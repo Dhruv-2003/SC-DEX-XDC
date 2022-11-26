@@ -37,9 +37,6 @@ const Navbar = (props: any): JSX.Element => {
         <div className="flex items-start justify-start space-x-2 w-auto cursor-pointer">
           <Link
             href="/"
-            onClick={() => {
-              setExpand(!expand);
-            }}
           >
             {!expand ? <Image width={100} src={logo} alt="logo" /> : null }
           </Link>
