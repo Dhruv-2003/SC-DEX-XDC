@@ -7,12 +7,11 @@ import Image from "next/image";
 import logo from "../public/img/logo.png";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
-const Navbar = (): JSX.Element => {
-  // --------- States here -------------
-  const [expand, setExpand] = useState<boolean>(false);
-
+const Navbar = (props: any): JSX.Element => {
+  // --------- States here ------------- //
+  const {expand, setExpand} = props
   return (
-    <nav className="max-w-full flex justify-between items-center px-6  lg:flex lg:justify-around lg:px-0 font-plus relative lg:items-center text-white">
+    <nav className="max-w-full flex justify-between items-center px-6 py-8 lg:flex lg:justify-around lg:px-0 font-plus relative lg:items-center text-white">
       {!expand ? (
         <a
           href="#"
@@ -26,7 +25,7 @@ const Navbar = (): JSX.Element => {
       ) : (
         <a
           href="#"
-          className="self-center text-center lg:hidden fixed left-[80%] z-50 rounded-full ml-3 bg-purple-900 px-2 py-2"
+          className="self-center text-center lg:hidden fixed left-[80%] z-50 rounded-full ml-3 border-2 px-2 py-2"
           onClick={() => {
             setExpand(!expand);
           }}
@@ -53,9 +52,9 @@ const Navbar = (): JSX.Element => {
               className="absolute -inset-1 blur-lg transition-all"
             ></div>
             <button
-              className="relative border-[#D100D1] py-1 transition-all"
+              className="relative border-[#D100D1] py-1 transition-all text-xl"
             >
-              TOKEN
+              Token
             </button>
           </div>
         </Link>
@@ -65,9 +64,9 @@ const Navbar = (): JSX.Element => {
               className="absolute -inset-1 blur-lg transition-all"
             ></div>
             <button
-              className="relative border-[#D100D1] py-1 transition-all"
+              className="relative border-[#D100D1] py-1 transition-all text-xl"
             >
-              POOL
+              Pool
             </button>
           </div>
         </Link>
@@ -77,9 +76,9 @@ const Navbar = (): JSX.Element => {
               className="absolute -inset-1 blur-lg transition-all"
             ></div>
             <button
-              className="relative border-[#D100D1] py-1 transition-all"
+              className="relative border-[#D100D1] py-1 transition-all text-xl"
             >
-              ACTIVITY
+              Activity
             </button>
           </div>
         </Link>
@@ -88,8 +87,8 @@ const Navbar = (): JSX.Element => {
             <div
               className="absolute -inset-1 blur-lg transition-all"
             ></div>
-            <button className="relative border-[#D100D1] py-1 transition-all">
-              APP
+            <button className="relative border-[#D100D1] py-1 transition-all text-xl">
+              App
             </button>
           </div>
         </Link>
@@ -128,21 +127,21 @@ const Navbar = (): JSX.Element => {
               <button
                 className="cursor-pointer transition-all text-3xl mb-4"
               >
-                TOKEN
+                Token
               </button>
             </Link>
             <Link href="/">
               <button
                 className="cursor-pointer  transition-all text-3xl mb-4"
               >
-                POOL
+                Pool
               </button>
             </Link>
             <Link href="/">
               <button
                 className="cursor-pointer  transition-all text-3xl mb-4"
               >
-                ACTIVITY
+                Activity
               </button>
             </Link>
             <Link href="/Activity">
@@ -152,7 +151,7 @@ const Navbar = (): JSX.Element => {
                   setExpand(!expand);
                 }}
               >
-                APP
+                App
               </button>
             </Link>
           </ul>
