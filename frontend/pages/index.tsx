@@ -3,7 +3,7 @@ import Navbar from "../Components/Navbar";
 
 const Home = (): JSX.Element => {
   return (
-    <div>
+    <div className=" w-screen h-screen no-repeat bg-cover bg-[url('/img/landing-image.png')]">
         <Navbar />  
     </div>
   )

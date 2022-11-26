@@ -12,7 +12,7 @@ const Navbar = (): JSX.Element => {
   const [expand, setExpand] = useState<boolean>(false);
 
   return (
-    <nav className="max-w-full bg-[#14032F] flex justify-between items-center px-6  lg:flex lg:justify-around lg:px-0 font-plus relative lg:items-center text-white">
+    <nav className="max-w-full flex justify-between items-center px-6  lg:flex lg:justify-around lg:px-0 font-plus relative lg:items-center text-white">
       {!expand ? (
         <a
           href="#"
