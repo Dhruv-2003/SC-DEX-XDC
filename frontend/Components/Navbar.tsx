@@ -41,7 +41,7 @@ const Navbar = (props: any): JSX.Element => {
               setExpand(!expand);
             }}
           >
-            <Image width={100} src={logo} alt="logo" />
+            {!expand ? <Image width={100} src={logo} alt="logo" /> : null }
           </Link>
         </div>
       </div>
@@ -119,7 +119,7 @@ const Navbar = (props: any): JSX.Element => {
                 setExpand(!expand);
               }}
             >
-              <Image src={logo} width={259} height={180} alt="logo" />
+              <Image src={logo} width={200} height={180} alt="logo" />
             </Link>
           </div>
           <ul className=" flex flex-col justify-between basis-2/6 items-start mb-6">
