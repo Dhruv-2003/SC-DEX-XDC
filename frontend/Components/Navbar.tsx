@@ -110,7 +110,7 @@ const Navbar = (): JSX.Element => {
         className="lg:hidden w-screen h-screen fixed overflow-y left-0 top-0 z-10"
       >
         <div
-          className="lg:hidden flex flex-col items-center h-full px-4 w-full bg-[#14032F] py-10 md:px-8"
+          className="lg:hidden flex flex-col items-center h-full px-4 w-full py-10 md:px-8"
           id="mobile-menu"
         >
           <div className="flex justify-center space-x-2 items-center w-auto mb-24">
