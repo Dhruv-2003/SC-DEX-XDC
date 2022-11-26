@@ -1,9 +1,12 @@
-import React from "react"
+import React from "react";
+import Navbar from "../Components/Navbar";
 
-export default function Home() {
+const Home = (): JSX.Element => {
   return (
     <div>
-      <h1 className="text-3xl">XDC?</h1>
+        <Navbar />  
     </div>
   )
 }
+
+export default Home
