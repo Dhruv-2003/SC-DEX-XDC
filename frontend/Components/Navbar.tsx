@@ -67,7 +67,7 @@ const Navbar = (props: any): JSX.Element => {
             </button>
           </div>
         </Link>
-        <Link href="/">
+        <Link href="/Activity">
           <div className="cursor-pointer hover:animate-pulse relative group py-0.5 px-0.5 ">
             <div
               className="absolute -inset-1 blur-lg transition-all"
@@ -79,7 +79,7 @@ const Navbar = (props: any): JSX.Element => {
             </button>
           </div>
         </Link>
-        <Link href="/Activity">
+        <Link href="/DEX">
           <div className="cursor-pointer hover:animate-pulse relative group py-0.5 px-0.5 ">
             <div
               className="absolute -inset-1 blur-lg transition-all"
@@ -141,9 +141,9 @@ const Navbar = (props: any): JSX.Element => {
                 Activity
               </button>
             </Link>
-            <Link href="/">
+            <Link href="/DEX">
               <button
-                className="cursor-pointer  transition-all text-3xl mb-4"
+                className="cursor-pointer transition-all text-3xl mb-4"
                 onClick={() => {
                   setExpand(!expand);
                 }}
