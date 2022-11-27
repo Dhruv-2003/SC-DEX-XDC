@@ -2,7 +2,6 @@ import React from "react";
 
 const Swap = (): JSX.Element => {
     return(
-        // font check at the very end
         <div className="font-fredoka text-white bg-[#03071E] border-y-2 flex flex-col items-center justify-center mt-32 md:mt-12 xl:mt-32 2xl:mt-40 mb-32">
             <h1 className="pb-8 pt-2 text-2xl">
                 Swap
