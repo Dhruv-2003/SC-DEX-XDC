@@ -134,14 +134,14 @@ const Navbar = (props: any): JSX.Element => {
                 Pool
               </button>
             </Link>
-            <Link href="/">
+            <Link href="/Activity">
               <button
                 className="cursor-pointer  transition-all text-3xl mb-4"
               >
                 Activity
               </button>
             </Link>
-            <Link href="/Activity">
+            <Link href="/">
               <button
                 className="cursor-pointer  transition-all text-3xl mb-4"
                 onClick={() => {
