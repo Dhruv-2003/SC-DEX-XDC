@@ -55,7 +55,7 @@ const Navbar = (props: any): JSX.Element => {
             </button>
           </div>
         </Link>
-        <Link href="/">
+        {/* <Link href="/">
           <div className="cursor-pointer hover:animate-pulse relative group py-0.5 px-0.5 ">
             <div
               className="absolute -inset-1 blur-lg transition-all"
@@ -66,7 +66,7 @@ const Navbar = (props: any): JSX.Element => {
               Pool
             </button>
           </div>
-        </Link>
+        </Link> */}
         <Link href="/Activity">
           <div className="cursor-pointer hover:animate-pulse relative group py-0.5 px-0.5 ">
             <div
@@ -127,13 +127,13 @@ const Navbar = (props: any): JSX.Element => {
                 Token
               </button>
             </Link>
-            <Link href="/">
+            {/* <Link href="/">
               <button
                 className="cursor-pointer  transition-all text-3xl mb-4"
               >
                 Pool
               </button>
-            </Link>
+            </Link> */}
             <Link href="/Activity">
               <button
                 className="cursor-pointer  transition-all text-3xl mb-4"
