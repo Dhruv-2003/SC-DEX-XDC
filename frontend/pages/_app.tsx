@@ -12,12 +12,12 @@ import {
   createClient,
   WagmiConfig,
 } from 'wagmi';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
+// import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 const { chains, provider } = configureChains(
   [chain.goerli],
   [
-    alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
+    // alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
     publicProvider()
   ]
 );
