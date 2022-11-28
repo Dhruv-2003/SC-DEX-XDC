@@ -9,7 +9,7 @@ const DEX = (): JSX.Element => {
         <div className=
         {`w-screen min-h-screen no-repeat bg-cover ${!expand ? `bg-[url('/img/landing-image.png')]` : `bg-[#03071E]`}`}>
             <Navbar expand={expand} setExpand={setExpand}/>
-            <Swap />
+            {expand ? null:  <Swap />}
             <Footer />
         </div>
     )
