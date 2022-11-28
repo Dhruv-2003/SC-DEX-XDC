@@ -7,7 +7,7 @@ const Coin = (): JSX.Element => {
     const [expand, setExpand] = useState<boolean>(false);
     return(
         <div className=
-        {`w-screen min-h-screen no-repeat bg-cover ${!expand ? `bg-[url('/img/landing-image.png')]` : `bg-[#03071E]`}`}
+        {`w-screen min-h-screen no-repeat bg-cover ${!expand ? `bg-[url('/img/dark-bg.png')]` : `bg-[#03071E]`}`}
         >
         <Navbar expand={expand} setExpand={setExpand}/>
         {expand ? null : <CoinHero /> }

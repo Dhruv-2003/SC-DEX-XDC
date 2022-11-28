@@ -43,7 +43,7 @@ const Navbar = (props: any): JSX.Element => {
         </div>
       </div>
       <ul className="hidden lg:flex justify-around items-center basis-2/5 text-lg">
-        <Link href="/">
+        <Link href="/Coin">
           <div className="cursor-pointer relative hover:animate-pulse group py-0.5 px-0.5 ">
             <div
               className="absolute -inset-1 blur-lg transition-all"
@@ -120,7 +120,7 @@ const Navbar = (props: any): JSX.Element => {
             </Link>
           </div>
           <ul className=" flex flex-col justify-between basis-2/6 items-start mb-6">
-            <Link href="/">
+            <Link href="/Coin">
               <button
                 className="cursor-pointer transition-all text-3xl mb-4"
               >
