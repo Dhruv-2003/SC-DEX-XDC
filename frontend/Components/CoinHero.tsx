@@ -45,12 +45,12 @@ const CoinHero = (): JSX.Element => {
                   />
                   <p>XDC Coin</p>
                   <a
-                    className="self-center text-center fixed z-50 top-1 sm:left-full left-[78%] rounded-full ml-3 bg-purple-900 px-2 py-2 "
+                    className="self-center text-center fixed z-50 top-1 sm:left-full left-[78%] rounded-full ml-3 bg-white curosor-pointer px-2 py-2 "
                     onClick={() => {
                       setShowModal(!showModal);
                     }}
                   >
-                    <MdClose className="text-4xl text-white" />
+                    <MdClose className="text-4xl text-black cursor-pointer" />
                   </a>
                 </div>
                 <a
