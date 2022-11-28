@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const CoinHero = (): JSX.Element => {
     return(
-    <section className="px-2 py-20 text-white">
+    <section className="font-fredoka px-2 py-20 text-white">
       <div className="md:flex items-center justify-around ">
         <div className=" md:w-3/5 px-32">
           <h2 className="text-4xl text-skin-base my-4 leading-tight lg:text-7xl tracking-tighter mb-6">
