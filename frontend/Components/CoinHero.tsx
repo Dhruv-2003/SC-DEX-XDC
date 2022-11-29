@@ -37,7 +37,6 @@ const CoinHero = (): JSX.Element => {
             >
               <div className=" bg-shade-bg sm:max-w-full  h-1/2 sm:w-1/2 sm:h-1/2 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 border-2 z-50 flex flex-col justify-center items-center">
                 <p className="sm:mb-14 mb-6 text-lg">Select Amount of XDC Stable coin</p>
-
                 <div className="px-2 flex flex-col sm:flex-row justify-center items-center">
                   <input
                     type="text"
@@ -55,7 +54,6 @@ const CoinHero = (): JSX.Element => {
                 </div>
                 <a
                   className="play-btn text-center py-4 w-[80%] sm:w-[35%] block animate-text cursor-pointer hover:animate-text-hover text-2xl mt-10 border-2 hover:bg-[#3E6B89]"
-                //   onClick={}
                 >
                   Buy
                 </a>
