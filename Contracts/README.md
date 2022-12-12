@@ -21,6 +21,8 @@
 
 /// Aim
 
-- Add Liquidity and earn rewards
+- Manage the Funds
+- for Liquidity Providers
 - Create Pool for a token PAIR
-- Swapping of token PAIR
+- Swapping for token PAIR
+- Protocol Fee
