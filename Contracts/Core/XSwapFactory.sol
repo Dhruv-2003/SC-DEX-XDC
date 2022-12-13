@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 import "@openzeppelin/contracts/access/Ownable.sol";
+
+//// Using Uniswap
 import "./XSwapPair.sol";
 
 contract XSwapFactory {
@@ -45,7 +47,8 @@ contract XSwapFactory {
         //     pair := create2(0, add(bytecode, 32), mload(bytecode), salt)
         // }
 
-        XSwapPair _pair = new XSwapPair(token0, token1);
+        XSwapPair _pair = new XSwapPair();
+        XSwapPair(_pair).initialize(token0, token1);
         getPair[token0][token1] = pair;
         getPair[token1][token0] = pair; // populate mapping in the reverse direction
         allPairs.push(pair);

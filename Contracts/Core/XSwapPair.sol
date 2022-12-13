@@ -4,8 +4,10 @@ pragma solidity ^0.8.10;
 import "./libraries/Math.sol";
 import "./libraries/UQ112x112.sol";
 import "./interfaces/IERC20.sol";
+import "./interfaces/IXSwapFactory.sol";
+import "./XSwapERC20.sol";
 
-contract XSwapPair {
+contract XSwapPair is XSwapERC20 {
     using SafeMath for uint256;
     using UQ112x112 for uint224;
 
@@ -78,10 +80,8 @@ contract XSwapPair {
     );
     event Sync(uint112 reserve0, uint112 reserve1);
 
-    constructor(address _token0, address _token1) public {
+    constructor() public {
         factory = msg.sender;
-        token0 = _token0;
-        token1 = _token1;
     }
 
     // called once by the factory at time of deployment
@@ -92,6 +92,7 @@ contract XSwapPair {
     }
 
     // update reserves and, on the first call per block, price accumulators
+    /// --/
     function _update(
         uint256 balance0,
         uint256 balance1,
@@ -117,11 +118,12 @@ contract XSwapPair {
     }
 
     // if fee is on, mint liquidity equivalent to 1/6th of the growth in sqrt(k)
-    function _mintFee(uint112 _reserve0, uint112 _reserve1)
+    // --/
+    function _collectFee(uint112 _reserve0, uint112 _reserve1)
         private
         returns (bool feeOn)
     {
-        address feeTo = IUniswapV2Factory(factory).feeTo();
+        address feeTo = IXSwapFactory(factory).feeTo();
         feeOn = feeTo != address(0);
         uint256 _kLast = kLast; // gas savings
         if (feeOn) {
@@ -141,6 +143,7 @@ contract XSwapPair {
     }
 
     // this low-level function should be called from a contract which performs important safety checks
+    // --/
     function mint(address to) external lock returns (uint256 liquidity) {
         (uint112 _reserve0, uint112 _reserve1, ) = getReserves(); // gas savings
         uint256 balance0 = IERC20(token0).balanceOf(address(this));
@@ -148,8 +151,8 @@ contract XSwapPair {
         uint256 amount0 = balance0.sub(_reserve0);
         uint256 amount1 = balance1.sub(_reserve1);
 
-        bool feeOn = _mintFee(_reserve0, _reserve1);
-        uint256 _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _mintFee
+        bool feeOn = _collectFee(_reserve0, _reserve1);
+        uint256 _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _collectFee
         if (_totalSupply == 0) {
             liquidity = Math.sqrt(amount0.mul(amount1)).sub(MINIMUM_LIQUIDITY);
             _mint(address(0), MINIMUM_LIQUIDITY); // permanently lock the first MINIMUM_LIQUIDITY tokens
@@ -159,7 +162,7 @@ contract XSwapPair {
                 amount1.mul(_totalSupply) / _reserve1
             );
         }
-        require(liquidity > 0, "UniswapV2: INSUFFICIENT_LIQUIDITY_MINTED");
+        require(liquidity > 0, " INSUFFICIENT_LIQUIDITY_MINTED");
         _mint(to, liquidity);
 
         _update(balance0, balance1, _reserve0, _reserve1);
@@ -168,6 +171,7 @@ contract XSwapPair {
     }
 
     // this low-level function should be called from a contract which performs important safety checks
+    // --/
     function burn(address to)
         external
         lock
@@ -180,14 +184,11 @@ contract XSwapPair {
         uint256 balance1 = IERC20(_token1).balanceOf(address(this));
         uint256 liquidity = balanceOf[address(this)];
 
-        bool feeOn = _mintFee(_reserve0, _reserve1);
-        uint256 _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _mintFee
+        bool feeOn = _collectFee(_reserve0, _reserve1);
+        uint256 _totalSupply = totalSupply; // gas savings, must be defined here since totalSupply can update in _collectFee
         amount0 = liquidity.mul(balance0) / _totalSupply; // using balances ensures pro-rata distribution
         amount1 = liquidity.mul(balance1) / _totalSupply; // using balances ensures pro-rata distribution
-        require(
-            amount0 > 0 && amount1 > 0,
-            "UniswapV2: INSUFFICIENT_LIQUIDITY_BURNED"
-        );
+        require(amount0 > 0 && amount1 > 0, "INSUFFICIENT_LIQUIDITY_BURNED");
         _burn(address(this), liquidity);
         _safeTransfer(_token0, to, amount0);
         _safeTransfer(_token1, to, amount1);
@@ -200,20 +201,18 @@ contract XSwapPair {
     }
 
     // this low-level function should be called from a contract which performs important safety checks
+    // --/
     function swap(
         uint256 amount0Out,
         uint256 amount1Out,
         address to,
         bytes calldata data
     ) external lock {
-        require(
-            amount0Out > 0 || amount1Out > 0,
-            "UniswapV2: INSUFFICIENT_OUTPUT_AMOUNT"
-        );
+        require(amount0Out > 0 || amount1Out > 0, "INSUFFICIENT_OUTPUT_AMOUNT");
         (uint112 _reserve0, uint112 _reserve1, ) = getReserves(); // gas savings
         require(
             amount0Out < _reserve0 && amount1Out < _reserve1,
-            "UniswapV2: INSUFFICIENT_LIQUIDITY"
+            "INSUFFICIENT_LIQUIDITY"
         );
 
         uint256 balance0;
@@ -222,16 +221,9 @@ contract XSwapPair {
             // scope for _token{0,1}, avoids stack too deep errors
             address _token0 = token0;
             address _token1 = token1;
-            require(to != _token0 && to != _token1, "UniswapV2: INVALID_TO");
+            require(to != _token0 && to != _token1, "INVALID_TO");
             if (amount0Out > 0) _safeTransfer(_token0, to, amount0Out); // optimistically transfer tokens
             if (amount1Out > 0) _safeTransfer(_token1, to, amount1Out); // optimistically transfer tokens
-            if (data.length > 0)
-                IUniswapV2Callee(to).uniswapV2Call(
-                    msg.sender,
-                    amount0Out,
-                    amount1Out,
-                    data
-                );
             balance0 = IERC20(_token0).balanceOf(address(this));
             balance1 = IERC20(_token1).balanceOf(address(this));
         }
@@ -241,10 +233,7 @@ contract XSwapPair {
         uint256 amount1In = balance1 > _reserve1 - amount1Out
             ? balance1 - (_reserve1 - amount1Out)
             : 0;
-        require(
-            amount0In > 0 || amount1In > 0,
-            "UniswapV2: INSUFFICIENT_INPUT_AMOUNT"
-        );
+        require(amount0In > 0 || amount1In > 0, "INSUFFICIENT_INPUT_AMOUNT");
         {
             // scope for reserve{0,1}Adjusted, avoids stack too deep errors
             uint256 balance0Adjusted = balance0.mul(1000).sub(amount0In.mul(3));
@@ -252,7 +241,7 @@ contract XSwapPair {
             require(
                 balance0Adjusted.mul(balance1Adjusted) >=
                     uint256(_reserve0).mul(_reserve1).mul(1000**2),
-                "UniswapV2: K"
+                " K"
             );
         }
 
@@ -260,7 +249,7 @@ contract XSwapPair {
         emit Swap(msg.sender, amount0In, amount1In, amount0Out, amount1Out, to);
     }
 
-    // force balances to match reserves
+    // force balances to match reserves --/
     function skim(address to) external lock {
         address _token0 = token0; // gas savings
         address _token1 = token1; // gas savings
@@ -276,7 +265,7 @@ contract XSwapPair {
         );
     }
 
-    // force reserves to match balances
+    // force reserves to match balances --/
     function sync() external lock {
         _update(
             IERC20(token0).balanceOf(address(this)),
