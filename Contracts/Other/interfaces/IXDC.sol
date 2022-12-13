@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.13;
 
-interface IXSwapERC20 {
+interface IXDC {
     event Approval(
         address indexed owner,
         address indexed spender,
@@ -9,11 +9,14 @@ interface IXSwapERC20 {
     );
     event Transfer(address indexed from, address indexed to, uint256 value);
 
-    function name() external pure returns (string memory);
+    event Deposit(address indexed account, uint256 _amount);
+    event Withdrawl(address indexed account, uint256 _amount);
 
-    function symbol() external pure returns (string memory);
+    function name() external view returns (string memory);
 
-    function decimals() external pure returns (uint8);
+    function symbol() external view returns (string memory);
+
+    function decimals() external view returns (uint8);
 
     function totalSupply() external view returns (uint256);
 
@@ -33,4 +36,8 @@ interface IXSwapERC20 {
         address to,
         uint256 value
     ) external returns (bool);
+
+    function deposit() external payable;
+
+    function withdraw(uint256 amount) external;
 }
