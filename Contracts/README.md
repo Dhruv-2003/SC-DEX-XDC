@@ -2,11 +2,6 @@
 
 // Contract
 
-- DEX contract (Full pair )
-- Mock token 1 - WETH (Wrapped Ether)
-- XDC Token - Native
-- Stablecoin Backed by XDC
-
 /// We are using similar to what Uniswap uses in their architecture to create contracts
 
 1. Core contracts
@@ -18,6 +13,14 @@
 2. Frontends Contracts
 
 - Router - Contract that can be use by frontend to just intiate Swapping and Liquidity
+
+3. Others Contract
+
+- IXDC Token
+- Mock token 1
+- Mock token 2
+- ETH Wrapper - if Bridge Created
+- Stablecoin Backed by XDC
 
 /// Aim
 

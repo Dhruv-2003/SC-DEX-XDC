@@ -2,7 +2,9 @@
 pragma solidity ^0.8.10;
 
 import "./libraries/XSwapLibrary.sol";
+import "./libraries/TransferHelper.sol";
 import "../Core/interfaces/IXSwapFactory.sol";
+import "../Core/interfaces/IXSwapPair.sol";
 import "../Core/libraries/SafeMath.sol";
 import "../Core/interfaces/IERC20.sol";
 import "../Other/interfaces/IXDC.sol";
@@ -30,6 +32,7 @@ contract XSwapRouter {
     }
 
     // **** ADD LIQUIDITY ****
+    // --/
     function _addLiquidity(
         address tokenA,
         address tokenB,
@@ -39,10 +42,10 @@ contract XSwapRouter {
         uint256 amountBMin
     ) internal virtual returns (uint256 amountA, uint256 amountB) {
         // create the pair if it doesn't exist yet
-        if (IUniswapV2Factory(factory).getPair(tokenA, tokenB) == address(0)) {
-            IUniswapV2Factory(factory).createPair(tokenA, tokenB);
+        if (IXSwapFactory(factory).getPair(tokenA, tokenB) == address(0)) {
+            IXSwapFactory(factory).createPair(tokenA, tokenB);
         }
-        (uint256 reserveA, uint256 reserveB) = UniswapV2Library.getReserves(
+        (uint256 reserveA, uint256 reserveB) = XSwapLibrary.getReserves(
             factory,
             tokenA,
             tokenB
@@ -50,7 +53,7 @@ contract XSwapRouter {
         if (reserveA == 0 && reserveB == 0) {
             (amountA, amountB) = (amountADesired, amountBDesired);
         } else {
-            uint256 amountBOptimal = UniswapV2Library.quote(
+            uint256 amountBOptimal = XSwapLibrary.quote(
                 amountADesired,
                 reserveA,
                 reserveB
@@ -62,7 +65,7 @@ contract XSwapRouter {
                 );
                 (amountA, amountB) = (amountADesired, amountBOptimal);
             } else {
-                uint256 amountAOptimal = UniswapV2Library.quote(
+                uint256 amountAOptimal = XSwapLibrary.quote(
                     amountBDesired,
                     reserveB,
                     reserveA
@@ -77,6 +80,7 @@ contract XSwapRouter {
         }
     }
 
+    // --/
     function addLiquidity(
         address tokenA,
         address tokenB,
@@ -105,12 +109,14 @@ contract XSwapRouter {
             amountAMin,
             amountBMin
         );
-        address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
+        address pair = XSwapLibrary.pairFor(factory, tokenA, tokenB);
         TransferHelper.safeTransferFrom(tokenA, msg.sender, pair, amountA);
         TransferHelper.safeTransferFrom(tokenB, msg.sender, pair, amountB);
-        liquidity = IUniswapV2Pair(pair).mint(to);
+        liquidity = IXSwapPair(pair).mint(to);
     }
 
+    // --/
+    // Contract takes in ETH and then get WETH against it from Wrapper and then user WETH for all the tx
     function addLiquidityETH(
         address token,
         uint256 amountTokenDesired,
@@ -138,16 +144,17 @@ contract XSwapRouter {
             amountTokenMin,
             amountETHMin
         );
-        address pair = UniswapV2Library.pairFor(factory, token, WETH);
+        address pair = XSwapLibrary.pairFor(factory, token, WETH);
         TransferHelper.safeTransferFrom(token, msg.sender, pair, amountToken);
         IWETH(WETH).deposit{value: amountETH}();
         assert(IWETH(WETH).transfer(pair, amountETH));
-        liquidity = IUniswapV2Pair(pair).mint(to);
+        liquidity = IXSwapPair(pair).mint(to);
         // refund dust eth, if any
         if (msg.value > amountETH)
             TransferHelper.safeTransferETH(msg.sender, msg.value - amountETH);
     }
 
+    // --/
     // **** REMOVE LIQUIDITY ****
     function removeLiquidity(
         address tokenA,
@@ -164,10 +171,10 @@ contract XSwapRouter {
         ensure(deadline)
         returns (uint256 amountA, uint256 amountB)
     {
-        address pair = UniswapV2Library.pairFor(factory, tokenA, tokenB);
-        IUniswapV2Pair(pair).transferFrom(msg.sender, pair, liquidity); // send liquidity to pair
-        (uint256 amount0, uint256 amount1) = IUniswapV2Pair(pair).burn(to);
-        (address token0, ) = UniswapV2Library.sortTokens(tokenA, tokenB);
+        address pair = XSwapLibrary.pairFor(factory, tokenA, tokenB);
+        IXSwapPair(pair).transferFrom(msg.sender, pair, liquidity); // send liquidity to pair
+        (uint256 amount0, uint256 amount1) = IXSwapPair(pair).burn(to);
+        (address token0, ) = XSwapLibrary.sortTokens(tokenA, tokenB);
         (amountA, amountB) = tokenA == token0
             ? (amount0, amount1)
             : (amount1, amount0);
@@ -175,6 +182,7 @@ contract XSwapRouter {
         require(amountB >= amountBMin, "Router: INSUFFICIENT_B_AMOUNT");
     }
 
+    // --/
     function removeLiquidityETH(
         address token,
         uint256 liquidity,
@@ -203,6 +211,7 @@ contract XSwapRouter {
         TransferHelper.safeTransferETH(to, amountETH);
     }
 
+    // --/
     // **** SWAP ****
     // requires the initial amount to have already been sent to the first pair
     function _swap(
@@ -212,19 +221,26 @@ contract XSwapRouter {
     ) internal virtual {
         for (uint256 i; i < path.length - 1; i++) {
             (address input, address output) = (path[i], path[i + 1]);
-            (address token0, ) = UniswapV2Library.sortTokens(input, output);
+            (address token0, ) = XSwapLibrary.sortTokens(input, output);
             uint256 amountOut = amounts[i + 1];
             (uint256 amount0Out, uint256 amount1Out) = input == token0
                 ? (uint256(0), amountOut)
                 : (amountOut, uint256(0));
             address to = i < path.length - 2
-                ? UniswapV2Library.pairFor(factory, output, path[i + 2])
+                ? XSwapLibrary.pairFor(factory, output, path[i + 2])
                 : _to;
-            IUniswapV2Pair(UniswapV2Library.pairFor(factory, input, output))
-                .swap(amount0Out, amount1Out, to, new bytes(0));
+            IXSwapPair(XSwapLibrary.pairFor(factory, input, output)).swap(
+                amount0Out,
+                amount1Out,
+                to,
+                new bytes(0)
+            );
         }
     }
 
+    // --/
+    // Token out
+    // Exasct Token In
     function swapExactTokensForTokens(
         uint256 amountIn,
         uint256 amountOutMin,
@@ -238,7 +254,7 @@ contract XSwapRouter {
         ensure(deadline)
         returns (uint256[] memory amounts)
     {
-        amounts = UniswapV2Library.getAmountsOut(factory, amountIn, path);
+        amounts = XSwapLibrary.getAmountsOut(factory, amountIn, path);
         require(
             amounts[amounts.length - 1] >= amountOutMin,
             "Router: INSUFFICIENT_OUTPUT_AMOUNT"
@@ -246,12 +262,15 @@ contract XSwapRouter {
         TransferHelper.safeTransferFrom(
             path[0],
             msg.sender,
-            UniswapV2Library.pairFor(factory, path[0], path[1]),
+            XSwapLibrary.pairFor(factory, path[0], path[1]),
             amounts[0]
         );
         _swap(amounts, path, to);
     }
 
+    // --/
+    // Token out
+    // Exact Tokens out
     function swapTokensForExactTokens(
         uint256 amountOut,
         uint256 amountInMax,
@@ -265,17 +284,20 @@ contract XSwapRouter {
         ensure(deadline)
         returns (uint256[] memory amounts)
     {
-        amounts = UniswapV2Library.getAmountsIn(factory, amountOut, path);
+        amounts = XSwapLibrary.getAmountsIn(factory, amountOut, path);
         require(amounts[0] <= amountInMax, "Router: EXCESSIVE_INPUT_AMOUNT");
         TransferHelper.safeTransferFrom(
             path[0],
             msg.sender,
-            UniswapV2Library.pairFor(factory, path[0], path[1]),
+            XSwapLibrary.pairFor(factory, path[0], path[1]),
             amounts[0]
         );
         _swap(amounts, path, to);
     }
 
+    // --/
+    // Token Out
+    // Exact amount - ETH
     function swapExactETHForTokens(
         uint256 amountOutMin,
         address[] calldata path,
@@ -290,7 +312,7 @@ contract XSwapRouter {
         returns (uint256[] memory amounts)
     {
         require(path[0] == WETH, "Router: INVALID_PATH");
-        amounts = UniswapV2Library.getAmountsOut(factory, msg.value, path);
+        amounts = XSwapLibrary.getAmountsOut(factory, msg.value, path);
         require(
             amounts[amounts.length - 1] >= amountOutMin,
             "Router: INSUFFICIENT_OUTPUT_AMOUNT"
@@ -298,13 +320,17 @@ contract XSwapRouter {
         IWETH(WETH).deposit{value: amounts[0]}();
         assert(
             IWETH(WETH).transfer(
-                UniswapV2Library.pairFor(factory, path[0], path[1]),
+                XSwapLibrary.pairFor(factory, path[0], path[1]),
                 amounts[0]
             )
         );
         _swap(amounts, path, to);
     }
 
+    //
+    // --/
+    // ETH out
+    // Exact Amount - ETH
     function swapTokensForExactETH(
         uint256 amountOut,
         uint256 amountInMax,
@@ -319,12 +345,12 @@ contract XSwapRouter {
         returns (uint256[] memory amounts)
     {
         require(path[path.length - 1] == WETH, "Router: INVALID_PATH");
-        amounts = UniswapV2Library.getAmountsIn(factory, amountOut, path);
+        amounts = XSwapLibrary.getAmountsIn(factory, amountOut, path);
         require(amounts[0] <= amountInMax, "Router: EXCESSIVE_INPUT_AMOUNT");
         TransferHelper.safeTransferFrom(
             path[0],
             msg.sender,
-            UniswapV2Library.pairFor(factory, path[0], path[1]),
+            XSwapLibrary.pairFor(factory, path[0], path[1]),
             amounts[0]
         );
         _swap(amounts, path, address(this));
@@ -332,6 +358,9 @@ contract XSwapRouter {
         TransferHelper.safeTransferETH(to, amounts[amounts.length - 1]);
     }
 
+    // --/
+    // ETH out
+    // Exact amount - token
     function swapExactTokensForETH(
         uint256 amountIn,
         uint256 amountOutMin,
@@ -346,7 +375,7 @@ contract XSwapRouter {
         returns (uint256[] memory amounts)
     {
         require(path[path.length - 1] == WETH, "Router: INVALID_PATH");
-        amounts = UniswapV2Library.getAmountsOut(factory, amountIn, path);
+        amounts = XSwapLibrary.getAmountsOut(factory, amountIn, path);
         require(
             amounts[amounts.length - 1] >= amountOutMin,
             "Router: INSUFFICIENT_OUTPUT_AMOUNT"
@@ -354,7 +383,7 @@ contract XSwapRouter {
         TransferHelper.safeTransferFrom(
             path[0],
             msg.sender,
-            UniswapV2Library.pairFor(factory, path[0], path[1]),
+            XSwapLibrary.pairFor(factory, path[0], path[1]),
             amounts[0]
         );
         _swap(amounts, path, address(this));
@@ -362,6 +391,9 @@ contract XSwapRouter {
         TransferHelper.safeTransferETH(to, amounts[amounts.length - 1]);
     }
 
+    // --/
+    // Token Out
+    // Exact Amount -  Token
     function swapETHForExactTokens(
         uint256 amountOut,
         address[] calldata path,
@@ -376,12 +408,12 @@ contract XSwapRouter {
         returns (uint256[] memory amounts)
     {
         require(path[0] == WETH, "Router: INVALID_PATH");
-        amounts = UniswapV2Library.getAmountsIn(factory, amountOut, path);
+        amounts = XSwapLibrary.getAmountsIn(factory, amountOut, path);
         require(amounts[0] <= msg.value, "Router: EXCESSIVE_INPUT_AMOUNT");
         IWETH(WETH).deposit{value: amounts[0]}();
         assert(
             IWETH(WETH).transfer(
-                UniswapV2Library.pairFor(factory, path[0], path[1]),
+                XSwapLibrary.pairFor(factory, path[0], path[1]),
                 amounts[0]
             )
         );
@@ -391,31 +423,35 @@ contract XSwapRouter {
             TransferHelper.safeTransferETH(msg.sender, msg.value - amounts[0]);
     }
 
+    // --/
     // **** LIBRARY FUNCTIONS ****
     function quote(
         uint256 amountA,
         uint256 reserveA,
         uint256 reserveB
     ) public pure virtual override returns (uint256 amountB) {
-        return UniswapV2Library.quote(amountA, reserveA, reserveB);
+        return XSwapLibrary.quote(amountA, reserveA, reserveB);
     }
 
+    // --/
     function getAmountOut(
         uint256 amountIn,
         uint256 reserveIn,
         uint256 reserveOut
     ) public pure virtual override returns (uint256 amountOut) {
-        return UniswapV2Library.getAmountOut(amountIn, reserveIn, reserveOut);
+        return XSwapLibrary.getAmountOut(amountIn, reserveIn, reserveOut);
     }
 
+    // --/
     function getAmountIn(
         uint256 amountOut,
         uint256 reserveIn,
         uint256 reserveOut
     ) public pure virtual override returns (uint256 amountIn) {
-        return UniswapV2Library.getAmountIn(amountOut, reserveIn, reserveOut);
+        return XSwapLibrary.getAmountIn(amountOut, reserveIn, reserveOut);
     }
 
+    // --/
     function getAmountsOut(uint256 amountIn, address[] memory path)
         public
         view
@@ -423,9 +459,10 @@ contract XSwapRouter {
         override
         returns (uint256[] memory amounts)
     {
-        return UniswapV2Library.getAmountsOut(factory, amountIn, path);
+        return XSwapLibrary.getAmountsOut(factory, amountIn, path);
     }
 
+    // --/
     function getAmountsIn(uint256 amountOut, address[] memory path)
         public
         view
@@ -433,6 +470,6 @@ contract XSwapRouter {
         override
         returns (uint256[] memory amounts)
     {
-        return UniswapV2Library.getAmountsIn(factory, amountOut, path);
+        return XSwapLibrary.getAmountsIn(factory, amountOut, path);
     }
 }
