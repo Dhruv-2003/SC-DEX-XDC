@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-import "@openzeppelin/contracts/utils/maths/SafeMath.sol";
+import "./libraries/Math.sol";
+import "./libraries/UQ112x112.sol";
+import "./interfaces/IERC20.sol";
 
 contract XSwapPair {
     using SafeMath for uint256;
+    using UQ112x112 for uint224;
 
     uint256 public constant MINIMUM_LIQUIDITY = 10**3;
     bytes4 private constant SELECTOR =
@@ -14,9 +17,9 @@ contract XSwapPair {
     address public token0;
     address public token1;
 
-    uint256 private reserve0;
-    uint256 private reserve1;
-    uint32 private blockTimestampLast;
+    uint112 private reserve0; // uses single storage slot, accessible via getReserves
+    uint112 private reserve1; // uses single storage slot, accessible via getReserves
+    uint32 private blockTimestampLast; // uses single storage slot, accessible via getReserves
 
     uint256 public price0CumulativeLast;
     uint256 public price1CumulativeLast;
@@ -24,7 +27,7 @@ contract XSwapPair {
 
     uint256 private unlocked = 1;
     modifier lock() {
-        require(unlocked == 1, "UniswapV2: LOCKED");
+        require(unlocked == 1, "LOCKED");
         unlocked = 0;
         _;
         unlocked = 1;
@@ -54,7 +57,7 @@ contract XSwapPair {
         );
         require(
             success && (data.length == 0 || abi.decode(data, (bool))),
-            "UniswapV2: TRANSFER_FAILED"
+            "TRANSFER_FAILED"
         );
     }
 
@@ -75,13 +78,15 @@ contract XSwapPair {
     );
     event Sync(uint112 reserve0, uint112 reserve1);
 
-    constructor() public {
+    constructor(address _token0, address _token1) public {
         factory = msg.sender;
+        token0 = _token0;
+        token1 = _token1;
     }
 
     // called once by the factory at time of deployment
     function initialize(address _token0, address _token1) external {
-        require(msg.sender == factory, "UniswapV2: FORBIDDEN"); // sufficient check
+        require(msg.sender == factory, "FORBIDDEN"); // sufficient check
         token0 = _token0;
         token1 = _token1;
     }
@@ -93,10 +98,7 @@ contract XSwapPair {
         uint112 _reserve0,
         uint112 _reserve1
     ) private {
-        require(
-            balance0 <= uint112(-1) && balance1 <= uint112(-1),
-            "UniswapV2: OVERFLOW"
-        );
+        require(balance0 <= uint112(-1) && balance1 <= uint112(-1), "OVERFLOW");
         uint32 blockTimestamp = uint32(block.timestamp % 2**32);
         uint32 timeElapsed = blockTimestamp - blockTimestampLast; // overflow is desired
         if (timeElapsed > 0 && _reserve0 != 0 && _reserve1 != 0) {
