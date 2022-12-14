@@ -5,40 +5,11 @@ pragma solidity ^0.8.13;
 // - User  or borrower can borrow some amount of tokens (limited) , and pay back with some interest for some time period.
 // - lender can withdraw the amount later with some interest
 
-// interface of the tokens to be awarded as rewards for the user
-interface IERC20 {
-    function totalSupply() external view returns (uint256);
-
-    function balanceOf(address account) external view returns (uint256);
-
-    function transfer(address recipient, uint256 amount)
-        external
-        returns (bool);
-
-    function allowance(address owner, address spender)
-        external
-        view
-        returns (uint256);
-
-    function approve(address spender, uint256 amount) external returns (bool);
-
-    function transferFrom(
-        address sender,
-        address recipient,
-        uint256 amount
-    ) external returns (bool);
-
-    event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(
-        address indexed owner,
-        address indexed spender,
-        uint256 value
-    );
-}
+import "../Other/interfaces/IERC20.sol";
 
 // to maintain the track we need to mint and Burn Tokens
 
-contract LiquidityPool {
+contract LendingPool {
     /// intialize token
     IERC20 token;
     uint256 totalSupply;

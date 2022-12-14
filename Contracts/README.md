@@ -33,3 +33,17 @@
 - Protocol Fee
 - Price Oracle
 - Stable Coin
+
+/// Lending - Borrowing
+
+1. Lending Pool - Contract handles the lending and borrowing of a particular asset
+2. Pool Factory - Creates Pool for a new Contract and then allow users to
+3. Pool Router - Functions to deposit, withdraw , borrow and repay for a particular asset
+
+/// Staking
+
+1. Staking Pool - Staked the defined token for the user
+2. Staking reward Token - The reward token which is to be sent for the Staking users do
+3. Staking Factory - Create and Manages the various Staking Pool
+
+We have plans to allow users to pay protocol fees in the Reward Token we offer to them , in this way it can be utilised
