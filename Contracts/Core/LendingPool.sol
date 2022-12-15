@@ -47,7 +47,7 @@ contract LendingPool is ERC20 {
 
     /// making the contract payable and adding the tokens in starting to the pool
 
-    constructor(address _tokenAddress) ERC20("XToken", "XT") {
+    constructor(address _tokenAddress, uint256 amount) ERC20("XToken", "XT") {
         token = IERC20(_tokenAddress);
     }
 

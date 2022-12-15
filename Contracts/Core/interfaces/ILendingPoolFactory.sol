@@ -8,7 +8,5 @@ interface ILendingPoolFactory {
 
     function allPoolsLength() external view returns (uint256);
 
-    function createPool(address token, uint256 amount)
-        external
-        returns (address);
+    function createPool(address token) external returns (address);
 }

@@ -24,14 +24,11 @@ contract LendingPoolFactory {
         return allPools.length;
     }
 
-    function createPool(address token, uint256 amount)
-        external
-        returns (address)
-    {
+    function createPool(address token) external returns (address) {
         require(token != address(0), "ZERO_ADDRESS");
-        require(getPool[token] == address(0), "PAIR_EXISTS");
+        require(getPool[token] == address(0), "POOL_EXISTS");
 
-        LendingPool _pool = new LendingPool(token, amount);
+        LendingPool _pool = new LendingPool(token);
 
         getPool[token] = address(_pool);
         allPools.push(address(_pool));

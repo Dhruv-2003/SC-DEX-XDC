@@ -8,6 +8,7 @@ import "../Core/interfaces/IXSwapPair.sol";
 import "../Core/libraries/SafeMath.sol";
 import "../Core/interfaces/IERC20.sol";
 import "../Other/interfaces/IXDC.sol";
+import "../Other/interfaces/IWETH.sol";
 
 /// Followed Uniswap V2 Router 02 implementation
 
