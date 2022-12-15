@@ -6,12 +6,14 @@ pragma solidity ^0.8.13;
 // - lender can withdraw the amount later with some interest
 
 import "../Other/interfaces/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 // to maintain the track we need to mint and Burn Tokens
+// Provide allowance first by calling approve()
 
-contract LendingPool {
+contract LendingPool is ERC20 {
     /// intialize token
-    IERC20 token;
+    IERC20 immutable token;
     uint256 totalSupply;
 
     /// the rate earned by the lender per second
@@ -22,13 +24,13 @@ contract LendingPool {
     uint256 peroidBorrowed;
 
     ///  struct with amount and date of borrowing or lending
-    struct amount {
+    struct Amount {
         uint256 amount;
         uint256 start;
     }
 
     // mapping to check if the address has lended any amount
-    mapping(address => amount) lendAmount;
+    mapping(address => Amount) lendAmount;
     // mapping for the interest earned by the lender ;
     mapping(address => uint256) earnedInterest;
 
@@ -37,7 +39,7 @@ contract LendingPool {
     mapping(address => bool) borrowers;
 
     // mapping to check if the address has borrowed any amount
-    mapping(address => amount) borrowAmount;
+    mapping(address => Amount) borrowAmount;
     // mapping for the interest to be paid by the borrower ;
     mapping(address => uint256) payInterest;
 
@@ -45,13 +47,12 @@ contract LendingPool {
 
     /// making the contract payable and adding the tokens in starting to the pool
 
-    constructor(address _tokenAddress, uint256 _amount) payable {
+    constructor(address _tokenAddress) ERC20("XToken", "XT") {
         token = IERC20(_tokenAddress);
-        token.transferFrom(msg.sender, address(this), _amount);
     }
 
     /// @dev - to lend the amount by  , add liquidity
-    /// @param _amount - the amount to be lender
+    /// @param _amount - deposited amount
     function deposit(uint256 _amount) external {
         require(_amount != 0, " amount can not be 0");
 
@@ -62,6 +63,8 @@ contract LendingPool {
         lendAmount[msg.sender].amount = _amount;
         lendAmount[msg.sender].start = block.timestamp;
         lenders[msg.sender] = true;
+
+        _mint(msg.sender, _amount);
 
         /// updating total supply
         totalSupply += _amount;
@@ -88,7 +91,7 @@ contract LendingPool {
         require(borrowers[msg.sender], "not a borrower");
 
         /// total amount to be repaid with intrest
-        amount storage amount_ = borrowAmount[msg.sender];
+        Amount storage amount_ = borrowAmount[msg.sender];
         uint256 _amount = (amount_.amount +
             (amount_.amount *
                 ((block.timestamp - amount_.start) * borrowRate * 1e18)) /
@@ -113,7 +116,7 @@ contract LendingPool {
         require(lenders[msg.sender], "you are not a lender");
 
         // calculating the total amount along with the interest
-        amount storage amount_ = lendAmount[msg.sender];
+        Amount storage amount_ = lendAmount[msg.sender];
         uint256 _amount = (amount_.amount +
             (amount_.amount *
                 ((block.timestamp - amount_.start) * lendRate * 1e18)) /
@@ -124,6 +127,8 @@ contract LendingPool {
         /// deleting the records and updating the list
         delete lendAmount[msg.sender];
         lenders[msg.sender] = false;
+
+        _burn(msg.sender, amount_.amount);
 
         /// updating total supply earlier before transfering token , so as to be safe from attacks
         totalSupply -= _amount;
