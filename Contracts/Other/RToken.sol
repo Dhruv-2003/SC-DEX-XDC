@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 /// The Staking contract is allowed only to mint and burn the Tokens
 
-contract Token2 is ERC20, Ownable {
+contract RToken is ERC20, Ownable {
     address public approved;
 
     constructor() ERC20("X Reward", "XR") {}
