@@ -1,56 +1,51 @@
 import Link from "next/link";
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import { Transition } from "@headlessui/react";
 import { BiMenu } from "react-icons/bi";
 import { MdClose } from "react-icons/md";
 import Image from "next/image";
 import logo from "../public/img/logo.png";
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const Navbar = (props: any): JSX.Element => {
   // --------- States here ------------- //
-  const {expand, setExpand} = props
+  const { expand, setExpand } = props;
   return (
-    <nav className="max-w-full flex justify-between items-center px-6 py-8 lg:flex lg:justify-around lg:px-0 font-plus relative lg:items-center text-white">
+    <nav className="max-w-full border-b border-gray-500 relative w-full flex justify-between items-center px-4 py-4 lg:flex lg:justify-around lg:px-0 font-plus  lg:items-center text-white">
       {!expand ? (
         <a
           href="#"
-          className="self-center ml-2 lg:hidden"
+          className="self-center mlq-2 lg:hidden"
           onClick={() => {
             setExpand(!expand);
           }}
         >
-          <BiMenu className="text-5xl" />
+          <BiMenu className="text-4xl" />
         </a>
       ) : (
         <a
           href="#"
-          className="self-center text-center lg:hidden fixed left-[80%] z-50 rounded-full ml-3 border-2 px-2 py-2"
+          className="self-center text-center lg:hidden fixed left-[80%] z-50 rounded-full mx-5 border-2 px-2 py-2"
           onClick={() => {
             setExpand(!expand);
           }}
         >
-          <MdClose className="text-4xl text-white" />
+          <MdClose className="text-xl text-white" />
         </a>
       )}
       <div className="flex justify-between w-[200px] -order-1 lg:w-72">
-        <div className="flex items-start justify-start space-x-2 w-auto cursor-pointer">
-          <Link
-            href="/"
-          >
-            {!expand ? <Image width={100} src={logo} alt="logo" /> : null }
+        <div className="flex items-center justify-start space-x-2 w-auto cursor-pointer">
+          <Link href="/">
+             <Image width={40} src={logo} alt="logo" /> 
           </Link>
+          <span className="tracking-wide text-2xl font-bold">XDCDEX</span>
         </div>
       </div>
       <ul className="hidden lg:flex justify-around items-center basis-2/5 text-lg">
         <Link href="/Coin">
           <div className="cursor-pointer relative hover:animate-pulse group py-0.5 px-0.5 ">
-            <div
-              className="absolute -inset-1 blur-lg transition-all"
-            ></div>
-            <button
-              className="relative border-[#D100D1] py-1 transition-all text-xl"
-            >
+            <div className="absolute -inset-1 blur-lg transition-all"></div>
+            <button className="relative border-[#D100D1] py-1 transition-all text-xl">
               Token
             </button>
           </div>
@@ -69,21 +64,15 @@ const Navbar = (props: any): JSX.Element => {
         </Link> */}
         <Link href="/Activity">
           <div className="cursor-pointer hover:animate-pulse relative group py-0.5 px-0.5 ">
-            <div
-              className="absolute -inset-1 blur-lg transition-all"
-            ></div>
-            <button
-              className="relative border-[#D100D1] py-1 transition-all text-xl"
-            >
+            <div className="absolute -inset-1 blur-lg transition-all"></div>
+            <button className="relative border-[#D100D1] py-1 transition-all text-xl">
               Activity
             </button>
           </div>
         </Link>
         <Link href="/DEX">
           <div className="cursor-pointer hover:animate-pulse relative group py-0.5 px-0.5 ">
-            <div
-              className="absolute -inset-1 blur-lg transition-all"
-            ></div>
+            <div className="absolute -inset-1 blur-lg transition-all"></div>
             <button className="relative border-[#D100D1] py-1 transition-all text-xl">
               App
             </button>
@@ -106,24 +95,13 @@ const Navbar = (props: any): JSX.Element => {
         className="lg:hidden w-screen h-screen fixed overflow-y left-0 top-0 z-10"
       >
         <div
-          className="lg:hidden flex flex-col items-center h-full px-4 w-full py-10 md:px-8"
+          className="lg:hidden  flex flex-col items-center h-full px-4 w-full mt-16 py-12 md:px-8"
           id="mobile-menu"
         >
-          <div className="flex justify-center space-x-2 items-center w-auto mb-24">
-            <Link
-              href="/"
-              onClick={() => {
-                setExpand(!expand);
-              }}
-            >
-              <Image src={logo} width={200} height={180} alt="logo" />
-            </Link>
-          </div>
-          <ul className=" flex flex-col justify-between basis-2/6 items-start mb-6">
+          
+          <ul className=" flex flex-col text-center items-center justify-between basis-2/6 mt-14 mb-6">
             <Link href="/Coin">
-              <button
-                className="cursor-pointer transition-all text-3xl mb-4"
-              >
+              <button className="cursor-pointer transition-all text-2xl mb-4">
                 Token
               </button>
             </Link>
@@ -135,15 +113,13 @@ const Navbar = (props: any): JSX.Element => {
               </button>
             </Link> */}
             <Link href="/Activity">
-              <button
-                className="cursor-pointer  transition-all text-3xl mb-4"
-              >
+              <button className="cursor-pointer  transition-all text-2xl mb-4">
                 Activity
               </button>
             </Link>
             <Link href="/DEX">
               <button
-                className="cursor-pointer transition-all text-3xl mb-4"
+                className="cursor-pointer transition-all text-2xl mb-4"
                 onClick={() => {
                   setExpand(!expand);
                 }}
@@ -151,10 +127,10 @@ const Navbar = (props: any): JSX.Element => {
                 App
               </button>
             </Link>
+            <div className="flex items-center  ">
+              <ConnectButton />
+            </div>
           </ul>
-          <div className="flex items-center ">
-            <ConnectButton />
-          </div>
         </div>
       </Transition>
     </nav>
