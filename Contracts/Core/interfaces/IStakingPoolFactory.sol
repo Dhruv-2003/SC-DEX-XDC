@@ -8,7 +8,7 @@ interface IStakingPoolFactory {
 
     function allPoolsLength() external view returns (uint256);
 
-    function createPool(address token, uint256 amount)
+    function createPool(address stoken, address rtoken)
         external
         returns (address);
 }
