@@ -65,14 +65,32 @@ contract LendingPool is ERC20 {
     {
         /// total amount to be repaid with intrest
         Amount storage amount_ = borrowAmount[user];
+        require(
+            repayAmount <= amount_.amount,
+            "Amount exceeding borrowed amount"
+        );
 
-        uint256 _amount = (amount_.amount +
-            (amount_.amount *
+        uint256 amount = (repayAmount +
+            (repayAmount *
                 ((block.timestamp - amount_.start) * borrowRate * 1e18)) /
             totalPoolSupply);
     }
 
-    function calculateWithdrawAmount() public view returns (uint256 amount) {}
+    function calculateWithdrawAmount(address user, uint256 withdrawAmount)
+        public
+        view
+        returns (uint256 amount)
+    {
+        Amount storage amount_ = lendAmount[user];
+        require(
+            withdrawAmount <= amount_.amount,
+            "Amount exceeding deposit amount"
+        );
+        uint256 amount = (withdrawAmount +
+            (withdrawAmount *
+                ((block.timestamp - amount_.start) * lendRate * 1e18)) /
+            totalPoolSupply);
+    }
 
     /// @dev - to lend the amount by  , add liquidity
     /// @param _amount - deposited amount
@@ -118,33 +136,31 @@ contract LendingPool is ERC20 {
     /// @dev  - repay the whole loan
     function repay(address user, uint256 amount) external {
         /// check borrower
-        require(borrowers[msg.sender], "not a borrower");
+        require(borrowers[user], "not a borrower");
 
         uint256 _amount = calculateRepayAmount(user, amount);
-        require(_amount != 0, " amount can not be 0");
+        require(_amount != 0, "amount can not be 0");
 
         /// transferring the tokens
-        token.transferFrom(msg.sender, address(this), _amount);
+        token.transferFrom(user, address(this), _amount);
 
         /// updating records and deleting the record of borrowing
-        delete borrowAmount[msg.sender];
-        borrowers[msg.sender] = false;
+        borrowAmount[user].amount -= _amount;
+
+        if (borrowAmount[user].amount == 0) {
+            borrowers[user] = false;
+        }
 
         /// update total supply at the end
         totalPoolSupply += _amount;
     }
 
     /// @dev  - to withdraw the amount for the lender
-    function withdraw() external {
+    function withdraw(address user, uint256 amount) external {
         /// checking if the caller is a lender or not
-        require(lenders[msg.sender], "you are not a lender");
+        require(lenders[user], "you are not a lender");
 
         // calculating the total amount along with the interest
-        Amount storage amount_ = lendAmount[msg.sender];
-        uint256 _amount = (amount_.amount +
-            (amount_.amount *
-                ((block.timestamp - amount_.start) * lendRate * 1e18)) /
-            totalPoolSupply);
 
         require(_amount != 0, " amount can not be 0");
 
