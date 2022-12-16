@@ -7,11 +7,7 @@ import Image from "next/image";
 import logo from "../assets/logo.png";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-<<<<<<< HEAD
-export default function Navbar(props) {
-=======
 export default function Navbar( props ) {
->>>>>>> main
   // --------- States here ------------- //
   const { expand, setExpand } = props;
   return (
@@ -40,17 +36,11 @@ export default function Navbar( props ) {
       <div className="flex justify-between w-[200px] -order-1 lg:w-72">
         <div className="flex items-center justify-start space-x-2 w-auto cursor-pointer">
           <Link href="/">
-<<<<<<< HEAD
             <Image width={40} src={logo} alt="logo" />
           </Link>
           <span className="tracking-wide text-2xl font-bold text-[#fff4f0]">
             XDCDEX
           </span>
-=======
-             <Image width={40} src={logo} alt="logo" /> 
-          </Link>
-          <span className="tracking-wide text-2xl font-bold text-[#fff4f0]">XDCDEX</span>
->>>>>>> main
         </div>
       </div>
       <ul className="hidden lg:flex justify-around items-center basis-2/5 text-lg">
@@ -58,11 +48,7 @@ export default function Navbar( props ) {
           <div className="cursor-pointer relative hover:animate-pulse group py-0.5 px-0.5 ">
             <div className="absolute -inset-1 blur-lg transition-all"></div>
             <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
-<<<<<<< HEAD
               Tokens
-=======
-              Token
->>>>>>> main
             </button>
           </div>
         </Link>
@@ -78,19 +64,11 @@ export default function Navbar( props ) {
             </button>
           </div>
         </Link> */}
-<<<<<<< HEAD
         <Link href="/stake">
           <div className="cursor-pointer hover:animate-pulse relative group py-0.5 px-0.5 ">
             <div className="absolute -inset-1 blur-lg transition-all"></div>
             <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
               Stake
-=======
-        <Link href="/Activity">
-          <div className="cursor-pointer hover:animate-pulse relative group py-0.5 px-0.5 ">
-            <div className="absolute -inset-1 blur-lg transition-all"></div>
-            <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
-              Activity
->>>>>>> main
             </button>
           </div>
         </Link>
@@ -122,18 +100,10 @@ export default function Navbar( props ) {
           className="lg:hidden  flex flex-col items-center h-full px-4 w-full mt-16 py-12 md:px-8"
           id="mobile-menu"
         >
-<<<<<<< HEAD
           <ul className=" flex flex-col text-center items-center justify-between basis-2/6 mt-14 mb-6">
             <Link href="/tokens">
               <button className="cursor-pointer transition-all text-2xl mb-4">
                 Tokens
-=======
-          
-          <ul className=" flex flex-col text-center items-center justify-between basis-2/6 mt-14 mb-6">
-            <Link href="/Coin">
-              <button className="cursor-pointer transition-all text-2xl mb-4">
-                Token
->>>>>>> main
               </button>
             </Link>
             {/* <Link href="/">
@@ -143,7 +113,6 @@ export default function Navbar( props ) {
                 Pool
               </button>
             </Link> */}
-<<<<<<< HEAD
             <Link href="/stake">
               <button className="cursor-pointer  transition-all text-2xl mb-4">
                 Stake
@@ -154,18 +123,6 @@ export default function Navbar( props ) {
                 className="cursor-pointer transition-all text-2xl mb-4"
                 onClick={() => {
                   setExpand(!expand);
-=======
-            <Link href="/Activity">
-              <button className="cursor-pointer  transition-all text-2xl mb-4">
-                Activity
-              </button>
-            </Link>
-            <Link href="/DEX">
-              <button
-                className="cursor-pointer transition-all text-2xl mb-4"
-                onClick={() => {
-                    setExpand(!expand);
->>>>>>> main
                 }}
               >
                 App
@@ -179,9 +136,4 @@ export default function Navbar( props ) {
       </Transition>
     </nav>
   );
-<<<<<<< HEAD
 }
-=======
-};
-
->>>>>>> main
