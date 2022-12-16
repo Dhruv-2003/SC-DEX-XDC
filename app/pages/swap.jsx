@@ -8,11 +8,7 @@ import { Dialog, Listbox, Transition } from "@headlessui/react";
 const token1 = tokens;
 const token2 = tokens;
 
-<<<<<<< HEAD
-export default function Swap() {
-=======
 export default function swap() {
->>>>>>> main
   const [expand, setExpand] = useState(false);
   const [selectedToken1, setSelectedToken1] = useState(token1[0]);
   const [selectedToken2, setSelectedToken2] = useState(token2[0]);
@@ -27,13 +23,8 @@ export default function swap() {
       {expand ? null : (
         <div className=" w-full flex justify-center items-center px-2">
           <div className=" max-w-xl rounded-md mx-auto lg:mx-auto font-fredoka text-white px-0 py-0 bg-[#03071e68] opacity-100 backdrop-blur-lg flex flex-col items-center justify-center mt-32 md:mt-12 xl:mt-32 2xl:mt-40 mb-32 ">
-<<<<<<< HEAD
             <h2 className=" rounded-t-md text-xl font-semibold tracking-wid w-full bg-[blue-700] py-4 px-4 border-b border-gray-400">
               Swap Tokens
-=======
-            <h2 className=" rounded-t-md text-2xl font-semibold tracking-wid w-full bg-[blue-700] py-4 px-4 border-b border-gray-400">
-              Swap
->>>>>>> main
             </h2>
             <div className=" px-4 py-8">
               <label className="" htmlFor="">
