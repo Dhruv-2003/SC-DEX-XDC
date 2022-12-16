@@ -9,7 +9,7 @@ import "../Other/interfaces/IERC20.sol";
 
 /// rewards are calculated with reward rate and time period staked for
 
-contract Staking {
+contract StakingPool {
     // tokens intialized
     IERC20 public rewardsToken;
     IERC20 public stakingToken;
@@ -88,7 +88,7 @@ contract Staking {
     }
 
     /// @dev to withdraw the reward token
-    function getReward() external updateReward(msg.sender) {
+    function reedemReward() external updateReward(msg.sender) {
         uint256 reward = rewards[msg.sender];
         rewards[msg.sender] = 0;
         rewardsToken.transfer(msg.sender, reward);
