@@ -7,7 +7,7 @@ import Image from "next/image";
 import logo from "../assets/logo.png";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-export default function Navbar( props ) {
+export default function Navbar(props) {
   // --------- States here ------------- //
   const { expand, setExpand } = props;
   return (
@@ -36,9 +36,11 @@ export default function Navbar( props ) {
       <div className="flex justify-between w-[200px] -order-1 lg:w-72">
         <div className="flex items-center justify-start space-x-2 w-auto cursor-pointer">
           <Link href="/">
-             <Image width={40} src={logo} alt="logo" /> 
+            <Image width={40} src={logo} alt="logo" />
           </Link>
-          <span className="tracking-wide text-2xl font-bold text-[#fff4f0]">XDCDEX</span>
+          <span className="tracking-wide text-2xl font-bold text-[#fff4f0]">
+            XDCDEX
+          </span>
         </div>
       </div>
       <ul className="hidden lg:flex justify-around items-center basis-2/5 text-lg">
@@ -46,7 +48,7 @@ export default function Navbar( props ) {
           <div className="cursor-pointer relative hover:animate-pulse group py-0.5 px-0.5 ">
             <div className="absolute -inset-1 blur-lg transition-all"></div>
             <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
-              Token
+              Tokens
             </button>
           </div>
         </Link>
@@ -62,11 +64,11 @@ export default function Navbar( props ) {
             </button>
           </div>
         </Link> */}
-        <Link href="/Activity">
+        <Link href="/stake">
           <div className="cursor-pointer hover:animate-pulse relative group py-0.5 px-0.5 ">
             <div className="absolute -inset-1 blur-lg transition-all"></div>
             <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
-              Activity
+              Stake
             </button>
           </div>
         </Link>
@@ -98,11 +100,10 @@ export default function Navbar( props ) {
           className="lg:hidden  flex flex-col items-center h-full px-4 w-full mt-16 py-12 md:px-8"
           id="mobile-menu"
         >
-          
           <ul className=" flex flex-col text-center items-center justify-between basis-2/6 mt-14 mb-6">
-            <Link href="/Coin">
+            <Link href="/tokens">
               <button className="cursor-pointer transition-all text-2xl mb-4">
-                Token
+                Tokens
               </button>
             </Link>
             {/* <Link href="/">
@@ -112,16 +113,16 @@ export default function Navbar( props ) {
                 Pool
               </button>
             </Link> */}
-            <Link href="/Activity">
+            <Link href="/stake">
               <button className="cursor-pointer  transition-all text-2xl mb-4">
-                Activity
+                Stake
               </button>
             </Link>
-            <Link href="/DEX">
+            <Link href="/swap">
               <button
                 className="cursor-pointer transition-all text-2xl mb-4"
                 onClick={() => {
-                    setExpand(!expand);
+                  setExpand(!expand);
                 }}
               >
                 App
@@ -135,5 +136,4 @@ export default function Navbar( props ) {
       </Transition>
     </nav>
   );
-};
-
+}
