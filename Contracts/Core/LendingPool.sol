@@ -69,11 +69,10 @@ contract LendingPool is ERC20 {
             repayAmount <= amount_.amount,
             "Amount exceeding borrowed amount"
         );
-
-        amount = (repayAmount +
-            (repayAmount *
-                ((block.timestamp - amount_.start) * borrowRate * 1e18)) /
-            totalPoolSupply);
+        uint256 interest = (repayAmount *
+            ((block.timestamp - amount_.start) * borrowRate * 1e18)) /
+            totalPoolSupply;
+        amount = (repayAmount + interest);
     }
 
     function calculateWithdrawAmount(address user, uint256 withdrawAmount)
@@ -86,10 +85,33 @@ contract LendingPool is ERC20 {
             withdrawAmount <= amount_.amount,
             "Amount exceeding deposit amount"
         );
-        amount = (withdrawAmount +
-            (withdrawAmount *
+
+        uint256 interest = (withdrawAmount *
+            ((block.timestamp - amount_.start) * lendRate * 1e18)) /
+            totalPoolSupply;
+        amount = (withdrawAmount + interest);
+    }
+
+    function updateBorrow(address user)
+        public
+        returns (uint256 interestAmount)
+    {
+        Amount storage amount_ = borrowAmount[user];
+        interestAmount =
+            (amount_.amount *
+                ((block.timestamp - amount_.start) * borrowRate * 1e18)) /
+            totalPoolSupply;
+
+        payInterest[user] = interestAmount;
+    }
+
+    function updateLend(address user) public returns (uint256 interestAmount) {
+        Amount storage amount_ = lendAmount[user];
+        interestAmount =
+            (amount_.amount *
                 ((block.timestamp - amount_.start) * lendRate * 1e18)) /
-            totalPoolSupply);
+            totalPoolSupply;
+        earnedInterest[user] = interestAmount;
     }
 
     /// @dev - to lend the amount by  , add liquidity
@@ -109,7 +131,7 @@ contract LendingPool is ERC20 {
 
         /// updating total supply
         totalPoolSupply += _amount;
-
+        updateLend(user);
         emit Deposit(user, _amount);
     }
 
@@ -133,7 +155,7 @@ contract LendingPool is ERC20 {
         token.approve(address(this), _amount);
 
         borrowers[user] = true;
-
+        updateBorrow(user);
         emit Borrow(user, _amount);
     }
 
@@ -157,7 +179,7 @@ contract LendingPool is ERC20 {
 
         /// update total supply at the end
         totalPoolSupply += _amount;
-
+        updateBorrow(user);
         emit Repay(user, amount);
     }
 
@@ -184,7 +206,7 @@ contract LendingPool is ERC20 {
 
         /// transferring the tokens in the end
         token.transfer(user, _amount);
-
+        updateLend(user);
         emit Withdraw(user, amount);
     }
 
@@ -197,7 +219,7 @@ contract LendingPool is ERC20 {
         token.transferFrom(user, address(this), amount);
 
         uint256 reward = (amount * 3) / 100;
-
+        updateBorrow(user);
         token.transfer(msg.sender, reward);
         borrowAmount[user].amount -= amount + reward;
     }

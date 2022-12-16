@@ -16,6 +16,7 @@ contract StakingPool {
 
     // 100 wei per second , calculated for per anum
     uint256 public rewardRate = 100;
+
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
 
@@ -26,7 +27,7 @@ contract StakingPool {
     mapping(address => uint256) public rewardsPerTokenPaid;
 
     // mapping for staked amount by an address
-    mapping(address => uint256) staked;
+    mapping(address => uint256) public staked;
 
     // total supply for the staked token in the contract
     uint256 public _totalSupply;
@@ -73,24 +74,29 @@ contract StakingPool {
 
     /// @dev to stake some amount of token
     /// @param _amount -  amount to be staked
-    function stake(uint256 _amount) external updateReward(msg.sender) {
+    function stake(uint256 _amount, address user) external updateReward(user) {
         _totalSupply += _amount;
-        staked[msg.sender] += _amount;
-        stakingToken.transferFrom(msg.sender, address(this), _amount);
+        staked[user] += _amount;
+
+        ///  need approval
+        stakingToken.transferFrom(user, address(this), _amount);
     }
 
     /// @dev to withdraw the staked amount
     /// @param _amount - amount to be withdrawn
-    function withdraw(uint256 _amount) external updateReward(msg.sender) {
+    function withdraw(uint256 _amount, address user)
+        external
+        updateReward(user)
+    {
         _totalSupply -= _amount;
-        staked[msg.sender] -= _amount;
-        stakingToken.transfer(msg.sender, _amount);
+        staked[user] -= _amount;
+        stakingToken.transfer(user, _amount);
     }
 
     /// @dev to withdraw the reward token
-    function reedemReward() external updateReward(msg.sender) {
-        uint256 reward = rewards[msg.sender];
-        rewards[msg.sender] = 0;
-        rewardsToken.transfer(msg.sender, reward);
+    function reedemReward(address user) external updateReward(msg.sender) {
+        uint256 reward = rewards[user];
+        rewards[user] = 0;
+        rewardsToken.transfer(user, reward);
     }
 }
