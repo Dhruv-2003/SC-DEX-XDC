@@ -12,9 +12,9 @@ interface IStakingPool {
 
     function earned(address account) external view returns (uint256);
 
-    function stake(uint256 _amount) external;
+    function stake(uint256 _amount, address user) external;
 
-    function withdraw(uint256 _amount) external;
+    function withdraw(uint256 _amount, address user) external;
 
-    function reedemReward() external;
+    function reedemReward(address user) external;
 }

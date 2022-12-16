@@ -36,24 +36,52 @@ contract LendingPoolRouter {
         ILendingPoolFactory(factory).createPool(token);
     }
 
+    /// repay Amount quote with interest
+    function getRepayAmount(
+        address token,
+        address user,
+        uint256 repayAmount
+    ) public view returns (uint256 amount) {
+        address pool = getPoolAddress(token);
+
+        amount = ILendingPool(pool).calculateRepayAmount(user, repayAmount);
+    }
+
+    /// withdraw amount quote with interest
+    function getWithdrawAmount(
+        address token,
+        address user,
+        uint256 withdrawAmount
+    ) public view returns (uint256 amount) {
+        address pool = getPoolAddress(token);
+
+        amount = ILendingPool(pool).calculateWithdrawAmount(
+            user,
+            withdrawAmount
+        );
+    }
+
     /// user SafeApprove , SafeTransfer , SafeTransferFrom from Transfer Helper
 
+    /// done and working
     function depositToken(address token, uint256 amount) public {
         address pool = getPoolAddress(token);
 
         if (pool != address(0)) {
             /// Not sure of Approval
-            // TransferHelper.safeApprove(token, pool, amount);
-
-            ILendingPool(pool).deposit(amount);
+            TransferHelper.safeApprove(token, pool, amount);
+            ILendingPool(pool).deposit(amount, msg.sender);
         } else {
             createPool(token);
             pool = getPoolAddress(token);
-            ILendingPool(pool).deposit(amount);
+
+            TransferHelper.safeApprove(token, pool, amount);
+            ILendingPool(pool).deposit(amount, msg.sender);
         }
     }
 
-    function withdrawToken(address token) public {
+    /// done and working
+    function withdrawToken(address token, uint256 amount) public {
         address pool = getPoolAddress(token);
         require(pool != address(0), "Pool Does not exists");
 
@@ -61,29 +89,29 @@ contract LendingPoolRouter {
             ILendingPool(pool).lendAmount(msg.sender).amount > 0,
             "No amount to withdraw"
         );
-        ILendingPool(pool).withdraw();
+        ILendingPool(pool).withdraw(msg.sender, amount);
     }
 
+    /// done and working
     function borrowToken(address token, uint256 amount) public {
         address pool = getPoolAddress(token);
         require(pool != address(0), "Pool Does not exists");
 
-        ILendingPool(pool).borrow(amount);
+        ILendingPool(pool).borrow(amount, msg.sender);
     }
 
-    function repayToken(address token) public {
+    /// done and working
+    function repayToken(address token, uint256 amount) public {
         address pool = getPoolAddress(token);
         require(pool != address(0), "Pool Does not exists");
 
-        /// amount is not correct most probably
-        uint256 amount = ILendingPool(pool).borrowAmount(msg.sender).amount;
+        uint256 totalAmount = getRepayAmount(token, msg.sender, amount);
 
-        require(amount > 0, "No Amount to repay");
-        // TransferHelper.safeApprove(token, pool, amount * 2);
-
-        ILendingPool(pool).repay();
+        TransferHelper.safeApprove(token, pool, totalAmount);
+        ILendingPool(pool).repay(msg.sender, amount);
     }
 
+    /// done and working
     function depositETH(uint256 amount) public payable {
         require(amount == msg.value, "Incorrect Amount");
 
@@ -95,37 +123,41 @@ contract LendingPoolRouter {
 
         if (pool != address(0)) {
             /// Not sure of Approval
-            // TransferHelper.safeApprove(token, pool, amount);
-
-            ILendingPool(pool).deposit(amount);
+            TransferHelper.safeApprove(WEXDC, pool, amount);
+            ILendingPool(pool).deposit(amount, msg.sender);
         } else {
             createPool(WEXDC);
             pool = getPoolAddress(WEXDC);
-            ILendingPool(pool).deposit(amount);
+
+            TransferHelper.safeApprove(WEXDC, pool, amount);
+            ILendingPool(pool).deposit(amount, msg.sender);
         }
     }
 
-    function withdrawETH() public {
+    // done and working
+    function withdrawETH(uint256 amount) public {
         address pool = getPoolAddress(WEXDC);
         require(pool != address(0), "Pool Does not exists");
-        uint256 amount = ILendingPool(pool).lendAmount(msg.sender).amount;
 
-        require(amount > 0, "No amount to withdraw");
+        uint256 totalAmount = getWithdrawAmount(WEXDC, msg.sender, amount);
+        ILendingPool(pool).withdraw(msg.sender, amount);
 
-        ILendingPool(pool).withdraw();
-        IXDC(WEXDC).transferFrom(msg.sender, address(this), amount);
+        TransferHelper.safeApprove(WEXDC, address(this), totalAmount);
+        IXDC(WEXDC).transferFrom(msg.sender, address(this), totalAmount);
 
-        IXDC(WEXDC).withdraw(amount);
+        IXDC(WEXDC).withdraw(totalAmount);
 
         TransferHelper.safeTransferETH(msg.sender, amount);
     }
 
+    // done and working
     function borrowETH(uint256 amount) public {
         address pool = getPoolAddress(WEXDC);
         require(pool != address(0), "Pool Does not exists");
 
-        ILendingPool(pool).borrow(amount);
+        ILendingPool(pool).borrow(amount, msg.sender);
 
+        IXDC(WEXDC).approve(address(this), amount);
         IXDC(WEXDC).transferFrom(msg.sender, address(this), amount);
 
         IXDC(WEXDC).withdraw(amount);
@@ -133,19 +165,24 @@ contract LendingPoolRouter {
         TransferHelper.safeTransferETH(msg.sender, amount);
     }
 
-    function repayETH() public payable {
+    /// send ETH > repay Amount taking into time considerartion
+    function repayETH(uint256 amount) public payable {
         address pool = getPoolAddress(WEXDC);
         require(pool != address(0), "Pool Does not exists");
-        uint256 amount = ILendingPool(pool).borrowAmount(msg.sender).amount;
 
-        require(amount > 0, "No Amount to repay");
+        uint256 totalAmount = getRepayAmount(WEXDC, msg.sender, amount);
 
-        require(msg.value == amount, "Incorrect amount sent");
+        require(msg.value >= totalAmount, "Incorrect amount sent");
 
-        IXDC(WEXDC).deposit{value: msg.value}();
-        TransferHelper.safeTransfer(WEXDC, msg.sender, msg.value);
+        IXDC(WEXDC).deposit{value: totalAmount}();
+        TransferHelper.safeTransfer(WEXDC, msg.sender, totalAmount);
 
-        ILendingPool(pool).repay();
+        ILendingPool(pool).repay(msg.sender, amount);
+
+        /// Extra ETH returned back to the user
+        if (msg.value > totalAmount) {
+            TransferHelper.safeTransferETH(msg.sender, msg.value - totalAmount);
+        }
     }
 
     function getLendAmount(address token, address user)

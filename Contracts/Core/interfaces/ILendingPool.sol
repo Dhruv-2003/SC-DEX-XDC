@@ -28,4 +28,14 @@ interface ILendingPool {
     function withdraw(address user, uint256 amount) external;
 
     function liquidate(address user, uint256 amount) external;
+
+    function calculateRepayAmount(address user, uint256 amount)
+        external
+        view
+        returns (uint256);
+
+    function calculateWithdrawAmount(address user, uint256 amount)
+        external
+        views
+        returns (uint256);
 }

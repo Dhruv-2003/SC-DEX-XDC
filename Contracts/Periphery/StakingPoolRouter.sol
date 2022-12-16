@@ -10,6 +10,8 @@ import "./libraries/TransferHelper.sol";
 // Stake Tokens
 // Withdraw Tokens
 // Withdraw Reward Token
+/// Staking is done so in case of Emergency , 50% of the amount locked can be used for covering
+/// The Reward Token can be used to pay gas fees for the Exchange and other DEFI activities in the future
 
 contract StakingPoolRouter {
     address public immutable factory;
@@ -35,6 +37,9 @@ contract StakingPoolRouter {
     }
 
     function createPool(address sToken) public {
+        address pool = getPoolAddress(sToken);
+        require(pool == address(0), "Pool Exists");
+
         IStakingPoolFactory(factory).createPool(sToken, rtoken);
     }
 
@@ -46,7 +51,7 @@ contract StakingPoolRouter {
         address pool = getPoolAddress(token);
         require(pool != address(0), "Pool don't Exists");
 
-        rewardAmount = IStakingPool(pool).earned(user);
+        rewardAmount = IStakingPool(pool).rewards(user);
     }
 
     function getStaked(address user, address token)
@@ -62,12 +67,12 @@ contract StakingPoolRouter {
         address pool = getPoolAddress(token);
         if (pool != address(0)) {
             TransferHelper.safeApprove(token, pool, _amount);
-            IStakingPool(pool).stake(_amount);
+            IStakingPool(pool).stake(_amount, msg.sender);
         } else {
             createPool(token);
 
             TransferHelper.safeApprove(token, pool, _amount);
-            IStakingPool(pool).stake(_amount);
+            IStakingPool(pool).stake(_amount, msg.sender);
         }
     }
 
@@ -78,7 +83,7 @@ contract StakingPoolRouter {
         uint256 stakedAmount = getStaked(msg.sender, token);
         require(stakedAmount >= _amount, "Incorrect Balance entered");
 
-        IStakingPool(pool).withdraw(_amount);
+        IStakingPool(pool).withdraw(_amount, msg.sender);
     }
 
     function reedemReward(address token) public {
@@ -86,14 +91,13 @@ contract StakingPoolRouter {
         require(pool != address(0), "Pool Do Not Exists");
 
         uint256 rewardAmount = getRewardEarned(token, msg.sender);
-
         require(rewardAmount > 0, "No rewards Found");
 
-        IStakingPool(pool).reedemReward();
+        IStakingPool(pool).reedemReward(msg.sender);
     }
 
     /// wrap
-    function stakedETH(uint256 _amount) public payable {
+    function stakeETH(uint256 _amount) public payable {
         require(msg.value == _amount, "Incorrect Amount sent");
 
         IXDC(WEXDC).deposit{value: msg.value}();
@@ -118,6 +122,7 @@ contract StakingPoolRouter {
         TransferHelper.safeTransferETH(msg.sender, _amount);
     }
 
+    // reward in the rToken itslef
     function reedemRewardETH() public {
         reedemReward(WEXDC);
     }
