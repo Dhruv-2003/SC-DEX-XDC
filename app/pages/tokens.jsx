@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import styles from '../styles/Home.module.css'
 
 export default function Tokens() {
   const [expand, setExpand] = useState(false);
@@ -8,7 +9,7 @@ export default function Tokens() {
   return (
     <div
       className={`w-screen min-h-screen no-repeat bg-cover bg-[#03071E]
-            ${!expand ? `bg-[url('../assets/dark.png')]` : `bg-[#03071E]`}
+            ${!expand ? `${styles.bg2} bg-[url('../assets/dark.png')]` : `bg-[#03071E]`}
               `}
     >
       <Navbar expand={expand} setExpand={setExpand} />

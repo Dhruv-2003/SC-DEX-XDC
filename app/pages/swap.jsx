@@ -4,6 +4,7 @@ import { Fragment, useState } from "react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { tokens } from "../utils/tokens";
 import { Dialog, Listbox, Transition } from "@headlessui/react";
+import styles from '../styles/Home.module.css'
 
 const token1 = tokens;
 const token2 = tokens;
@@ -16,7 +17,7 @@ export default function Swap() {
   return (
     <div
       className={`w-screen min-h-screen no-repeat bg-cover bg-[#03071E]
-        ${!expand ? `bg-[url('../assets/landing.png')]` : `bg-[#03071E]`}
+        ${!expand ? `${styles.bg} bg-[url('../assets/landing.png')]` : `bg-[#03071E]`}
           `}
     >
       <Navbar expand={expand} setExpand={setExpand} />

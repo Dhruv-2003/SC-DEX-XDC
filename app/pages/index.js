@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <div
       className={`w-screen min-h-screen no-repeat bg-cover ${
-        !expand ? `bg-[url('../assets/landing.png')] bg-cover lg:bg-center bg-no-repeat` : `bg-[#03071E]`
+        !expand ? `${styles.bg} bg-[url('../assets/landing.png')] bg-cover lg:bg-center bg-no-repeat` : `bg-[#03071E]`
       }`}
     >
       <Navbar expand={expand} setExpand={setExpand} />
