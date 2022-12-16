@@ -31,18 +31,18 @@ contract LendingPool is ERC20 {
     }
 
     // mapping to check if the address has lended any amount
-    mapping(address => Amount) lendAmount;
+    mapping(address => Amount) public lendAmount;
     // mapping for the interest earned by the lender ;
-    mapping(address => uint256) earnedInterest;
+    mapping(address => uint256) public earnedInterest;
 
     // arrays to store the info about lender & borrowers
-    mapping(address => bool) lenders;
-    mapping(address => bool) borrowers;
+    mapping(address => bool) public lenders;
+    mapping(address => bool) public borrowers;
 
     // mapping to check if the address has borrowed any amount
-    mapping(address => Amount) borrowAmount;
+    mapping(address => Amount) public borrowAmount;
     // mapping for the interest to be paid by the borrower ;
-    mapping(address => uint256) payInterest;
+    mapping(address => uint256) public payInterest;
 
     /// events
     event Deposit(address user, uint256 amount);
@@ -70,7 +70,7 @@ contract LendingPool is ERC20 {
             "Amount exceeding borrowed amount"
         );
 
-        uint256 amount = (repayAmount +
+        amount = (repayAmount +
             (repayAmount *
                 ((block.timestamp - amount_.start) * borrowRate * 1e18)) /
             totalPoolSupply);
@@ -86,7 +86,7 @@ contract LendingPool is ERC20 {
             withdrawAmount <= amount_.amount,
             "Amount exceeding deposit amount"
         );
-        uint256 amount = (withdrawAmount +
+        amount = (withdrawAmount +
             (withdrawAmount *
                 ((block.timestamp - amount_.start) * lendRate * 1e18)) /
             totalPoolSupply);
@@ -109,6 +109,8 @@ contract LendingPool is ERC20 {
 
         /// updating total supply
         totalPoolSupply += _amount;
+
+        emit Deposit(user, _amount);
     }
 
     /// @dev - to borrow token
@@ -117,7 +119,7 @@ contract LendingPool is ERC20 {
         require(_amount != 0, " amount can not be 0");
 
         /// Amount can not be sent
-        require(_amount < totalPoolSupply / 100, "Amount is incorrect");
+        require(_amount < totalPoolSupply / 10, "Amount is incorrect");
 
         /// updating records first
         borrowAmount[user].amount = _amount;
@@ -131,6 +133,8 @@ contract LendingPool is ERC20 {
         token.approve(address(this), _amount);
 
         borrowers[user] = true;
+
+        emit Borrow(user, _amount);
     }
 
     /// @dev  - repay the whole loan
@@ -153,6 +157,8 @@ contract LendingPool is ERC20 {
 
         /// update total supply at the end
         totalPoolSupply += _amount;
+
+        emit Repay(user, amount);
     }
 
     /// @dev  - to withdraw the amount for the lender
@@ -161,21 +167,38 @@ contract LendingPool is ERC20 {
         require(lenders[user], "you are not a lender");
 
         // calculating the total amount along with the interest
-
+        uint256 _amount = calculateWithdrawAmount(user, amount);
         require(_amount != 0, " amount can not be 0");
 
         /// deleting the records and updating the list
-        delete lendAmount[msg.sender];
-        lenders[msg.sender] = false;
+        lendAmount[user].amount -= _amount;
 
-        _burn(msg.sender, amount_.amount);
+        if (lendAmount[user].amount == 0) {
+            lenders[user] = false;
+        }
+
+        _burn(user, _amount);
 
         /// updating total supply earlier before transfering token , so as to be safe from attacks
         totalPoolSupply -= _amount;
 
         /// transferring the tokens in the end
-        token.transfer(msg.sender, _amount);
+        token.transfer(user, _amount);
+
+        emit Withdraw(user, amount);
     }
 
-    function liquidate(address user, uint256 amount) public {}
+    function liquidate(address user, uint256 amount) public {
+        require(borrowers[user], "Not a borrower");
+
+        require(amount <= borrowAmount[user].amount, "Amount is incorrect");
+
+        /// already approved
+        token.transferFrom(user, address(this), amount);
+
+        uint256 reward = (amount * 3) / 100;
+
+        token.transfer(msg.sender, reward);
+        borrowAmount[user].amount -= amount + reward;
+    }
 }

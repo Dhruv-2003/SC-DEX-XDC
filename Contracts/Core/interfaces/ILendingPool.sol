@@ -15,11 +15,13 @@ interface ILendingPool {
 
     function borrowers(address user) external view returns (bool);
 
-    function deposit(uint256 _amount) external;
+    function deposit(uint256 _amount , address user) external;
 
-    function borrow(uint256 _amount) external;
+    function borrow(uint256 _amount, address user) external;
 
-    function repay() external;
+    function repay(address user , uint256 amount) external;
 
-    function withdraw() external;
+    function withdraw(address user , uint256 amount) external;
+
+    function liquidate(address user , uint256 amount) external;
 }
