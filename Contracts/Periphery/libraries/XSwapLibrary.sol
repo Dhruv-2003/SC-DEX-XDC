@@ -28,9 +28,9 @@ library XSwapLibrary {
         address factory,
         address tokenA,
         address tokenB
-    ) internal pure returns (address pair) {
+    ) internal view returns (address pair) {
         (address token0, address token1) = sortTokens(tokenA, tokenB);
-        pair = IXSwapFactory.getPair(token0, token1);
+        pair = IXSwapFactory(factory).getPair(token0, token1);
     }
 
     // fetches and sorts the reserves for a pair

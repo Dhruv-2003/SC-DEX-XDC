@@ -5,7 +5,7 @@ pragma solidity ^0.8.13;
 // - User  or borrower can borrow some amount of tokens (limited) , and pay back with some interest for some time period.
 // - lender can withdraw the amount later with some interest
 
-import "../Other/interfaces/IERC20.sol";
+// import "../Other/interfaces/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 // to maintain the track we need to mint and Burn Tokens
@@ -13,8 +13,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 contract LendingPool is ERC20 {
     /// intialize token
-    IERC20 immutable token;
-    uint256 totalSupply;
+    ERC20 immutable token;
+    uint256 totalPoolSupply;
 
     /// the rate earned by the lender per second
     uint256 lendRate = 100;
@@ -47,8 +47,8 @@ contract LendingPool is ERC20 {
 
     /// making the contract payable and adding the tokens in starting to the pool
 
-    constructor(address _tokenAddress, uint256 amount) ERC20("XToken", "XT") {
-        token = IERC20(_tokenAddress);
+    constructor(address _tokenAddress) ERC20("XToken", "XT") {
+        token = ERC20(_tokenAddress);
     }
 
     /// @dev - to lend the amount by  , add liquidity
@@ -67,7 +67,7 @@ contract LendingPool is ERC20 {
         _mint(msg.sender, _amount);
 
         /// updating total supply
-        totalSupply += _amount;
+        totalPoolSupply += _amount;
     }
 
     /// @dev - to borrow token
@@ -78,7 +78,7 @@ contract LendingPool is ERC20 {
         /// updating records first
         borrowAmount[msg.sender].amount = _amount;
         borrowAmount[msg.sender].start = block.timestamp;
-        totalSupply -= _amount;
+        totalPoolSupply -= _amount;
 
         /// then transfer
         token.transfer(msg.sender, _amount);
@@ -95,7 +95,7 @@ contract LendingPool is ERC20 {
         uint256 _amount = (amount_.amount +
             (amount_.amount *
                 ((block.timestamp - amount_.start) * borrowRate * 1e18)) /
-            totalSupply);
+            totalPoolSupply);
 
         require(_amount != 0, " amount can not be 0");
 
@@ -107,7 +107,7 @@ contract LendingPool is ERC20 {
         borrowers[msg.sender] = false;
 
         /// update total supply at the end
-        totalSupply += _amount;
+        totalPoolSupply += _amount;
     }
 
     /// @dev  - to withdraw the amount for the lender
@@ -120,7 +120,7 @@ contract LendingPool is ERC20 {
         uint256 _amount = (amount_.amount +
             (amount_.amount *
                 ((block.timestamp - amount_.start) * lendRate * 1e18)) /
-            totalSupply);
+            totalPoolSupply);
 
         require(_amount != 0, " amount can not be 0");
 
@@ -131,7 +131,7 @@ contract LendingPool is ERC20 {
         _burn(msg.sender, amount_.amount);
 
         /// updating total supply earlier before transfering token , so as to be safe from attacks
-        totalSupply -= _amount;
+        totalPoolSupply -= _amount;
 
         /// transferring the tokens in the end
         token.transfer(msg.sender, _amount);

@@ -128,19 +128,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "approved",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [
 					{
 						"internalType": "address",
@@ -290,19 +277,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_approved",
-						"type": "address"
-					}
-				],
-				"name": "setApproved",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "symbol",
 				"outputs": [
@@ -446,13 +420,12 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {},
-			"notice": "The Staking contract is allowed only to mint and burn the Tokens",
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"Other/RToken.sol": "Token2"
+			"Other/Token2.sol": "Token2"
 		},
 		"evmVersion": "london",
 		"libraries": {},
@@ -506,12 +479,12 @@
 				"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3"
 			]
 		},
-		"Other/RToken.sol": {
-			"keccak256": "0xd8ab0c66b540ab87ed5e31ea6cfadb6c3c49bf123a38abdefb83dfdd2afa4453",
+		"Other/Token2.sol": {
+			"keccak256": "0x504712c3e1693540c746db2a733cdf2075a9d09a6ed0636a5120eaba069a7f4f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://792269c65aa5da3fe3ab7c37afc67dc405e3123c3f621a1f1a9dd4906d23908c",
-				"dweb:/ipfs/QmWn74F5NUbTU3dvcn4VmDBmd4T1x643UTDRv9x6K2c5sb"
+				"bzz-raw://6d8a14c141ea30f4c40f1caeab47358782227b955096b77be65d0c5e26916cf6",
+				"dweb:/ipfs/Qmf89CtV1FuEjTYSwBJw8w72BcyM1pPZ8cjLnNjd47o19z"
 			]
 		}
 	},

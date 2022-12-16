@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
-import "@openzeppelin/contracts/access/Ownable.sol";
 
 //// Using Uniswap
 import "./XSwapPair.sol";
@@ -22,7 +21,7 @@ contract XSwapFactory {
         uint256
     );
 
-    constructor(address _feeToSetter) public {
+    constructor(address _feeToSetter) {
         feeToSetter = _feeToSetter;
     }
 

@@ -1,5 +1,6 @@
-### Token1 - xdcF444a85CbB170e34F52C5d0A64CFFb7f16032725
+### Token1 -
 
+xdcF444a85CbB170e34F52C5d0A64CFFb7f16032725
 0xF444a85CbB170e34F52C5d0A64CFFb7f16032725
 
 https://explorer.apothem.network/address/xdcf444a85cbb170e34f52c5d0a64cffb7f16032725#transactions

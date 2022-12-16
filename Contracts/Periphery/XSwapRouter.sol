@@ -15,15 +15,15 @@ import "../Other/interfaces/IWETH.sol";
 contract XSwapRouter {
     using SafeMath for uint256;
 
-    address public immutable override factory;
-    address public immutable override WETH;
+    address public immutable  factory;
+    address public immutable  WETH;
 
     modifier ensure(uint256 deadline) {
         require(deadline >= block.timestamp, "Router: EXPIRED");
         _;
     }
 
-    constructor(address _factory, address _WETH) public {
+    constructor(address _factory, address _WETH) {
         factory = _factory;
         WETH = _WETH;
     }
@@ -94,7 +94,7 @@ contract XSwapRouter {
     )
         external
         virtual
-        override
+        
         ensure(deadline)
         returns (
             uint256 amountA,
@@ -129,7 +129,7 @@ contract XSwapRouter {
         external
         payable
         virtual
-        override
+        
         ensure(deadline)
         returns (
             uint256 amountToken,
@@ -168,7 +168,7 @@ contract XSwapRouter {
     )
         public
         virtual
-        override
+        
         ensure(deadline)
         returns (uint256 amountA, uint256 amountB)
     {
@@ -194,7 +194,7 @@ contract XSwapRouter {
     )
         public
         virtual
-        override
+        
         ensure(deadline)
         returns (uint256 amountToken, uint256 amountETH)
     {
@@ -251,7 +251,7 @@ contract XSwapRouter {
     )
         external
         virtual
-        override
+        
         ensure(deadline)
         returns (uint256[] memory amounts)
     {
@@ -281,7 +281,7 @@ contract XSwapRouter {
     )
         external
         virtual
-        override
+        
         ensure(deadline)
         returns (uint256[] memory amounts)
     {
@@ -308,7 +308,7 @@ contract XSwapRouter {
         external
         payable
         virtual
-        override
+        
         ensure(deadline)
         returns (uint256[] memory amounts)
     {
@@ -341,7 +341,7 @@ contract XSwapRouter {
     )
         external
         virtual
-        override
+        
         ensure(deadline)
         returns (uint256[] memory amounts)
     {
@@ -371,7 +371,7 @@ contract XSwapRouter {
     )
         external
         virtual
-        override
+        
         ensure(deadline)
         returns (uint256[] memory amounts)
     {
@@ -404,7 +404,7 @@ contract XSwapRouter {
         external
         payable
         virtual
-        override
+        
         ensure(deadline)
         returns (uint256[] memory amounts)
     {
@@ -430,7 +430,7 @@ contract XSwapRouter {
         uint256 amountA,
         uint256 reserveA,
         uint256 reserveB
-    ) public pure virtual override returns (uint256 amountB) {
+    ) public pure virtual  returns (uint256 amountB) {
         return XSwapLibrary.quote(amountA, reserveA, reserveB);
     }
 
@@ -439,7 +439,7 @@ contract XSwapRouter {
         uint256 amountIn,
         uint256 reserveIn,
         uint256 reserveOut
-    ) public pure virtual override returns (uint256 amountOut) {
+    ) public pure virtual  returns (uint256 amountOut) {
         return XSwapLibrary.getAmountOut(amountIn, reserveIn, reserveOut);
     }
 
@@ -448,7 +448,7 @@ contract XSwapRouter {
         uint256 amountOut,
         uint256 reserveIn,
         uint256 reserveOut
-    ) public pure virtual override returns (uint256 amountIn) {
+    ) public pure virtual  returns (uint256 amountIn) {
         return XSwapLibrary.getAmountIn(amountOut, reserveIn, reserveOut);
     }
 
@@ -457,7 +457,7 @@ contract XSwapRouter {
         public
         view
         virtual
-        override
+        
         returns (uint256[] memory amounts)
     {
         return XSwapLibrary.getAmountsOut(factory, amountIn, path);
@@ -468,7 +468,7 @@ contract XSwapRouter {
         public
         view
         virtual
-        override
+        
         returns (uint256[] memory amounts)
     {
         return XSwapLibrary.getAmountsIn(factory, amountOut, path);

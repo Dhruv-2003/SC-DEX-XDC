@@ -16,7 +16,7 @@ contract StakingPoolFactory {
 
     event PoolCreated(address indexed token, address pool, uint256 timeStamp);
 
-    constructor(address _feeToSetter) public {
+    constructor(address _feeToSetter) {
         feeToSetter = _feeToSetter;
     }
 

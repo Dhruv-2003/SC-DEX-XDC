@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-import "@openzeppelin/contracts/utils/maths/SafeMath.sol";
+import "./libraries/SafeMath.sol";
 
 contract XSwapERC20 {
     using SafeMath for uint256;
@@ -9,6 +9,7 @@ contract XSwapERC20 {
     string public constant name = "XSwap-V1";
     string public constant symbol = "XS-V1";
     uint8 public constant decimals = 18;
+
     uint256 public totalSupply;
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
@@ -21,8 +22,6 @@ contract XSwapERC20 {
         uint256 value
     );
     event Transfer(address indexed from, address indexed to, uint256 value);
-
-    constructor() public {}
 
     function _mint(address to, uint256 value) internal {
         totalSupply = totalSupply.add(value);
@@ -70,7 +69,7 @@ contract XSwapERC20 {
         address to,
         uint256 value
     ) external returns (bool) {
-        if (allowance[from][msg.sender] != uint256(-1)) {
+        if (allowance[from][msg.sender] != 2**112 - 1) {
             allowance[from][msg.sender] = allowance[from][msg.sender].sub(
                 value
             );
