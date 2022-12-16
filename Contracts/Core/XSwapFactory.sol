@@ -47,7 +47,8 @@ contract XSwapFactory {
         // }
 
         XSwapPair _pair = new XSwapPair();
-        XSwapPair(_pair).initialize(token0, token1);
+        pair = address(_pair);
+        XSwapPair(pair).initialize(token0, token1);
         getPair[token0][token1] = pair;
         getPair[token1][token0] = pair; // populate mapping in the reverse direction
         allPairs.push(pair);

@@ -2,9 +2,9 @@
 
 - Token1 ✅
 - Token2 ✅
-- WXDC ✅
-- RToken ✅
-- WETH ✅
+- WXDC ✅ (Change Only Owner to only Approved and allow approved to mint and burn)
+- RToken ✅ (Need to set the approved address to be able to mint reward tokens for the Staking Pool)
+- WETH ✅ (Need to set the approved for the bridge manager )
 
 ## Core
 

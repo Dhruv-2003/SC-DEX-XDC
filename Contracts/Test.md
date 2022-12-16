@@ -1,5 +1,7 @@
 ## Basic Contracts
 
+- Test Done Alls
+
 - Token1 ✅
 - Token2 ✅
 - WXDC ✅
@@ -8,9 +10,11 @@
 
 ## Core
 
+/// All working perfectly fine
+
 - XSwapERC20 ✅ (option - ERC20 contract and with name and symbol fixed in the Pair Contract )
-- XSwapPair ✅ (No error found , test remaining)
-- XSwap Factory
+- XSwapPair ✅ (No error found )
+- XSwap Factory ✅
 
 - XSwap Pair2 ✅
 
