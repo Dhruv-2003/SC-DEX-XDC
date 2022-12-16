@@ -5,10 +5,10 @@ import "./libraries/XSwapLibrary.sol";
 import "../Core/interfaces/IXSwapPair.sol";
 
 contract XSwapPriceOracle {
-    address public immutable override factory;
-    address public immutable override WETH;
+    address public immutable factory;
+    address public immutable WETH;
 
-    constructor(address _factory, address _WETH) public {
+    constructor(address _factory, address _WETH) {
         factory = _factory;
         WETH = _WETH;
     }
@@ -17,6 +17,7 @@ contract XSwapPriceOracle {
     /// 1 A = price * ( B )
     function getPriceA(address tokenA, address tokenB)
         public
+        view
         returns (uint256 priceA)
     {
         address pair = XSwapLibrary.pairFor(factory, tokenA, tokenB);
@@ -25,6 +26,7 @@ contract XSwapPriceOracle {
 
     function getPriceB(address tokenA, address tokenB)
         public
+        view
         returns (uint256 priceB)
     {
         address pair = XSwapLibrary.pairFor(factory, tokenA, tokenB);

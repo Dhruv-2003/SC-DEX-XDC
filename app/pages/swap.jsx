@@ -8,7 +8,7 @@ import { Dialog, Listbox, Transition } from "@headlessui/react";
 const token1 = tokens;
 const token2 = tokens;
 
-export default function swap() {
+export default function Swap() {
   const [expand, setExpand] = useState(false);
   const [selectedToken1, setSelectedToken1] = useState(token1[0]);
   const [selectedToken2, setSelectedToken2] = useState(token2[0]);
@@ -130,7 +130,9 @@ export default function swap() {
                 <Listbox value={selectedToken2} onChange={setSelectedToken2}>
                   <div className="relative mt-1">
                     <Listbox.Button className="relative cursor-default rounded-md w-36 lg:w-36 px-4 py-2.5 bg-gray-700 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                      <span className="block truncate">{selectedToken2.symbol}</span>
+                      <span className="block truncate">
+                        {selectedToken2.symbol}
+                      </span>
                       <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                         <ChevronUpDownIcon
                           className="h-5 w-5 text-gray-200"
@@ -161,7 +163,9 @@ export default function swap() {
                               <>
                                 <span
                                   className={`block truncate ${
-                                    selectedToken2 ? "font-medium" : "font-normal"
+                                    selectedToken2
+                                      ? "font-medium"
+                                      : "font-normal"
                                   }`}
                                 >
                                   {token.symbol}

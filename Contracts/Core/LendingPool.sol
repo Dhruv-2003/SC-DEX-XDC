@@ -14,6 +14,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract LendingPool is ERC20 {
     /// intialize token
     ERC20 immutable token;
+    address public immutable tokenAddress;
     uint256 totalPoolSupply;
 
     /// the rate earned by the lender per second
@@ -44,27 +45,49 @@ contract LendingPool is ERC20 {
     mapping(address => uint256) payInterest;
 
     /// events
+    event Deposit(address user, uint256 amount);
+    event Withdraw(address user, uint256 amount);
+
+    event Borrow(address user, uint256 amount);
+    event Repay(address user, uint256 amount);
 
     /// making the contract payable and adding the tokens in starting to the pool
 
     constructor(address _tokenAddress) ERC20("XToken", "XT") {
         token = ERC20(_tokenAddress);
+        tokenAddress = _tokenAddress;
     }
+
+    function calculateRepayAmount(address user, uint256 repayAmount)
+        public
+        view
+        returns (uint256 amount)
+    {
+        /// total amount to be repaid with intrest
+        Amount storage amount_ = borrowAmount[user];
+
+        uint256 _amount = (amount_.amount +
+            (amount_.amount *
+                ((block.timestamp - amount_.start) * borrowRate * 1e18)) /
+            totalPoolSupply);
+    }
+
+    function calculateWithdrawAmount() public view returns (uint256 amount) {}
 
     /// @dev - to lend the amount by  , add liquidity
     /// @param _amount - deposited amount
-    function deposit(uint256 _amount) external {
+    function deposit(uint256 _amount, address user) external {
         require(_amount != 0, " amount can not be 0");
 
         /// transferring the tokens to the pool contract
-        token.transferFrom(msg.sender, address(this), _amount);
+        token.transferFrom(user, address(this), _amount);
 
         /// adding in lending and lenders array for record
-        lendAmount[msg.sender].amount = _amount;
-        lendAmount[msg.sender].start = block.timestamp;
-        lenders[msg.sender] = true;
+        lendAmount[user].amount = _amount;
+        lendAmount[user].start = block.timestamp;
+        lenders[user] = true;
 
-        _mint(msg.sender, _amount);
+        _mint(user, _amount);
 
         /// updating total supply
         totalPoolSupply += _amount;
@@ -72,31 +95,32 @@ contract LendingPool is ERC20 {
 
     /// @dev - to borrow token
     /// @param _amount - amount to be withdraw
-    function borrow(uint256 _amount) external {
+    function borrow(uint256 _amount, address user) external {
         require(_amount != 0, " amount can not be 0");
 
+        /// Amount can not be sent
+        require(_amount < totalPoolSupply / 100, "Amount is incorrect");
+
         /// updating records first
-        borrowAmount[msg.sender].amount = _amount;
-        borrowAmount[msg.sender].start = block.timestamp;
+        borrowAmount[user].amount = _amount;
+        borrowAmount[user].start = block.timestamp;
         totalPoolSupply -= _amount;
 
         /// then transfer
-        token.transfer(msg.sender, _amount);
-        borrowers[msg.sender] = true;
+        token.transfer(user, _amount);
+
+        /// tokenApproval to deduct under liquidation
+        token.approve(address(this), _amount);
+
+        borrowers[user] = true;
     }
 
     /// @dev  - repay the whole loan
-    function repay() external {
+    function repay(address user, uint256 amount) external {
         /// check borrower
         require(borrowers[msg.sender], "not a borrower");
 
-        /// total amount to be repaid with intrest
-        Amount storage amount_ = borrowAmount[msg.sender];
-        uint256 _amount = (amount_.amount +
-            (amount_.amount *
-                ((block.timestamp - amount_.start) * borrowRate * 1e18)) /
-            totalPoolSupply);
-
+        uint256 _amount = calculateRepayAmount(user, amount);
         require(_amount != 0, " amount can not be 0");
 
         /// transferring the tokens
@@ -136,4 +160,6 @@ contract LendingPool is ERC20 {
         /// transferring the tokens in the end
         token.transfer(msg.sender, _amount);
     }
+
+    function liquidate(address user, uint256 amount) public {}
 }

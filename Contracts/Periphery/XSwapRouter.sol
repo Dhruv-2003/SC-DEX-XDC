@@ -15,8 +15,8 @@ import "../Other/interfaces/IWETH.sol";
 contract XSwapRouter {
     using SafeMath for uint256;
 
-    address public immutable  factory;
-    address public immutable  WETH;
+    address public immutable factory;
+    address public immutable WETH;
 
     modifier ensure(uint256 deadline) {
         require(deadline >= block.timestamp, "Router: EXPIRED");
@@ -31,6 +31,8 @@ contract XSwapRouter {
     receive() external payable {
         assert(msg.sender == WETH); // only accept ETH via fallback from the WETH contract
     }
+
+    function getLiquidityAmount() public view returns (uint256 liqAmount) {}
 
     // **** ADD LIQUIDITY ****
     // --/
@@ -94,7 +96,6 @@ contract XSwapRouter {
     )
         external
         virtual
-        
         ensure(deadline)
         returns (
             uint256 amountA,
@@ -129,7 +130,6 @@ contract XSwapRouter {
         external
         payable
         virtual
-        
         ensure(deadline)
         returns (
             uint256 amountToken,
@@ -168,7 +168,6 @@ contract XSwapRouter {
     )
         public
         virtual
-        
         ensure(deadline)
         returns (uint256 amountA, uint256 amountB)
     {
@@ -194,7 +193,6 @@ contract XSwapRouter {
     )
         public
         virtual
-        
         ensure(deadline)
         returns (uint256 amountToken, uint256 amountETH)
     {
@@ -248,13 +246,7 @@ contract XSwapRouter {
         address[] calldata path,
         address to,
         uint256 deadline
-    )
-        external
-        virtual
-        
-        ensure(deadline)
-        returns (uint256[] memory amounts)
-    {
+    ) external virtual ensure(deadline) returns (uint256[] memory amounts) {
         amounts = XSwapLibrary.getAmountsOut(factory, amountIn, path);
         require(
             amounts[amounts.length - 1] >= amountOutMin,
@@ -278,13 +270,7 @@ contract XSwapRouter {
         address[] calldata path,
         address to,
         uint256 deadline
-    )
-        external
-        virtual
-        
-        ensure(deadline)
-        returns (uint256[] memory amounts)
-    {
+    ) external virtual ensure(deadline) returns (uint256[] memory amounts) {
         amounts = XSwapLibrary.getAmountsIn(factory, amountOut, path);
         require(amounts[0] <= amountInMax, "Router: EXCESSIVE_INPUT_AMOUNT");
         TransferHelper.safeTransferFrom(
@@ -308,7 +294,6 @@ contract XSwapRouter {
         external
         payable
         virtual
-        
         ensure(deadline)
         returns (uint256[] memory amounts)
     {
@@ -328,6 +313,37 @@ contract XSwapRouter {
         _swap(amounts, path, to);
     }
 
+    // --/
+    // Token Out
+    // Exact Amount -  Token
+    function swapETHForExactTokens(
+        uint256 amountOut,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    )
+        external
+        payable
+        virtual
+        ensure(deadline)
+        returns (uint256[] memory amounts)
+    {
+        require(path[0] == WETH, "Router: INVALID_PATH");
+        amounts = XSwapLibrary.getAmountsIn(factory, amountOut, path);
+        require(amounts[0] <= msg.value, "Router: EXCESSIVE_INPUT_AMOUNT");
+        IWETH(WETH).deposit{value: amounts[0]}();
+        assert(
+            IWETH(WETH).transfer(
+                XSwapLibrary.pairFor(factory, path[0], path[1]),
+                amounts[0]
+            )
+        );
+        _swap(amounts, path, to);
+        // refund dust eth, if any
+        if (msg.value > amounts[0])
+            TransferHelper.safeTransferETH(msg.sender, msg.value - amounts[0]);
+    }
+
     //
     // --/
     // ETH out
@@ -338,13 +354,7 @@ contract XSwapRouter {
         address[] calldata path,
         address to,
         uint256 deadline
-    )
-        external
-        virtual
-        
-        ensure(deadline)
-        returns (uint256[] memory amounts)
-    {
+    ) external virtual ensure(deadline) returns (uint256[] memory amounts) {
         require(path[path.length - 1] == WETH, "Router: INVALID_PATH");
         amounts = XSwapLibrary.getAmountsIn(factory, amountOut, path);
         require(amounts[0] <= amountInMax, "Router: EXCESSIVE_INPUT_AMOUNT");
@@ -368,13 +378,7 @@ contract XSwapRouter {
         address[] calldata path,
         address to,
         uint256 deadline
-    )
-        external
-        virtual
-        
-        ensure(deadline)
-        returns (uint256[] memory amounts)
-    {
+    ) external virtual ensure(deadline) returns (uint256[] memory amounts) {
         require(path[path.length - 1] == WETH, "Router: INVALID_PATH");
         amounts = XSwapLibrary.getAmountsOut(factory, amountIn, path);
         require(
@@ -393,44 +397,12 @@ contract XSwapRouter {
     }
 
     // --/
-    // Token Out
-    // Exact Amount -  Token
-    function swapETHForExactTokens(
-        uint256 amountOut,
-        address[] calldata path,
-        address to,
-        uint256 deadline
-    )
-        external
-        payable
-        virtual
-        
-        ensure(deadline)
-        returns (uint256[] memory amounts)
-    {
-        require(path[0] == WETH, "Router: INVALID_PATH");
-        amounts = XSwapLibrary.getAmountsIn(factory, amountOut, path);
-        require(amounts[0] <= msg.value, "Router: EXCESSIVE_INPUT_AMOUNT");
-        IWETH(WETH).deposit{value: amounts[0]}();
-        assert(
-            IWETH(WETH).transfer(
-                XSwapLibrary.pairFor(factory, path[0], path[1]),
-                amounts[0]
-            )
-        );
-        _swap(amounts, path, to);
-        // refund dust eth, if any
-        if (msg.value > amounts[0])
-            TransferHelper.safeTransferETH(msg.sender, msg.value - amounts[0]);
-    }
-
-    // --/
     // **** LIBRARY FUNCTIONS ****
     function quote(
         uint256 amountA,
         uint256 reserveA,
         uint256 reserveB
-    ) public pure virtual  returns (uint256 amountB) {
+    ) public pure virtual returns (uint256 amountB) {
         return XSwapLibrary.quote(amountA, reserveA, reserveB);
     }
 
@@ -439,7 +411,7 @@ contract XSwapRouter {
         uint256 amountIn,
         uint256 reserveIn,
         uint256 reserveOut
-    ) public pure virtual  returns (uint256 amountOut) {
+    ) public pure virtual returns (uint256 amountOut) {
         return XSwapLibrary.getAmountOut(amountIn, reserveIn, reserveOut);
     }
 
@@ -448,7 +420,7 @@ contract XSwapRouter {
         uint256 amountOut,
         uint256 reserveIn,
         uint256 reserveOut
-    ) public pure virtual  returns (uint256 amountIn) {
+    ) public pure virtual returns (uint256 amountIn) {
         return XSwapLibrary.getAmountIn(amountOut, reserveIn, reserveOut);
     }
 
@@ -457,7 +429,6 @@ contract XSwapRouter {
         public
         view
         virtual
-        
         returns (uint256[] memory amounts)
     {
         return XSwapLibrary.getAmountsOut(factory, amountIn, path);
@@ -468,7 +439,6 @@ contract XSwapRouter {
         public
         view
         virtual
-        
         returns (uint256[] memory amounts)
     {
         return XSwapLibrary.getAmountsIn(factory, amountOut, path);
