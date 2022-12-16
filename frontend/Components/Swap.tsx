@@ -6,19 +6,19 @@ import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import {tokens} from '../utils/tokens'
 
-const people = [
-  { name: "ETH"},
-  { name: "BTC" },
-  { name: "LTC" },
-  { name: "XDC" },
-  { name: "MATIC" },
-  { name: "DOT" },
-];
+// const people = [
+//   { name: [tokens[0].symbol]},
+//   { name: [tokens[1].symbol] },
+//   { name: [tokens[2].symbol] },
+//   { name: [tokens[3].symbol] },
+//   { name: [tokens[4].symbol] },
+//   { name: [tokens[5].symbol] },
+// ];
 
-console.log(tokens)
+console.log([tokens[0].symbol])
 
 const Swap = (): JSX.Element => {
-  const [selected, setSelected] = useState(people[0]);
+  const [selected, setSelected] = useState([...tokens]);
   return (
     <>
       {/* <div className="font-fredoka text-white bg-[#03071E] border-y-2 flex flex-col items-center justify-center mt-32 md:mt-12 xl:mt-32 2xl:mt-40 mb-32">
@@ -75,9 +75,9 @@ const Swap = (): JSX.Element => {
                     leaveTo="opacity-0"
                   >
                     <Listbox.Options className="absolute mt-1 max-h-60 w-full z-[1]  overflow-auto rounded-md bg-gray-700 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                      {people.map((person, personIdx) => (
+                      {tokens.map((token, tokenIdx) => (
                         <Listbox.Option
-                          key={personIdx}
+                          key={tokenIdx}
                           className={({ active }) =>
                             `relative  curson-pointer select-none py-2 px-2 lg:px-6 ${
                               active
@@ -85,7 +85,7 @@ const Swap = (): JSX.Element => {
                                 : "text-white"
                             }`
                           }
-                          value={person}
+                          value={token.symbol}
                         >
                           {({ selected }) => (
                             <>
@@ -94,7 +94,7 @@ const Swap = (): JSX.Element => {
                                   selected ? "font-medium " : "font-normal"
                                 }`}
                               >
-                                {person.name}
+                                {token.symbol}
                               </span>
                               
                             </>
@@ -145,17 +145,17 @@ const Swap = (): JSX.Element => {
                     leaveTo="opacity-0"
                   >
                     <Listbox.Options className="absolute mt-1 max-h-60 w-full   overflow-auto rounded-md bg-gray-700 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                      {people.map((person, personIdx) => (
+                    {tokens.map((token, tokenIdx) => (
                         <Listbox.Option
-                          key={personIdx}
+                          key={tokenIdx}
                           className={({ active }) =>
-                            `relative  curson-pointer select-none py-2 pl-10 pr-4 ${
+                            `relative  curson-pointer select-none py-2 px-2 lg:px-6 ${
                               active
-                                ? "bg-gray-100 text-gray-900"
+                                ? "bg-gray-100 text-gray-900 "
                                 : "text-white"
                             }`
                           }
-                          value={person}
+                          value={token.symbol}
                         >
                           {({ selected }) => (
                             <>
@@ -164,7 +164,7 @@ const Swap = (): JSX.Element => {
                                   selected ? "font-medium " : "font-normal"
                                 }`}
                               >
-                                {person.name}
+                                {token.symbol}
                               </span>
                               
                             </>
