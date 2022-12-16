@@ -19,6 +19,7 @@ export default function Footer() {
           <a
             href="https://www.linkedin.com/in/abbas-khan-033802222"
             target="_blank"
+            rel="noreferrer"
           >
             <BsLinkedin className="text-lg hover:animate-pulse active:animate-ping" />
           </a>
@@ -27,12 +28,13 @@ export default function Footer() {
           <a
             href="https://github.com/Abbas-Khann/SC-DEX-XDC"
             target="_blank"
+            rel="noreferrer"
           >
             <BsGithub className="text-lg hover:animate-pulse active:animate-ping" />
           </a>
         </div>
         <div className="border-2 border-[#FCF8E8] rounded-full p-2">
-          <a href="https://twitter.com/KhanAbbas201" target="_blank">
+          <a href="https://twitter.com/KhanAbbas201" target="_blank" rel="noreferrer">
             <BsTwitter className="text-lg hover:animate-pulse active:animate-ping" />
           </a>
         </div>
