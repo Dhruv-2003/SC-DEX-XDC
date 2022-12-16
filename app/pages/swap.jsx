@@ -1,12 +1,18 @@
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import { Fragment, useState } from "react";
-import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { tokens } from "../utils/tokens";
+import { Dialog, Listbox, Transition } from "@headlessui/react";
+
+const token1 = tokens;
+const token2 = tokens;
 
 export default function swap() {
   const [expand, setExpand] = useState(false);
+  const [selectedToken1, setSelectedToken1] = useState(token1[0]);
+  const [selectedToken2, setSelectedToken2] = useState(token2[0]);
+
   return (
     <div
       className={`w-screen min-h-screen no-repeat bg-cover bg-[#03071E]
@@ -32,61 +38,73 @@ export default function swap() {
                   placeholder="0"
                   required
                 />
-                <div className="lg:w-28 w-24 ">
-                  {/* <Listbox value={selected} onChange={setSelected}>
-                    <div className="relative mt-1 ">
-                      <Listbox.Button className="relative w-full  rounded-lg bg-gray-700 py-2.5 pl-3 cursor-pointer pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                        <span className="block truncate">{selected.name}</span>
-                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                          <ChevronUpDownIcon
-                            className="h-5 w-5 text-gray-400"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </Listbox.Button>
-                      <Transition
-                        as={Fragment}
-                        leave="transition ease-in duration-100"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                      >
-                        <Listbox.Options className="absolute mt-1 max-h-60 w-full z-[1]  overflow-auto rounded-md bg-gray-700 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                          {tokens.map((token, tokenIdx) => (
-                            <Listbox.Option
-                              key={tokenIdx}
-                              className={({ active }) =>
-                                `relative  curson-pointer select-none py-2 px-2 lg:px-6 ${
-                                  active
-                                    ? "bg-gray-100 text-gray-900 "
-                                    : "text-white"
-                                }`
-                              }
-                              value={token.symbol}
-                            >
-                              {({ selected }) => (
-                                <>
-                                  <span
-                                    className={`block truncate ${
-                                      selected ? "font-medium " : "font-normal"
-                                    }`}
-                                  >
-                                    {token.symbol}
-                                  </span>
-                                </>
-                              )}
-                            </Listbox.Option>
-                          ))}
-                        </Listbox.Options>
-                      </Transition>
-                    </div>
-                  </Listbox> */}
-                </div>
-                <button
+                <div className="lg:w-28 w-24 "></div>
+                {/* <button
+                  //   onClick={openModal}
                   type="button"
                   className="text-white mt-1  bg-blue-700 text-sm hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-md lg:w-48 px-4 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                 >
                   Select Token
-                </button>
+                </button> */}
+                <Listbox value={selectedToken1} onChange={setSelectedToken1}>
+                  <div className="relative mt-1">
+                    <Listbox.Button className="relative  cursor-default rounded-md w-36 lg:w-36 px-4 py-2.5 bg-gray-700 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                      <span className="block truncate">
+                        {selectedToken1.symbol}
+                      </span>
+                      <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                        <ChevronUpDownIcon
+                          className="h-5 w-5 text-gray-200"
+                          aria-hidden="true"
+                        />
+                      </span>
+                    </Listbox.Button>
+                    <Transition
+                      as={Fragment}
+                      leave="transition ease-in duration-100 "
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0"
+                    >
+                      <Listbox.Options className="absolute mt-1 max-h-60 w-full z-[100] overflow-auto rounded-md  bg-transparent backdrop-blur-xl py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                        {tokens.map((token, tokenId) => (
+                          <Listbox.Option
+                            key={tokenId}
+                            className={({ active }) =>
+                              `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                active
+                                  ? "bg-gray-100 text-gray-900"
+                                  : "text-gray-100"
+                              }`
+                            }
+                            value={token}
+                          >
+                            {({ selectedToken1 }) => (
+                              <>
+                                <span
+                                  className={`block truncate ${
+                                    selectedToken1
+                                      ? "font-medium"
+                                      : "font-normal"
+                                  }`}
+                                >
+                                  {token.symbol}
+                                </span>
+                                {selectedToken1 ? (
+                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                    <CheckIcon
+                                      className="h-5 w-5 text-gray-900"
+                                      aria-hidden="true"
+                                    />
+                                  </span>
+                                ) : null}
+                              </>
+                            )}
+                          </Listbox.Option>
+                        ))}
+                      </Listbox.Options>
+                    </Transition>
+                  </div>
+                </Listbox>
               </div>
 
               <label className="mt-6" htmlFor="">
@@ -101,61 +119,69 @@ export default function swap() {
                   placeholder="0"
                   required
                 />
-                <div className="lg:w-28 w-24 ">
-                  {/* <Listbox value={selected} onChange={setSelected}>
-                    <div className="relative mt-1 ">
-                      <Listbox.Button className="relative w-full curson-pointer rounded-lg bg-gray-700  py-2.5 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                        <span className="block truncate">{selected.name}</span>
-                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                          <ChevronUpDownIcon
-                            className="h-5 w-5 text-gray-400"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </Listbox.Button>
-                      <Transition
-                        as={Fragment}
-                        leave="transition ease-in duration-100"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                      >
-                        <Listbox.Options className="absolute mt-1 max-h-60 w-full   overflow-auto rounded-md bg-gray-700 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                          {tokens.map((token, tokenIdx) => (
-                            <Listbox.Option
-                              key={tokenIdx}
-                              className={({ active }) =>
-                                `relative  curson-pointer select-none py-2 px-2 lg:px-6 ${
-                                  active
-                                    ? "bg-gray-100 text-gray-900 "
-                                    : "text-white"
-                                }`
-                              }
-                              value={token.symbol}
-                            >
-                              {({ selected }) => (
-                                <>
-                                  <span
-                                    className={`block truncate ${
-                                      selected ? "font-medium " : "font-normal"
-                                    }`}
-                                  >
-                                    {token.symbol}
-                                  </span>
-                                </>
-                              )}
-                            </Listbox.Option>
-                          ))}
-                        </Listbox.Options>
-                      </Transition>
-                    </div>
-                  </Listbox> */}
-                </div>
-                <button
+                <div className="lg:w-28 w-24 "></div>
+                {/* <button
+                  //   onClick={openModal}
                   type="button"
-                  className="text-white mt-2 bg-blue-700  text-sm hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-md lg:w-48 px-4 py-2.5  dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                  className="text-white mt-1  bg-blue-700 text-sm hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-md lg:w-48 px-4 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                 >
                   Select Token
-                </button>
+                </button> */}
+                <Listbox value={selectedToken2} onChange={setSelectedToken2}>
+                  <div className="relative mt-1">
+                    <Listbox.Button className="relative cursor-default rounded-md w-36 lg:w-36 px-4 py-2.5 bg-gray-700 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                      <span className="block truncate">{selectedToken2.symbol}</span>
+                      <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                        <ChevronUpDownIcon
+                          className="h-5 w-5 text-gray-200"
+                          aria-hidden="true"
+                        />
+                      </span>
+                    </Listbox.Button>
+                    <Transition
+                      as={Fragment}
+                      leave="transition ease-in duration-100"
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0"
+                    >
+                      <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md  bg-transparent backdrop-blur-xl py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                        {tokens.map((token, tokenId) => (
+                          <Listbox.Option
+                            key={tokenId}
+                            className={({ active }) =>
+                              `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                active
+                                  ? "bg-gray-100 text-gray-900"
+                                  : "text-gray-100"
+                              }`
+                            }
+                            value={token}
+                          >
+                            {({ selectedToken2 }) => (
+                              <>
+                                <span
+                                  className={`block truncate ${
+                                    selectedToken2 ? "font-medium" : "font-normal"
+                                  }`}
+                                >
+                                  {token.symbol}
+                                </span>
+                                {selectedToken2 ? (
+                                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                    <CheckIcon
+                                      className="h-5 w-5 text-gray-900"
+                                      aria-hidden="true"
+                                    />
+                                  </span>
+                                ) : null}
+                              </>
+                            )}
+                          </Listbox.Option>
+                        ))}
+                      </Listbox.Options>
+                    </Transition>
+                  </div>
+                </Listbox>
               </div>
 
               <div className="px-2 border-t border-gray-400 pt-6 w-full mt-6 mx-auto">
