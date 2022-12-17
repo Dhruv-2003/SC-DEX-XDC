@@ -272,7 +272,23 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "tokenA",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "tokenB",
+						"type": "address"
+					}
+				],
 				"name": "getLiquidityAmount",
 				"outputs": [
 					{
@@ -652,7 +668,11 @@
 		},
 		"userdoc": {
 			"kind": "user",
-			"methods": {},
+			"methods": {
+				"addLiquidityETH(address,uint256,uint256,uint256,address,uint256)": {
+					"notice": "Token - ETH Pool"
+				}
+			},
 			"notice": "Followed Uniswap V2 Router 02 implementation",
 			"version": 1
 		}
@@ -722,11 +742,11 @@
 			]
 		},
 		"Periphery/XSwapRouter.sol": {
-			"keccak256": "0xc8ccac9964f5b673a0ae3a6143535865a7a7935a8e9287b22b5e2a8b66c80211",
+			"keccak256": "0x95a3f330032e989b206d9bc260102a5942e0f3b630220234318df2c46dd4c3d4",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://a93d563c52fb2ed9da787b0137d43d5767ffe7ebeda636bffa2f479ab4234dc9",
-				"dweb:/ipfs/QmW17mDAe7dT9pxVcQkaytH4ARYNPGuppLsM7KhWH5xfEn"
+				"bzz-raw://16932ca07109bcacf3013631440b5a3c8f41a73ea720b9918f00675f885ddf11",
+				"dweb:/ipfs/Qmbv9MmGAzibY7DtLEjtkMU9UXTgB8TE2eERkbhdDFKVBK"
 			]
 		},
 		"Periphery/libraries/TransferHelper.sol": {

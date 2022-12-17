@@ -41,9 +41,9 @@ https://explorer.apothem.network/address/xdcEe5045c2cca298d1965dE00493fF7Cb33BbA
 
 ## XSwap Router
 
-xdc979108B6aF9EDF76DE5EE93C3EA99bDad5a80521
-0x979108B6aF9EDF76DE5EE93C3EA99bDad5a80521
-https://explorer.apothem.network/address/xdc979108B6aF9EDF76DE5EE93C3EA99bDad5a80521#transactions
+xdcF7E919944685aB5912CE06B56815A4E8d91a23d4
+0xF7E919944685aB5912CE06B56815A4E8d91a23d4
+https://explorer.apothem.network/address/xdcF7E919944685aB5912CE06B56815A4E8d91a23d4#transactions
 
 ## XSwap Oracle
 
