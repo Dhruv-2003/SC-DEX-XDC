@@ -32,7 +32,14 @@ contract XSwapRouter {
         assert(msg.sender == WETH); // only accept ETH via fallback from the WETH contract
     }
 
-    function getLiquidityAmount() public view returns (uint256 liqAmount) {}
+    function getLiquidityAmount(
+        address user,
+        address tokenA,
+        address tokenB
+    ) public view returns (uint256 liqAmount) {
+        address pair = IXSwapFactory(factory).getPair(tokenA, tokenB);
+        liqAmount = IXSwapPair(pair).balanceOf(user);
+    }
 
     // **** ADD LIQUIDITY ****
     // --/
@@ -84,6 +91,7 @@ contract XSwapRouter {
     }
 
     // --/
+    // Token - Token Pool
     function addLiquidity(
         address tokenA,
         address tokenB,
@@ -119,6 +127,7 @@ contract XSwapRouter {
 
     // --/
     // Contract takes in ETH and then get WETH against it from Wrapper and then user WETH for all the tx
+    /// Token - ETH Pool
     function addLiquidityETH(
         address token,
         uint256 amountTokenDesired,
@@ -157,6 +166,7 @@ contract XSwapRouter {
 
     // --/
     // **** REMOVE LIQUIDITY ****
+    // Token - Token Pool
     function removeLiquidity(
         address tokenA,
         address tokenB,
