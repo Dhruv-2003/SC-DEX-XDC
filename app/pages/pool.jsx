@@ -11,8 +11,14 @@ const token2 = tokens;
 
 export default function Pool() {
   const [expand, setExpand] = useState(false);
+  const [toggle, setToggle] = useState(false);
   const [selectedToken1, setSelectedToken1] = useState(token1[0]);
   const [selectedToken2, setSelectedToken2] = useState(token2[0]);
+
+  const newPool = () => {
+    setToggle(!toggle)
+  }
+
 
   return (
     <div
@@ -29,15 +35,15 @@ export default function Pool() {
         <div className=" w-full mt-10 flex flex-col justify-center items-center px-2">
           <div className="w-full flex justify-around">
             <h1 className=" text-gray-100 text-3xl font-semibold">Pools</h1>
-            <button className="active:scale-105 bg-[#fc6f38] px-3 py-2 text-sm font-semibold rounded-md">
+            <button onClick={newPool} className="active:scale-95 bg-[#fc6f38] px-3 py-2 text-sm font-semibold rounded-md">
               + New Pool
             </button>
           </div>
-          <div className="mt-8 lg:w-7/12 border rounded-lg border-gray-500 px-4 py-6 bg-transparent backdrop-blur-xl">
+          <div className={`${toggle ? `visible` : `hidden` } mt-8 lg:w-7/12 border rounded-lg border-gray-500 px-4 py-6 bg-transparent backdrop-blur-xl`}>
             <span className=" text-gray-100 text-lg font-semibold">
               Select Pair
             </span>
-            <div className="lg:w-full flex items-center justify-between ">
+            <div className="lg:w-5/12 flex items-center justify-start ">
               {/* token1 */}
               <div className="">
                 <Listbox value={selectedToken1} onChange={setSelectedToken1}>
@@ -102,7 +108,7 @@ export default function Pool() {
               </div>
 
               {/* token2 */}
-              <div className="ml-4">
+              <div className="ml-4 lg:ml-7">
                 <Listbox value={selectedToken2} onChange={setSelectedToken2}>
                   <div className="relative mt-1">
                     <Listbox.Button className="relative cursor-default rounded-md w-36 lg:w-36 px-4 py-2.5 bg-gray-800 text-white pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
@@ -200,7 +206,7 @@ export default function Pool() {
             </div>
             <button
               type="button"
-              className="text-white w-full mt-4 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
+              className="text-white w-full mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
             >
               Create Pool
             </button>
