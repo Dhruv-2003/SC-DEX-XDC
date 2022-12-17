@@ -1,10 +1,12 @@
 import React from "react";
 import { Button, NumberInput, Select, TextInput } from "@mantine/core";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import {tokens} from '../utils/tokens'
+import { BigNumber } from "ethers";
 
 // const people = [
 //   { name: [tokens[0].symbol]},
@@ -18,7 +20,79 @@ import {tokens} from '../utils/tokens'
 console.log([tokens[0].symbol])
 
 const Swap = (): JSX.Element => {
+  const provider = useProvider();
+  const {data: signer} = useSigner();
+  const contract = useContract({
+    address: "",
+    // abi: ,
+    signerOrProvider: signer || provider
+  });
+
+  const [loading, setLoading] = useState<boolean>(false);
   const [selected, setSelected] = useState([...tokens]);
+  const [desiredAmountA, setDesiredAmountA] = useState<number>(0);
+  const [desiredAmountB, setDesiredAmountB] = useState<number>(0);
+
+  // Creating some global variables to use in the upcoming liquidity functions
+  const userAddress: any = useAccount();
+  const connectedWalletAddress: any = userAddress.address;
+  const addressTokenA: string = "";
+  const addressTokenB: string = "";
+  const _deadline: number = 0;
+  const _amountAMin: number = 0;
+  const _amountBMin: number = 0;
+
+  console.log(connectedWalletAddress)
+
+  function handleChange(event: any): void {
+      setDesiredAmountA(parseInt(event.target.value));
+      setDesiredAmountB(parseInt(event.target.value));
+  }
+
+
+  const addLiquidity = async (valueOne: number, valueTwo: number): Promise<void> => {
+    try {
+      const _addLiquidity = await contract.addLiquidity(
+        addressTokenA,
+        addressTokenB,
+        valueOne,
+        valueTwo,
+        _amountAMin,
+        _amountBMin,
+        connectedWalletAddress,
+        _deadline
+      );
+      setLoading(true);
+      await _addLiquidity.wait();
+      setLoading(false);
+    } 
+    catch (err: any) {
+      // alert shall be changed to toast.error(err.reason) once kushagra adds it
+      alert(err.reason)
+      console.error(err)
+    }
+  }
+
+  const removeLiquidity = async (): Promise<void> => {
+    try { 
+      const _removeLiquidity = await contract.removeLiquidity(
+
+      );
+      setLoading(true);
+      await _removeLiquidity.wait();
+      setLoading(false);
+    }
+    catch(err: any) {
+      alert(err.reason);
+      console.error(err)
+    }
+  }
+
+  // this is for testing purposes
+  // const testingCall = (): void => {
+  //   addLiquidity(desiredAmountA, desiredAmountB);
+  // }
+
   return (
     <>
       {/* <div className="font-fredoka text-white bg-[#03071E] border-y-2 flex flex-col items-center justify-center mt-32 md:mt-12 xl:mt-32 2xl:mt-40 mb-32">
