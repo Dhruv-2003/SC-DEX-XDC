@@ -408,6 +408,18 @@ contract XSwapRouter {
 
     // --/
     // **** LIBRARY FUNCTIONS ****
+    function getReserve(address tokenA, address tokenB)
+        public
+        virtual
+        returns (uint256 reserveA, uint256 reserveB)
+    {
+        (reserveA, reserveB) = XSwapLibrary.getReserves(
+            factory,
+            tokenA,
+            tokenB
+        );
+    }
+
     function quote(
         uint256 amountA,
         uint256 reserveA,
