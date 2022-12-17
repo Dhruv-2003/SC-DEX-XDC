@@ -32,3 +32,45 @@ xdc39813f50a9Ac1b1201EF7c32B80c78CD9fE8b46f
 0x39813f50a9Ac1b1201EF7c32B80c78CD9fE8b46f
 
 https://explorer.apothem.network/address/xdc39813f50a9ac1b1201ef7c32b80c78cd9fe8b46f#transactions
+
+## XSwap Factory
+
+xdcEe5045c2cca298d1965dE00493fF7Cb33BbAD2Ab
+0xEe5045c2cca298d1965dE00493fF7Cb33BbAD2Ab
+https://explorer.apothem.network/address/xdcEe5045c2cca298d1965dE00493fF7Cb33BbAD2Ab#transactions
+
+## XSwap Router
+
+xdcF7E919944685aB5912CE06B56815A4E8d91a23d4
+0xF7E919944685aB5912CE06B56815A4E8d91a23d4
+https://explorer.apothem.network/address/xdcF7E919944685aB5912CE06B56815A4E8d91a23d4#transactions
+
+## XSwap Oracle
+
+xdcCFECf5Da1674e940b1f49E5C3CE0066980815499
+0xCFECf5Da1674e940b1f49E5C3CE0066980815499
+https://explorer.apothem.network/address/xdcCFECf5Da1674e940b1f49E5C3CE0066980815499#transactions
+
+## Lending Factory
+
+xdcFbA6E5cB5250FB3d5EbD0e51a99f6c3C947160C8
+0xFbA6E5cB5250FB3d5EbD0e51a99f6c3C947160C8
+https://explorer.apothem.network/address/xdcFbA6E5cB5250FB3d5EbD0e51a99f6c3C947160C8#transactions
+
+## Lending Router
+
+xdc49372A68d48E11bC12da03128a25f4ADbcBCA739
+0x49372A68d48E11bC12da03128a25f4ADbcBCA739
+https://explorer.apothem.network/address/xdc49372A68d48E11bC12da03128a25f4ADbcBCA739#transactions
+
+## Staking Factory
+
+xdcb254a0e6d8b26F4CAe66deC3289E941bd51FFc39
+0xb254a0e6d8b26F4CAe66deC3289E941bd51FFc39
+https://explorer.apothem.network/address/xdcb254a0e6d8b26F4CAe66deC3289E941bd51FFc39#transactions
+
+## Stakig Router
+
+xdc7aFE87507dCafFE72263Aa0b498Cc007C6Be0877
+0x7aFE87507dCafFE72263Aa0b498Cc007C6Be0877
+https://explorer.apothem.network/address/xdc7aFE87507dCafFE72263Aa0b498Cc007C6Be0877#transactions

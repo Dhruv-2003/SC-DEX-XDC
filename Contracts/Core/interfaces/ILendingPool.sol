@@ -36,6 +36,6 @@ interface ILendingPool {
 
     function calculateWithdrawAmount(address user, uint256 amount)
         external
-        views
+        view
         returns (uint256);
 }
