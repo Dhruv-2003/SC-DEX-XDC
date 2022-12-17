@@ -6,9 +6,9 @@ import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import {tokens} from '../utils/tokens'
-import { BigNumber } from "ethers";
 import { TOKEN_ONE_ADDRESS, TOKEN_TWO_ADDRESS,
   SWAP_ROUTER_ADDRESS, SWAP_ROUTER_ABI } from "../Constants/Index";
+import { ethers } from "ethers";
 
 const Swap = (): JSX.Element => {
   const provider = useProvider();
@@ -67,6 +67,28 @@ const Swap = (): JSX.Element => {
     }
   }
 
+  // ask dhruv about the parameters
+  const addLiquidityEth = async (val: number): Promise<void> => {
+    try {
+      const _amount = ethers.utils.parseEther("0.1");
+      const _addLiquidity = await contract.addLiquidityEth(
+        addressTokenA, 
+        val,
+        0,
+        0,
+        connectedWalletAddress,
+        _deadline,
+      {
+        value: _amount
+      });
+    }
+    catch (err: any) 
+    {
+      console.error(err);
+      alert(err.reason);  
+    }
+  }
+
   const returnLiquidity = async (): Promise<void> => {
     const _liquidity = await contract.getLiquidityAmount(
       connectedWalletAddress,
@@ -92,11 +114,36 @@ const Swap = (): JSX.Element => {
           setLoading(true);
           await _removeLiquidity.wait();
           setLoading(false);
+          // toast.success("Liquidity removed");
         }
       }
     catch(err: any) {
       alert(err.reason);
       console.error(err)
+    }
+  }
+
+  // ask dhruv about parameters
+  const removeLiquidityEth = async (val: number): Promise<void> => {
+    try {
+      if(liquidity) {
+        const _removeLiquidity = await contract.removeLiquidityETH(
+          addressTokenA,
+          liquidity,
+          val,
+          0,
+          connectedWalletAddress,
+          _deadline
+          );
+          setLoading(true);
+          await _removeLiquidity.wait();
+          setLoading(false);
+          // toast.success()
+        }
+    }
+    catch (err: any) {
+      alert(err.reason);
+      console.error(err);
     }
   }
 
