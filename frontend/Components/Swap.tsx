@@ -8,7 +8,7 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import {tokens} from '../utils/tokens'
 import { TOKEN_ONE_ADDRESS, TOKEN_TWO_ADDRESS,
   SWAP_ROUTER_ADDRESS, SWAP_ROUTER_ABI } from "../Constants/Index";
-import { ethers } from "ethers";
+import { Contract, ethers } from "ethers";
 
 const Swap = (): JSX.Element => {
   const provider = useProvider();
@@ -24,6 +24,8 @@ const Swap = (): JSX.Element => {
   const [desiredAmountA, setDesiredAmountA] = useState<number>(0);
   const [desiredAmountB, setDesiredAmountB] = useState<number>(0);
   const [liquidity, setLiquidity] = useState();
+  const [amounts, setAmounts] = useState([]);
+  const [path, setPath] = useState([]);
 
   // Creating some global variables to use in the upcoming liquidity functions
   const userAddress: any = useAccount();
@@ -31,13 +33,23 @@ const Swap = (): JSX.Element => {
   const addressTokenA: string = TOKEN_ONE_ADDRESS;
   const addressTokenB: string = TOKEN_TWO_ADDRESS;
   const _deadline: number = 0;
-  const _amountAMin: number = 0;
-  const _amountBMin: number = 0;
+  const _amountAMin: number = 1;
+  const _amountBMin: number = 1;
 
   function handleChange(event: any): void {
       setDesiredAmountA(parseInt(event.target.value));
       setDesiredAmountB(parseInt(event.target.value));
   }
+
+  const getDeadline = (): number => {
+    const _deadline = Math.floor(Date.now() / 1000);
+    console.log(_deadline)
+    return _deadline;
+  }
+
+  useEffect(() => {
+    getDeadline();
+  }, [])
 
   const addLiquidity = async (valueOne: number, valueTwo: number): Promise<void> => {
     try {
@@ -50,7 +62,7 @@ const Swap = (): JSX.Element => {
           _amountAMin,
           _amountBMin,
           connectedWalletAddress,
-          _deadline
+          _deadline // current time + 10 mins
           );
           setLoading(true);
           await _addLiquidity.wait();
@@ -147,6 +159,211 @@ const Swap = (): JSX.Element => {
     }
   }
 
+  // ask dhruv about the params
+  const swap = async (): Promise<void> => {
+    try {
+      if(amounts && path) {
+        const _swap = await contract._swap(
+          amounts,
+          path,
+          connectedWalletAddress
+        )
+        setLoading(true);
+        await _swap.wait();
+        setLoading(false);
+        // toast.success("")
+      }
+      } 
+    catch (err: any) {
+      // toast.error(err.reason)
+      console.error(err)  
+    }
+  }
+
+  // ask dhruv about params
+  const swapExactAmountOfTokens = async (valueIn: number): Promise<void> => {
+    try {
+      if(valueIn) {
+        const _swapExactTokens = await contract.swapExactTokensForTokens(
+          valueIn,
+          0,
+          path,
+          connectedWalletAddress,
+          _deadline
+        );
+        setLoading(true);
+        await _swapExactTokens.wait();
+        setLoading(false);
+        // taost.success("swapped");
+      }
+    }
+    catch (err: any) {
+      // toast.err(err.reason)
+      console.error(err)  
+    }
+  }
+
+  const swapTokensForExactAmount = async (valueOut: number): Promise<void> => {
+    try {
+      if(valueOut) {
+        const _swapTokens = await contract.swapTokensForExactTokens(
+          valueOut,
+          0,
+          path,
+          connectedWalletAddress,
+          _deadline
+          );
+          setLoading(true);
+          await _swapTokens.wait();
+          setLoading(false);
+          // taost.success("SWAPPED!!!");
+        }
+    }
+    catch (err: any) {
+      // taost.error("err.reason")
+      console.error(err)  
+    }
+  }
+  // payable func
+  const swapExactAmountOfEthForTokens = async (valueOut: number): Promise<void> => {
+    try {
+      if(valueOut) {
+        const _amount = ethers.utils.parseEther("0.1");
+        const _swapEth = await contract.swapExactETHForTokens(
+          valueOut,
+          path,
+          connectedWalletAddress,
+          _deadline,
+          {
+            value: _amount
+          }
+        );
+        setLoading(true);
+        await _swapEth.wait();
+        setLoading(false);
+        // toast.success();
+      }
+    } catch (err: any) {
+      // taost.error(err.reason);
+      console.error(err)
+    }
+  }
+
+  const swapEthForExactAmountOfTokens = async (valueOut: number): Promise<void> => {
+    try {
+      if(valueOut) {
+        const _amount = ethers.utils.parseEther("0.01");
+        const _swapTokens = await contract.swapETHForExactTokens(
+            valueOut,
+            path,
+            connectedWalletAddress,
+            _deadline,
+          { value: _amount }
+          );
+          setLoading(true);
+          await _swapTokens.wait();
+          setLoading(false);
+          // toast.success();
+      }
+    }
+    catch (err: any) {
+      // toast.error(err.reason);
+      console.error(err.reason);
+    }
+  }
+
+  const swapTokensForExactAmountOfEth = async (valueOut: number): Promise<void> => {
+    try {
+      if(valueOut) {
+        const _swapTokensForEth = await contract.swapTokensForExactETH(
+          valueOut,
+          0,
+          path,
+          connectedWalletAddress,
+          _deadline
+        );
+        setLoading(true);
+        await _swapTokensForEth.wait();
+        setLoading(false);
+        // taost.success("");
+      }
+    }
+    catch (err: any) {
+      // toast.error(err.reason);
+      console.error(err);
+    }
+  }
+
+  const swapExactAmountOfTokensForEth = async (valueIn: number): Promise<void> => {
+    try {
+      if(valueIn) {
+        const _swapTokensForEth = await contract.swapExactTokensForETH(
+          valueIn,
+          0,
+          path,
+          connectedWalletAddress,
+          _deadline
+        );
+        setLoading(true);
+        await _swapTokensForEth.wait();
+        setLoading(false);
+        // toast.success("asdf");
+      }
+    } 
+    catch (err: any) {
+      // toast.error("")
+      console.error(err);  
+    }
+  }
+  // 3 params on this one
+  const quote = async (): Promise<void> => {
+    try {
+      const _fetchQuote: any = await contract.quote(
+        0,
+        0,
+        0
+      );
+      // setQuote(_fetchQuote);
+    } 
+    catch (err: any) {
+      // toast.error(err.reason);
+      console.error(err)
+    }
+  }
+
+  const getAmountOut = async (): Promise<void> => {
+    const _getAmount = await contract.getAmountOut(
+      0,
+      0,
+      0
+    );
+    // setOutAmount(_getAmount);
+  }
+
+  const getAmountIn = async ():Promise<void> => {
+  const _getAmount = await contract.getAmountOut(
+    0,
+    0,
+    0
+  );
+  // setOutAmount(_getAmount);
+}
+
+const getAmountsOut = async (): Promise<void> => {
+  const _getAmounts = await contract.getAmountsOut(
+    0,
+    path
+  );
+  // setAllAmounts(_getAmounts);
+}
+
+const getAmountsIn = async (): Promise<void> => {
+  const _getAmounts = await contract.getAmountsIn(
+    0,
+    path
+  );
+  // setInAmounts(_getAmounts);
+}
   // this is for testing purposes
   // const testingCall = (): void => {
   //   addLiquidity(desiredAmountA, desiredAmountB);
