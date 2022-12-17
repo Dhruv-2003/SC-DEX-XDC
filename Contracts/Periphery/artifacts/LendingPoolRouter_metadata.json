@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.14+commit.80d49f37"
+		"version": "0.8.13+commit.abaa5c0e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -209,7 +209,71 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "repayAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "getRepayAmount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "token",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "withdrawAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "getWithdrawAmount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
 				"name": "repayETH",
 				"outputs": [],
 				"stateMutability": "payable",
@@ -221,6 +285,11 @@
 						"internalType": "address",
 						"name": "token",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
 					}
 				],
 				"name": "repayToken",
@@ -229,7 +298,13 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
 				"name": "withdrawETH",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -241,6 +316,11 @@
 						"internalType": "address",
 						"name": "token",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
 					}
 				],
 				"name": "withdrawToken",
@@ -257,8 +337,29 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {
+				"borrowToken(address,uint256)": {
+					"notice": "done and working"
+				},
+				"depositETH(uint256)": {
+					"notice": "done and working"
+				},
 				"depositToken(address,uint256)": {
-					"notice": "user SafeApprove , SafeTransfer , SafeTransferFrom from Transfer Helper"
+					"notice": "done and working"
+				},
+				"getRepayAmount(address,address,uint256)": {
+					"notice": "repay Amount quote with interest"
+				},
+				"getWithdrawAmount(address,address,uint256)": {
+					"notice": "withdraw amount quote with interest"
+				},
+				"repayETH(uint256)": {
+					"notice": "send ETH > repay Amount taking into time considerartion"
+				},
+				"repayToken(address,uint256)": {
+					"notice": "done and working"
+				},
+				"withdrawToken(address,uint256)": {
+					"notice": "done and working"
 				}
 			},
 			"version": 1
@@ -281,11 +382,11 @@
 	},
 	"sources": {
 		"Core/interfaces/ILendingPool.sol": {
-			"keccak256": "0xff083fb0efab7bf5dfd457a1a5086171eb8e31e465504b205fa38714ef8cd1d3",
+			"keccak256": "0x8334a278523bd092b257053743ee1e60fbf6bcc12bbc125f95dd9b6f95ee505f",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5d010081729286ff49ec37b827f25c6be90d8cd5915a9ebad5d7a336217d5a99",
-				"dweb:/ipfs/QmfXDNfVuD5XgUDHsvJ6bC76rarefeH6aLS2TG2zmLxD7C"
+				"bzz-raw://ac68cada74aa39acc66542388dada2102f0f4b8e1c4542bfef550aac85ed2225",
+				"dweb:/ipfs/QmbejVVZo5jThX5xLsM691LAWjxsVV6MspB23ibYtGWyBy"
 			]
 		},
 		"Core/interfaces/ILendingPoolFactory.sol": {
@@ -313,11 +414,11 @@
 			]
 		},
 		"Periphery/LendingPoolRouter.sol": {
-			"keccak256": "0x181dba1884397a45890dab934684904fe4a24ab370bd37f45e3d423371f311f8",
+			"keccak256": "0x443a9d5351124c65e3f6ef5a6fc4c9c34c2131f5009202d7be4029d3b9e7102c",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://1bf4c593ad1827037d28fdb4387c333da886f7a4d486de0fd01d20c32a79eac0",
-				"dweb:/ipfs/QmdfTqoqFgR6ZwuUS2aUFM7FRPHzrUjf7LZdvYH88MECHT"
+				"bzz-raw://ab576f47b28a42fcbca6ae2a0360be33eed49312153350a7bff958a6a4c1bcfd",
+				"dweb:/ipfs/QmTfZZi2ZZnm8HAM8eYzk36x2zudxMRgYpAzhRZ2yKG71m"
 			]
 		},
 		"Periphery/libraries/TransferHelper.sol": {

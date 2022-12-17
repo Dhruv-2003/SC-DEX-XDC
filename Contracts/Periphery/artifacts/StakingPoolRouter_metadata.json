@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.14+commit.80d49f37"
+		"version": "0.8.13+commit.abaa5c0e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -210,7 +210,7 @@
 						"type": "uint256"
 					}
 				],
-				"name": "stakedETH",
+				"name": "stakeETH",
 				"outputs": [],
 				"stateMutability": "payable",
 				"type": "function"
@@ -255,13 +255,14 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {
-				"stakedETH(uint256)": {
+				"stakeETH(uint256)": {
 					"notice": "wrap"
 				},
 				"withdrawETH(uint256)": {
 					"notice": "unWrap"
 				}
 			},
+			"notice": "Staking is done so in case of Emergency , 50% of the amount locked can be used for covering The Reward Token can be used to pay gas fees for the Exchange and other DEFI activities in the future",
 			"version": 1
 		}
 	},
@@ -282,11 +283,11 @@
 	},
 	"sources": {
 		"Core/interfaces/IStakingPool.sol": {
-			"keccak256": "0x2c3f350ec71eb70fba461d3060cbad64071aeb90732f87ce2abc143706184ef0",
+			"keccak256": "0x2d3270afd6df32fec0f7bfafc2ffaf9648439a53e20d677a34292aecc2d4cba6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://53bbf335aeecfde802f03742272f0f40cc77c80752d1654dd7c3938570a38c39",
-				"dweb:/ipfs/QmdYn6ceegMetrhSrF7RQ8uhEtyFf6AfkSCbRzRsvHWD7w"
+				"bzz-raw://2f4d71083c7e0f2a78cba378ef8d2212179de5163cd378ec1ec91e18779b4f23",
+				"dweb:/ipfs/QmU2uVCiL5XrSSQ2Mbz1etxrh9NMuGbSXSQNuoAdsM833N"
 			]
 		},
 		"Core/interfaces/IStakingPoolFactory.sol": {
@@ -314,11 +315,11 @@
 			]
 		},
 		"Periphery/StakingPoolRouter.sol": {
-			"keccak256": "0x8a359e8666d77ec4a636e0d618fa4ba782538cd70a50321d60fe440d6acff025",
+			"keccak256": "0xf00abb206b533a5f45f0f4de4cc95b87e49e962455ca4a44bb48a0ed74542cce",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5f11cc1fed345d9f98df35c1e326d4e94341c2e81609bdab4432e873cdd9b894",
-				"dweb:/ipfs/QmUbv92FjULrHPrVS31XBkHfb9iHpFTethPepb2fXJX3DG"
+				"bzz-raw://093460d93d05bda509a33d867ae546ea560f724ee9123d242b1f16cde9dd4c5a",
+				"dweb:/ipfs/QmaeZA2rS2CbCUxBWAKmwWoXYzGwsquZfSQpegJJT8JVCK"
 			]
 		},
 		"Periphery/libraries/TransferHelper.sol": {

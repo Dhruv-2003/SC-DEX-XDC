@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.14+commit.80d49f37"
+		"version": "0.8.13+commit.abaa5c0e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -266,6 +266,19 @@
 						"internalType": "uint256[]",
 						"name": "amounts",
 						"type": "uint256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getLiquidityAmount",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "liqAmount",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -709,11 +722,11 @@
 			]
 		},
 		"Periphery/XSwapRouter.sol": {
-			"keccak256": "0x8decaec47c3bebd8b7289e5b04576955289509932b3a0cbe00b344ca21257ea5",
+			"keccak256": "0xc8ccac9964f5b673a0ae3a6143535865a7a7935a8e9287b22b5e2a8b66c80211",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://4cef76c1d50714323a1d39b6acbafdfc4a393cd961528a32bdde98cefddd9c31",
-				"dweb:/ipfs/QmSUfFauDDARK4akprkuk6K3BCPeyD3Pv8Yb2uHZWRU2Rm"
+				"bzz-raw://a93d563c52fb2ed9da787b0137d43d5767ffe7ebeda636bffa2f479ab4234dc9",
+				"dweb:/ipfs/QmW17mDAe7dT9pxVcQkaytH4ARYNPGuppLsM7KhWH5xfEn"
 			]
 		},
 		"Periphery/libraries/TransferHelper.sol": {
