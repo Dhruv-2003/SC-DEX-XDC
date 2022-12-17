@@ -4,7 +4,7 @@ export const TOKEN_TWO_ADDRESS: string = "xdc8960a10CA625eA7b714757E307CF84B6d11
 
 export const SWAP_ROUTER_ADDRESS: string = "xdc8960a10CA625eA7b714757E307CF84B6d117fA5c";
 
-export const SWAP_ROUTER_ABI: Object[] = [
+export const SWAP_ROUTER_ABI = [
     {
         "inputs": [
             {

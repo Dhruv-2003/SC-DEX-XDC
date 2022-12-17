@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, NumberInput, Select, TextInput } from "@mantine/core";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
@@ -7,24 +7,15 @@ import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import {tokens} from '../utils/tokens'
 import { BigNumber } from "ethers";
-
-// const people = [
-//   { name: [tokens[0].symbol]},
-//   { name: [tokens[1].symbol] },
-//   { name: [tokens[2].symbol] },
-//   { name: [tokens[3].symbol] },
-//   { name: [tokens[4].symbol] },
-//   { name: [tokens[5].symbol] },
-// ];
-
-console.log([tokens[0].symbol])
+import { TOKEN_ONE_ADDRESS, TOKEN_TWO_ADDRESS,
+  SWAP_ROUTER_ADDRESS, SWAP_ROUTER_ABI } from "../Constants/Index";
 
 const Swap = (): JSX.Element => {
   const provider = useProvider();
-  const {data: signer} = useSigner();
+  const { data: signer } = useSigner();
   const contract = useContract({
-    address: "",
-    // abi: ,
+    address: SWAP_ROUTER_ADDRESS,
+    abi: SWAP_ROUTER_ABI,
     signerOrProvider: signer || provider
   });
 
@@ -32,40 +23,43 @@ const Swap = (): JSX.Element => {
   const [selected, setSelected] = useState([...tokens]);
   const [desiredAmountA, setDesiredAmountA] = useState<number>(0);
   const [desiredAmountB, setDesiredAmountB] = useState<number>(0);
+  const [liquidity, setLiquidity] = useState();
 
   // Creating some global variables to use in the upcoming liquidity functions
   const userAddress: any = useAccount();
   const connectedWalletAddress: any = userAddress.address;
-  const addressTokenA: string = "";
-  const addressTokenB: string = "";
+  const addressTokenA: string = TOKEN_ONE_ADDRESS;
+  const addressTokenB: string = TOKEN_TWO_ADDRESS;
   const _deadline: number = 0;
   const _amountAMin: number = 0;
   const _amountBMin: number = 0;
-
-  console.log(connectedWalletAddress)
 
   function handleChange(event: any): void {
       setDesiredAmountA(parseInt(event.target.value));
       setDesiredAmountB(parseInt(event.target.value));
   }
 
-
   const addLiquidity = async (valueOne: number, valueTwo: number): Promise<void> => {
     try {
-      const _addLiquidity = await contract.addLiquidity(
-        addressTokenA,
-        addressTokenB,
-        valueOne,
-        valueTwo,
-        _amountAMin,
-        _amountBMin,
-        connectedWalletAddress,
-        _deadline
-      );
-      setLoading(true);
-      await _addLiquidity.wait();
-      setLoading(false);
-    } 
+      if(addressTokenA && addressTokenB && valueOne && valueTwo && _amountAMin && _amountBMin && connectedWalletAddress && _deadline) {
+        const _addLiquidity = await contract.addLiquidity(
+          addressTokenA,
+          addressTokenB,
+          valueOne,
+          valueTwo,
+          _amountAMin,
+          _amountBMin,
+          connectedWalletAddress,
+          _deadline
+          );
+          setLoading(true);
+          await _addLiquidity.wait();
+          setLoading(false);
+        }
+        else {
+          alert("INPUT DUMBASS!!!");
+        }
+    }
     catch (err: any) {
       // alert shall be changed to toast.error(err.reason) once kushagra adds it
       alert(err.reason)
@@ -73,15 +67,33 @@ const Swap = (): JSX.Element => {
     }
   }
 
-  const removeLiquidity = async (): Promise<void> => {
-    try { 
-      const _removeLiquidity = await contract.removeLiquidity(
+  const returnLiquidity = async (): Promise<void> => {
+    const _liquidity = await contract.getLiquidityAmount(
+      connectedWalletAddress,
+      addressTokenA,
+      addressTokenB
+    );
+    setLiquidity(_liquidity);
+  }
 
-      );
-      setLoading(true);
-      await _removeLiquidity.wait();
-      setLoading(false);
-    }
+  // might need to take an input here
+  const removeLiquidity = async (): Promise<void> => {
+    try {
+      if(addressTokenA && addressTokenB && liquidity && _amountAMin && _amountBMin &&connectedWalletAddress && _deadline) {
+        const _removeLiquidity = await contract.removeLiquidity(
+          addressTokenA,
+          addressTokenB,
+          liquidity,
+          _amountAMin,
+          _amountBMin,
+          connectedWalletAddress,
+          _deadline
+          );
+          setLoading(true);
+          await _removeLiquidity.wait();
+          setLoading(false);
+        }
+      }
     catch(err: any) {
       alert(err.reason);
       console.error(err)
@@ -93,27 +105,12 @@ const Swap = (): JSX.Element => {
   //   addLiquidity(desiredAmountA, desiredAmountB);
   // }
 
+  // useEffect(() => {
+  //   returnLiquidity();
+  // }, [returnLiquidity, liquidity])
+
   return (
     <>
-      {/* <div className="font-fredoka text-white bg-[#03071E] border-y-2 flex flex-col items-center justify-center mt-32 md:mt-12 xl:mt-32 2xl:mt-40 mb-32">
-        <h1 className="pb-8 pt-2 text-2xl">Swap</h1>
-        <div className="px-5 py-5 bg-white rounded flex items-center justify-between">
-          <input className="text-black w-10/12 outline-none text-4xl" />
-          <button className="text-black border-2 border-black rounded-md px-8 py-2 text-xl hover:bg-[#03071E] hover:text-white">
-            ETH
-          </button>
-        </div>
-        <div className="px-5 py-5 bg-white rounded flex items-center justify-between mt-10">
-          <input className="text-black w-10/12 outline-none text-4xl" />
-          <button className="text-black border-2 border-black rounded-md px-8 py-2 text-xl hover:bg-[#03071E] hover:text-white">
-            XDC
-          </button>
-        </div>
-        <button className="mt-10 mb-5 border-2 py-2 px-4 text-xl hover:bg-white hover:text-black">
-          Swap
-        </button>
-      </div> */}
-
       <div className=" rounded-md mx-auto lg:w-[400px] lg:mx-auto font-fredoka text-white px-0 py-0 bg-[#03071e68] opacity-100 backdrop-blur-lg flex flex-col items-center justify-center mt-32 md:mt-12 xl:mt-32 2xl:mt-40 mb-32 ">
         <h2 className=" rounded-t-md text-2xl font-bold tracking-wid w-full bg-blue-700 py-4 px-4 md:px-10">
           Swap
@@ -180,12 +177,6 @@ const Swap = (): JSX.Element => {
                 </div>
               </Listbox>
             </div>
-            {/* <button
-              type="button"
-              className="text-white mt-2 bg-blue-700 text-md font-fredoka hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-3xl px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            >
-              Select Token
-            </button> */}
           </div>
 
           <label className="mt-6" htmlFor="">
