@@ -6,7 +6,7 @@ import { tokens } from "../utils/tokens";
 import { Dialog, Listbox, Transition } from "@headlessui/react";
 import styles from "../styles/Home.module.css";
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
-import { Contract, ethers } from "ethers";
+import { ethers } from "ethers";
 import { SWAP_ROUTER_ADDRESS, SWAP_ROUTER_ABI } from "../Constants/index.js";
 
 const token1 = tokens;
@@ -31,6 +31,9 @@ export default function Swap() {
   const [amountTwo, setAmountTwo] = useState(0);
   const [exactAmountIn, setExactAmountIn] = useState(false);
   const [exactAmountOut, setExactAmountOut] = useState(false);
+  const [amountOut, setAmountOut] = useState(0);
+  const [amountIn, setAmountIn] = useState(0);
+  const [inputAmount, setInputAmount] = useState(1);
 
   function checkIfAmountSet() {
     if (amountOne > 0) {
@@ -38,6 +41,10 @@ export default function Swap() {
     } else if (amountTwo > 0) {
       setExactAmountOut(true);
     }
+  }
+
+  function handleInput(event) {
+    setInputAmount(+event.target.value);
   }
 
   // ask dhruv about the params
@@ -214,18 +221,20 @@ export default function Swap() {
   /// Exact Amount in , user give 1st input
   const getAmountOut = async (amountA, reserveA, reserveB) => {
     const amountOut = await contract.getAmountOut(amountA, reserveA, reserveB);
-
-    setAmountOut(amountOut);
-
-    // setOutAmount(_getAmount);
+    setAmountOut(parseInt(amountOut));
+    console.log(+amountOut)
   };
-
+  
   /// Exact Amount out , user give 2nd input
   const getAmountIn = async (amountB, reserveA, reserveB) => {
     const _getAmount = await contract.getAmountOut(amountB, reserveA, reserveB);
-    // setOutAmount(_getAmount);
+    setAmountIn(parseInt(_getAmount));
   };
-
+  
+  useEffect(() => {
+    getAmountOut(inputAmount,123,123);
+    getAmountIn(inputAmount,123123,123123)
+  }, )
   // const getAmountsOut = async () => {
   //   const _getAmounts = await contract.getAmountsOut(
   //     0,
