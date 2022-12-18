@@ -48,48 +48,75 @@ export default function Pool() {
     signerOrProvider: signer || provider,
   });
 
-  const connectedWalletAddress = address;
   // const addressTokenA = TOKEN_ONE_ADDRESS;
   // const addressTokenB = TOKEN_TWO_ADDRESS;
   const _deadline = 0;
   const _amountAMin = 1;
   const _amountBMin = 1;
 
-  function handleChange(event) {
-    setDesiredAmountA(parseInt(event.target.value));
-    setDesiredAmountB(parseInt(event.target.value));
-  }
+  // function handleChange(event) {
+  //   setDesiredAmountA(parseInt(event.target.value));
+  //   setDesiredAmountB(parseInt(event.target.value));
+  // }
 
   const getDeadline = () => {
-    const _deadline = Math.floor(Date.now() / 1000);
+    const _deadline = Math.floor(Date.now() / 1000) + 900;
     console.log(_deadline);
     return _deadline;
   };
 
-  useEffect(() => {
-    getDeadline();
-  }, []);
+  const handleAddliquidity = () => {
+    if (selectedToken1 && selectedToken2 && selectedToken1 != selectedToken2) {
+      if (selectedToken1.symbol != "XDC" && selectedToken2.symbol != "XDC") {
+        addLiquidity(
+          desiredAmountA,
+          desiredAmountB,
+          selectedToken1.address,
+          selectedToken2.address
+        );
+      } else if (selectedToken1.symbol == "XDC") {
+        addLiquidityEth(selectedToken2.address, desiredAmountB, desiredAmountA);
+      } else if (selectedToken2.symbol == "XDC") {
+        addLiquidityEth(selectedToken1.address, desiredAmountA, desiredAmountB);
+      }
+    }
+  };
 
-  const addLiquidity = async (valueOne, valueTwo) => {
+  const approveTokens = async (tokenInAddress, amountIn) => {
     try {
-      if (
-        addressTokenA &&
-        addressTokenB &&
-        valueOne &&
-        valueTwo &&
-        _amountAMin &&
-        _amountBMin &&
-        connectedWalletAddress &&
-        _deadline
-      ) {
+      const Token_contract = new Contract(tokenInAddress, Token_ABI, signer);
+
+      const tx = await Token_contract.approve(
+        SWAP_ROUTER_ADDRESS,
+        ethers.utils.parseEther(amountIn.toString())
+      );
+
+      await tx.wait();
+      return true;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const addLiquidity = async (
+    valueOne,
+    valueTwo,
+    addressTokenA,
+    addressTokenB
+  ) => {
+    try {
+      if (addressTokenA && addressTokenB && valueOne && valueTwo && address) {
+        // await approveTokens(addressTokenA, valueOne);
+        // await approveTokens(addressTokenB, valueTwo);
+        const _deadline = getDeadline();
         const _addLiquidity = await contract.addLiquidity(
           addressTokenA,
           addressTokenB,
-          valueOne,
-          valueTwo,
-          _amountAMin,
-          _amountBMin,
-          connectedWalletAddress,
+          ethers.utils.parseEther(valueOne.toString()),
+          ethers.utils.parseEther(valueTwo.toString()),
+          1,
+          1,
+          address,
           _deadline // current time + 10 mins
         );
         setLoading(true);
@@ -106,29 +133,45 @@ export default function Pool() {
   };
 
   // ask dhruv about the parameters here
-  const addLiquidityEth = async (val) => {
+  const addLiquidityEth = async (addressToken, tokenValue, ETHValue) => {
     try {
-      const _amount = ethers.utils.parseEther("0.1");
+      const _amount = ethers.utils.parseEther(ETHValue.toString());
       const _addLiquidity = await contract.addLiquidityEth(
-        addressTokenA,
-        val,
-        0,
-        0,
-        connectedWalletAddress,
+        addressToken,
+        ethers.utils.parseEther(tokenValue.toString()),
+        1,
+        1,
+        address,
         _deadline,
         {
           value: _amount,
         }
       );
+      await _addLiquidity.wait();
     } catch (err) {
       console.error(err);
       alert(err.reason);
     }
   };
 
-  const returnLiquidity = async () => {
+  const getPositions = async () => {
+    try {
+      /// check balances for each pair and show if the balance is > 0 under positions
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const getPoolPairs = async () => {
+    try {
+      /// fetch all the pairs from the factory
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getLiquidity = async () => {
     const _liquidity = await contract.getLiquidityAmount(
-      connectedWalletAddress,
+      address,
       addressTokenA,
       addressTokenB
     );
@@ -136,24 +179,21 @@ export default function Pool() {
   };
 
   // might need to take an input here
-  const removeLiquidity = async () => {
+  const removeLiquidity = async (
+    addressTokenA,
+    addressTokenB,
+    liquidityAmount
+  ) => {
     try {
-      if (
-        addressTokenA &&
-        addressTokenB &&
-        liquidity &&
-        _amountAMin &&
-        _amountBMin &&
-        connectedWalletAddress &&
-        _deadline
-      ) {
+      if (addressTokenA && addressTokenA && liquidityAmount) {
+        const _deadline = getDeadline();
         const _removeLiquidity = await contract.removeLiquidity(
           addressTokenA,
           addressTokenB,
-          liquidity,
-          _amountAMin,
-          _amountBMin,
-          connectedWalletAddress,
+          ethers.utils.parseEther(liquidityAmount.toString()),
+          1,
+          1,
+          address,
           _deadline
         );
         setLoading(true);
@@ -168,15 +208,15 @@ export default function Pool() {
   };
 
   // ask dhruv about parameters
-  const removeLiquidityEth = async (val) => {
+  const removeLiquidityEth = async (addressTokenA, liquidityAmount) => {
     try {
-      if (liquidity) {
+      if (liquidityAmount) {
         const _removeLiquidity = await contract.removeLiquidityETH(
           addressTokenA,
-          liquidity,
+          ethers.utils.parseEther(liquidityAmount.toString()),
           val,
           0,
-          connectedWalletAddress,
+          address,
           _deadline
         );
         setLoading(true);
@@ -213,7 +253,7 @@ export default function Pool() {
         );
         console.log(ethers.utils.formatEther(_fetchQuote));
         // setQuote(_fetchQuote);
-        setDesiredAmountB(ethers.utils.formatEther(_fetchQuote));
+        setDesiredAmountB(ethers.utils.formatEther(_fetchQuote).slice(0, 7));
       }
     } catch (err) {
       // toast.error(err.reason);
@@ -226,12 +266,14 @@ export default function Pool() {
       if (amountB) {
         const _fetchQuote = await contract.quote(
           ethers.utils.parseEther(amountB.toString()),
-          ethers.utils.parseEther(reserveA.toString()),
-          ethers.utils.parseEther(reserveB.toString())
+          ethers.utils.parseEther(reserveB.toString()),
+          ethers.utils.parseEther(reserveA.toString())
         );
         console.log(ethers.utils.formatEther(_fetchQuote));
         // setQuote(_fetchQuote);
-        setDesiredAmountA(ethers.utils.formatEther(_fetchQuote));
+        setDesiredAmountA(
+          ethers.utils.formatEther(_fetchQuote).replaceslice(0, 7)
+        );
       }
     } catch (err) {
       // toast.error(err.reason);
@@ -454,8 +496,11 @@ export default function Pool() {
             <button
               type="button"
               className="text-white w-full mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
+              onClick={() => {
+                handleAddliquidity();
+              }}
             >
-              Create Pool
+              Add liquidity
             </button>
           </div>
         </div>
