@@ -36,7 +36,7 @@ export default function Swap() {
   const [exactAmountOut, setExactAmountOut] = useState(false);
   const [amountOut, setAmountOut] = useState(0);
   const [amountIn, setAmountIn] = useState(0);
-  const [inputAmount, setInputAmount] = useState(1);
+  // const [inputAmount, setInputAmount] = useState(0);
 
   // function checkIfAmountSet() {
   //   if (amountOne > 0) {
@@ -46,6 +46,12 @@ export default function Swap() {
   //   }
   // }
 
+  const getDeadline = () => {
+    const _deadline = Math.floor(Date.now() / 1000);
+    console.log(_deadline);
+    return _deadline;
+  };
+
   function handleInput(event) {
     setInputAmount(+event.target.value);
   }
@@ -54,11 +60,7 @@ export default function Swap() {
   const swap = async () => {
     try {
       if (amounts && path) {
-        const _swap = await contract._swap(
-          amounts,
-          path,
-          connectedWalletAddress
-        );
+        const _swap = await contract._swap(amounts, path, address);
         setLoading(true);
         await _swap.wait();
         setLoading(false);
@@ -87,11 +89,12 @@ export default function Swap() {
     try {
       if (valueIn) {
         const path = [`${selectedToken1}`, `${selectedToken1}`];
+        const dedaline = getDeadline();
         const _swapExactTokens = await contract.swapExactTokensForTokens(
           ethers.utils.parseEther(valueIn.toString()),
           1,
           path,
-          connectedWalletAddress,
+          address,
           _deadline
         );
         setLoading(true);
@@ -112,7 +115,7 @@ export default function Swap() {
           valueOut,
           0,
           path,
-          connectedWalletAddress,
+          address,
           _deadline
         );
         setLoading(true);
@@ -133,7 +136,7 @@ export default function Swap() {
         const _swapEth = await contract.swapExactETHForTokens(
           valueOut,
           path,
-          connectedWalletAddress,
+          address,
           _deadline,
           {
             value: _amount,
@@ -157,7 +160,7 @@ export default function Swap() {
         const _swapTokens = await contract.swapETHForExactTokens(
           valueOut,
           path,
-          connectedWalletAddress,
+          address,
           _deadline,
           { value: _amount }
         );
@@ -179,7 +182,7 @@ export default function Swap() {
           valueOut,
           0,
           path,
-          connectedWalletAddress,
+          address,
           _deadline
         );
         setLoading(true);
@@ -200,7 +203,7 @@ export default function Swap() {
           valueIn,
           0,
           path,
-          connectedWalletAddress,
+          address,
           _deadline
         );
         setLoading(true);
@@ -267,11 +270,6 @@ export default function Swap() {
       setAmountOne(ethers.utils.formatEther(amountIn).slice(0, 7));
     }
   };
-
-  useEffect(() => {
-    getAmountOut(inputAmount, reserveA, reserveB);
-    getAmountIn(inputAmount, reserveA, reserveB);
-  }, []);
 
   // const getAmountsOut = async () => {
   //   const _getAmounts = await contract.getAmountsOut(
