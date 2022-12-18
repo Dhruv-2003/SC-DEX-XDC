@@ -3,6 +3,7 @@ import coinImage from "../assets/coin.png";
 import Image from "next/image";
 import { MdClose } from "react-icons/md";
 import { Transition } from "@headlessui/react";
+import Link from "next/link";
 
 export default function BuyXDC() {
   const [showModal, setShowModal] = useState(false);
