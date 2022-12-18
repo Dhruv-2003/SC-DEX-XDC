@@ -7,7 +7,7 @@ import { Dialog, Listbox, Transition } from "@headlessui/react";
 import styles from '../styles/Home.module.css';
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 import { Contract, ethers } from "ethers";
-import { SWAP_ROUTER_ADDRESS, SWAP_ROUTER_ABI } from "../Constants/Index";
+import { SWAP_ROUTER_ADDRESS, SWAP_ROUTER_ABI } from "../Constants/Index.js";
 
 const token1 = tokens;
 const token2 = tokens;
