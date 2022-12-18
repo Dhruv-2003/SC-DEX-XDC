@@ -18,11 +18,13 @@ export default function Swap() {
   const [selectedToken2, setSelectedToken2] = useState(token2[0]);
   const provider = useProvider();
   const { data: signer } = useSigner();
+
   const contract = useContract({
     address: SWAP_ROUTER_ADDRESS,
     abi: SWAP_ROUTER_ABI,
     signerOrProvider: signer || provider,
   });
+
   const [reserveA, setReserveA] = useState(0);
   const [reserveB, setReserveB] = useState(0);
   const [amountOne, setAmountOne] = useState(0);
@@ -201,11 +203,11 @@ export default function Swap() {
   };
 
   /// As Soon as user selects both the tokens , call getReserve
-  const getReserve = async (tokenA, tokenB) => {
+  const getReserves = async (tokenA, tokenB) => {
     const response = await contract.getReserve(tokenA, tokenB);
     console.log(response);
-    setReserveA(response.reserveA);
-    setReserveB(response.reserveB);
+    setReserveA(ethers.utils.formatEther(response.reserveA));
+    setReserveB(ethers.utils.formatEther(response.reserveB));
     // setOutAmount(_getAmount);
   };
 
@@ -243,7 +245,8 @@ export default function Swap() {
   /// fetched reserves when both tokens are set
   useEffect(() => {
     if (selectedToken1 != 0 && selectedToken2 != 0) {
-      getReserve();
+      if (selectedToken1.symbol != "XDC" && selectedToken2.symbol != "XDC")
+        getReserves(selectedToken1.address, selectedToken2.address);
     }
   }, [selectedToken1, selectedToken2]);
 
