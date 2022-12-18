@@ -8,9 +8,9 @@ import {
 import { configureChains, createClient, goerli, WagmiConfig } from "wagmi";
 // import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
-import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
-const xdcApothem  = {
+const xdcApothem = {
   id: 51,
   name: "Apothem-Network (TestNet)",
   network: "XDC Apothem Network (TestNet)",
@@ -20,7 +20,9 @@ const xdcApothem  = {
     symbol: "XDC",
   },
   rpcUrls: {
-    default: "https://rpc.apothem.network",
+    default: {
+      http: ["https://rpc.apothem.network"],
+    },
   },
   blockExplorers: {
     default: {
@@ -31,7 +33,7 @@ const xdcApothem  = {
   testnet: true,
 };
 
-const xdcMainnet ={
+const xdcMainnet = {
   id: 50,
   name: "Xinfin MainNet",
   network: "Xinfin Network MainNet",
@@ -41,7 +43,9 @@ const xdcMainnet ={
     symbol: "XDC",
   },
   rpcUrls: {
-    default: "https://rpc.xinfin.network",
+    default: {
+      http: ["https://rpc.apothem.network"],
+    },
   },
   blockExplorers: {
     default: {
@@ -52,15 +56,8 @@ const xdcMainnet ={
   testnet: false,
 };
 
-
-const { provider, chains} = configureChains(
+const { provider, chains } = configureChains(
   [xdcApothem],
-  [xdcMainnet],
-  [
-    jsonRpcProvider({
-      rpc: chain => ({ http: chain.rpcUrls.default.http[0] }),
-    }),
-  ],
   [
     // alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
     publicProvider(),
@@ -77,8 +74,6 @@ const wagmiClient = createClient({
   connectors,
   provider,
 });
-
-
 
 export default function App({ Component, pageProps }) {
   return (
