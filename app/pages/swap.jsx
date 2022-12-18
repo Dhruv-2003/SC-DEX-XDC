@@ -232,9 +232,9 @@ export default function Swap() {
   };
   
   useEffect(() => {
-    getAmountOut(inputAmount,123,123);
-    getAmountIn(inputAmount,123123,123123)
-  }, )
+    getAmountOut(inputAmount,reserveA,reserveB);
+    getAmountIn(inputAmount,reserveA,reserveB);
+  }, [])
   // const getAmountsOut = async () => {
   //   const _getAmounts = await contract.getAmountsOut(
   //     0,
