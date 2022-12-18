@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-// import "hardhat/console.sol";
-// Import ERC20
-
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {ERC20Burnable} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
@@ -29,7 +26,6 @@ contract WrappedStackDollars is ERC20, ERC20Burnable {
         onlyBridge
     {
         _mint(_recipient, _amount);
-        // console.log("Tokens minted for %s", _recipient);
     }
 
     // @dev called from the bridge when tokens are received
@@ -41,6 +37,5 @@ contract WrappedStackDollars is ERC20, ERC20Burnable {
         onlyBridge
     {
         super.burnFrom(_account, _amount);
-        // console.log("Tokens burned from %s", _account);
     }
 }

@@ -14,6 +14,7 @@
     "@next/font": "13.0.7",
     "@rainbow-me/rainbowkit": "^0.8.1",
     "@tabler/icons": "^1.117.0",
+    "axios": "^1.2.1",
     "eslint": "8.29.0",
     "eslint-config-next": "13.0.7",
     "ethers": "^5.7.2",

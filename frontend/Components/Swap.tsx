@@ -1,45 +1,380 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, NumberInput, Select, TextInput } from "@mantine/core";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import {tokens} from '../utils/tokens'
-
-// const people = [
-//   { name: [tokens[0].symbol]},
-//   { name: [tokens[1].symbol] },
-//   { name: [tokens[2].symbol] },
-//   { name: [tokens[3].symbol] },
-//   { name: [tokens[4].symbol] },
-//   { name: [tokens[5].symbol] },
-// ];
-
-console.log([tokens[0].symbol])
+import { TOKEN_ONE_ADDRESS, TOKEN_TWO_ADDRESS,
+  SWAP_ROUTER_ADDRESS, SWAP_ROUTER_ABI } from "../Constants/Index";
+import { Contract, ethers } from "ethers";
 
 const Swap = (): JSX.Element => {
+  const provider = useProvider();
+  const { data: signer } = useSigner();
+  const contract = useContract({
+    address: SWAP_ROUTER_ADDRESS,
+    abi: SWAP_ROUTER_ABI,
+    signerOrProvider: signer || provider
+  });
+
+  const [loading, setLoading] = useState<boolean>(false);
   const [selected, setSelected] = useState([...tokens]);
+  const [desiredAmountA, setDesiredAmountA] = useState<number>(0);
+  const [desiredAmountB, setDesiredAmountB] = useState<number>(0);
+  const [liquidity, setLiquidity] = useState();
+  const [amounts, setAmounts] = useState([]);
+  const [path, setPath] = useState([]);
+
+  // Creating some global variables to use in the upcoming liquidity functions
+  const userAddress: any = useAccount();
+  const connectedWalletAddress: any = userAddress.address;
+  const addressTokenA: string = TOKEN_ONE_ADDRESS;
+  const addressTokenB: string = TOKEN_TWO_ADDRESS;
+  const _deadline: number = 0;
+  const _amountAMin: number = 1;
+  const _amountBMin: number = 1;
+
+  function handleChange(event: any): void {
+      setDesiredAmountA(parseInt(event.target.value));
+      setDesiredAmountB(parseInt(event.target.value));
+  }
+
+  const getDeadline = (): number => {
+    const _deadline = Math.floor(Date.now() / 1000);
+    console.log(_deadline)
+    return _deadline;
+  }
+
+  useEffect(() => {
+    getDeadline();
+  }, [])
+
+  const addLiquidity = async (valueOne: number, valueTwo: number): Promise<void> => {
+    try {
+      if(addressTokenA && addressTokenB && valueOne && valueTwo && _amountAMin && _amountBMin && connectedWalletAddress && _deadline) {
+        const _addLiquidity = await contract.addLiquidity(
+          addressTokenA,
+          addressTokenB,
+          valueOne,
+          valueTwo,
+          _amountAMin,
+          _amountBMin,
+          connectedWalletAddress,
+          _deadline // current time + 10 mins
+          );
+          setLoading(true);
+          await _addLiquidity.wait();
+          setLoading(false);
+        }
+        else {
+          alert("INPUT DUMBASS!!!");
+        }
+    }
+    catch (err: any) {
+      // alert shall be changed to toast.error(err.reason) once kushagra adds it
+      alert(err.reason)
+      console.error(err)
+    }
+  }
+
+  // ask dhruv about the parameters
+  const addLiquidityEth = async (val: number): Promise<void> => {
+    try {
+      const _amount = ethers.utils.parseEther("0.1");
+      const _addLiquidity = await contract.addLiquidityEth(
+        addressTokenA, 
+        val,
+        0,
+        0,
+        connectedWalletAddress,
+        _deadline,
+      {
+        value: _amount
+      });
+    }
+    catch (err: any) 
+    {
+      console.error(err);
+      alert(err.reason);  
+    }
+  }
+
+  const returnLiquidity = async (): Promise<void> => {
+    const _liquidity = await contract.getLiquidityAmount(
+      connectedWalletAddress,
+      addressTokenA,
+      addressTokenB
+    );
+    setLiquidity(_liquidity);
+  }
+
+  // might need to take an input here
+  const removeLiquidity = async (): Promise<void> => {
+    try {
+      if(addressTokenA && addressTokenB && liquidity && _amountAMin && _amountBMin &&connectedWalletAddress && _deadline) {
+        const _removeLiquidity = await contract.removeLiquidity(
+          addressTokenA,
+          addressTokenB,
+          liquidity,
+          _amountAMin,
+          _amountBMin,
+          connectedWalletAddress,
+          _deadline
+          );
+          setLoading(true);
+          await _removeLiquidity.wait();
+          setLoading(false);
+          // toast.success("Liquidity removed");
+        }
+      }
+    catch(err: any) {
+      alert(err.reason);
+      console.error(err)
+    }
+  }
+
+  // ask dhruv about parameters
+  const removeLiquidityEth = async (val: number): Promise<void> => {
+    try {
+      if(liquidity) {
+        const _removeLiquidity = await contract.removeLiquidityETH(
+          addressTokenA,
+          liquidity,
+          val,
+          0,
+          connectedWalletAddress,
+          _deadline
+          );
+          setLoading(true);
+          await _removeLiquidity.wait();
+          setLoading(false);
+          // toast.success()
+        }
+    }
+    catch (err: any) {
+      alert(err.reason);
+      console.error(err);
+    }
+  }
+
+  // ask dhruv about the params
+  const swap = async (): Promise<void> => {
+    try {
+      if(amounts && path) {
+        const _swap = await contract._swap(
+          amounts,
+          path,
+          connectedWalletAddress
+        )
+        setLoading(true);
+        await _swap.wait();
+        setLoading(false);
+        // toast.success("")
+      }
+      } 
+    catch (err: any) {
+      // toast.error(err.reason)
+      console.error(err)  
+    }
+  }
+
+  // ask dhruv about params
+  const swapExactAmountOfTokens = async (valueIn: number): Promise<void> => {
+    try {
+      if(valueIn) {
+        const _swapExactTokens = await contract.swapExactTokensForTokens(
+          valueIn,
+          0,
+          path,
+          connectedWalletAddress,
+          _deadline
+        );
+        setLoading(true);
+        await _swapExactTokens.wait();
+        setLoading(false);
+        // taost.success("swapped");
+      }
+    }
+    catch (err: any) {
+      // toast.err(err.reason)
+      console.error(err)  
+    }
+  }
+
+  const swapTokensForExactAmount = async (valueOut: number): Promise<void> => {
+    try {
+      if(valueOut) {
+        const _swapTokens = await contract.swapTokensForExactTokens(
+          valueOut,
+          0,
+          path,
+          connectedWalletAddress,
+          _deadline
+          );
+          setLoading(true);
+          await _swapTokens.wait();
+          setLoading(false);
+          // taost.success("SWAPPED!!!");
+        }
+    }
+    catch (err: any) {
+      // taost.error("err.reason")
+      console.error(err)  
+    }
+  }
+  // payable func
+  const swapExactAmountOfEthForTokens = async (valueOut: number): Promise<void> => {
+    try {
+      if(valueOut) {
+        const _amount = ethers.utils.parseEther("0.1");
+        const _swapEth = await contract.swapExactETHForTokens(
+          valueOut,
+          path,
+          connectedWalletAddress,
+          _deadline,
+          {
+            value: _amount
+          }
+        );
+        setLoading(true);
+        await _swapEth.wait();
+        setLoading(false);
+        // toast.success();
+      }
+    } catch (err: any) {
+      // taost.error(err.reason);
+      console.error(err)
+    }
+  }
+
+  const swapEthForExactAmountOfTokens = async (valueOut: number): Promise<void> => {
+    try {
+      if(valueOut) {
+        const _amount = ethers.utils.parseEther("0.01");
+        const _swapTokens = await contract.swapETHForExactTokens(
+            valueOut,
+            path,
+            connectedWalletAddress,
+            _deadline,
+          { value: _amount }
+          );
+          setLoading(true);
+          await _swapTokens.wait();
+          setLoading(false);
+          // toast.success();
+      }
+    }
+    catch (err: any) {
+      // toast.error(err.reason);
+      console.error(err.reason);
+    }
+  }
+
+  const swapTokensForExactAmountOfEth = async (valueOut: number): Promise<void> => {
+    try {
+      if(valueOut) {
+        const _swapTokensForEth = await contract.swapTokensForExactETH(
+          valueOut,
+          0,
+          path,
+          connectedWalletAddress,
+          _deadline
+        );
+        setLoading(true);
+        await _swapTokensForEth.wait();
+        setLoading(false);
+        // taost.success("");
+      }
+    }
+    catch (err: any) {
+      // toast.error(err.reason);
+      console.error(err);
+    }
+  }
+
+  const swapExactAmountOfTokensForEth = async (valueIn: number): Promise<void> => {
+    try {
+      if(valueIn) {
+        const _swapTokensForEth = await contract.swapExactTokensForETH(
+          valueIn,
+          0,
+          path,
+          connectedWalletAddress,
+          _deadline
+        );
+        setLoading(true);
+        await _swapTokensForEth.wait();
+        setLoading(false);
+        // toast.success("asdf");
+      }
+    } 
+    catch (err: any) {
+      // toast.error("")
+      console.error(err);  
+    }
+  }
+  // 3 params on this one
+  const quote = async (): Promise<void> => {
+    try {
+      const _fetchQuote: any = await contract.quote(
+        0,
+        0,
+        0
+      );
+      // setQuote(_fetchQuote);
+    } 
+    catch (err: any) {
+      // toast.error(err.reason);
+      console.error(err)
+    }
+  }
+
+  const getAmountOut = async (): Promise<void> => {
+    const _getAmount = await contract.getAmountOut(
+      0,
+      0,
+      0
+    );
+    // setOutAmount(_getAmount);
+  }
+
+  const getAmountIn = async ():Promise<void> => {
+  const _getAmount = await contract.getAmountOut(
+    0,
+    0,
+    0
+  );
+  // setOutAmount(_getAmount);
+}
+
+const getAmountsOut = async (): Promise<void> => {
+  const _getAmounts = await contract.getAmountsOut(
+    0,
+    path
+  );
+  // setAllAmounts(_getAmounts);
+}
+
+const getAmountsIn = async (): Promise<void> => {
+  const _getAmounts = await contract.getAmountsIn(
+    0,
+    path
+  );
+  // setInAmounts(_getAmounts);
+}
+  // this is for testing purposes
+  // const testingCall = (): void => {
+  //   addLiquidity(desiredAmountA, desiredAmountB);
+  // }
+
+  // useEffect(() => {
+  //   returnLiquidity();
+  // }, [returnLiquidity, liquidity])
+
   return (
     <>
-      {/* <div className="font-fredoka text-white bg-[#03071E] border-y-2 flex flex-col items-center justify-center mt-32 md:mt-12 xl:mt-32 2xl:mt-40 mb-32">
-        <h1 className="pb-8 pt-2 text-2xl">Swap</h1>
-        <div className="px-5 py-5 bg-white rounded flex items-center justify-between">
-          <input className="text-black w-10/12 outline-none text-4xl" />
-          <button className="text-black border-2 border-black rounded-md px-8 py-2 text-xl hover:bg-[#03071E] hover:text-white">
-            ETH
-          </button>
-        </div>
-        <div className="px-5 py-5 bg-white rounded flex items-center justify-between mt-10">
-          <input className="text-black w-10/12 outline-none text-4xl" />
-          <button className="text-black border-2 border-black rounded-md px-8 py-2 text-xl hover:bg-[#03071E] hover:text-white">
-            XDC
-          </button>
-        </div>
-        <button className="mt-10 mb-5 border-2 py-2 px-4 text-xl hover:bg-white hover:text-black">
-          Swap
-        </button>
-      </div> */}
-
       <div className=" rounded-md mx-auto lg:w-[400px] lg:mx-auto font-fredoka text-white px-0 py-0 bg-[#03071e68] opacity-100 backdrop-blur-lg flex flex-col items-center justify-center mt-32 md:mt-12 xl:mt-32 2xl:mt-40 mb-32 ">
         <h2 className=" rounded-t-md text-2xl font-bold tracking-wid w-full bg-blue-700 py-4 px-4 md:px-10">
           Swap
@@ -106,12 +441,6 @@ const Swap = (): JSX.Element => {
                 </div>
               </Listbox>
             </div>
-            {/* <button
-              type="button"
-              className="text-white mt-2 bg-blue-700 text-md font-fredoka hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-3xl px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-            >
-              Select Token
-            </button> */}
           </div>
 
           <label className="mt-6" htmlFor="">
