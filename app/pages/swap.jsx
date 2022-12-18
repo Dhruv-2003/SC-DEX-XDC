@@ -16,9 +16,10 @@ export default function Swap() {
   const [expand, setExpand] = useState(false);
   const [selectedToken1, setSelectedToken1] = useState(token1[0]);
   const [selectedToken2, setSelectedToken2] = useState(token2[0]);
+  const [token1Select, setToken1Select] = useState("");
+  const [token2Select, setToken2Select] = useState("");
 
   const { address, isConnected } = useAccount();
-  console.log(address);
   const provider = useProvider();
   const { data: signer } = useSigner();
 
@@ -47,7 +48,7 @@ export default function Swap() {
   // }
 
   const getDeadline = () => {
-    const _deadline = Math.floor(Date.now() / 1000);
+    const _deadline = Math.floor(Date.now() / 1000) + 600;
     console.log(_deadline);
     return _deadline;
   };
@@ -84,18 +85,34 @@ export default function Swap() {
     }
   };
 
+  const token1Add = selectedToken1.address;
+  const token2Add = selectedToken2.address;
+
+  function pushAddress() {
+    let arr = [];
+    arr.push(token1Add, token2Add);
+    console.log(arr);
+  }
+
+  pushAddress();
+  // console.log([
+  //   selectedToken1.address.replace('\'', '\"'),
+  //   selectedToken2.address.replace('\'', '\"'),
+  // ]);
+
   // ask dhruv about params
   const swapExactAmountOfTokens = async (valueIn) => {
     try {
       if (valueIn) {
-        const path = [`${selectedToken1}`, `${selectedToken1}`];
-        const dedaline = getDeadline();
+        const path = [selectedToken1.address, selectedToken2.address];
+        const deadline = getDeadline();
+        console.log(path, valueIn);
         const _swapExactTokens = await contract.swapExactTokensForTokens(
           ethers.utils.parseEther(valueIn.toString()),
           1,
           path,
           address,
-          _deadline
+          deadline
         );
         setLoading(true);
         await _swapExactTokens.wait();
@@ -111,12 +128,16 @@ export default function Swap() {
   const swapTokensForExactAmount = async (valueOut) => {
     try {
       if (valueOut) {
+        const path = [selectedToken1.address, selectedToken2.address];
+        // console.log(path);
+        const deadline = getDeadline();
+        // console.log(valueOut);
         const _swapTokens = await contract.swapTokensForExactTokens(
-          valueOut,
-          0,
+          ethers.utils.parseEther(valueOut.toString()),
+          1,
           path,
           address,
-          _deadline
+          deadline
         );
         setLoading(true);
         await _swapTokens.wait();
@@ -231,7 +252,6 @@ export default function Swap() {
   /// As Soon as user selects both the tokens , call getReserve
   const getReserves = async (tokenA, tokenB) => {
     const response = await contract.getReserve(tokenA, tokenB);
-    console.log(response);
     setReserveA(ethers.utils.formatEther(response.reserveA));
     setReserveB(ethers.utils.formatEther(response.reserveB));
     console.log(
@@ -495,6 +515,7 @@ export default function Swap() {
                 <button
                   type="button"
                   className="text-white w-full bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
+                  onClick={handleSwapSubmit}
                 >
                   Swap
                 </button>

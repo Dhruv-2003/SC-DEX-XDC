@@ -1,10 +1,11 @@
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { Dialog, Listbox, Transition } from "@headlessui/react";
 import styles from "../styles/Home.module.css";
 import { tokens } from "../utils/tokens";
+import { useAccount } from "wagmi";
 
 const token1 = tokens;
 const token2 = tokens;
@@ -19,19 +20,17 @@ export default function Pool() {
     setToggle(!toggle);
   };
 
-  const [loading, setLoading] = useState < boolean > false;
+  const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState([...tokens]);
-  const [desiredAmountA, setDesiredAmountA] = useState < number > 0;
-  const [desiredAmountB, setDesiredAmountB] = useState < number > 0;
+  const [desiredAmountA, setDesiredAmountA] = useState(0);
+  const [desiredAmountB, setDesiredAmountB] = useState(0);
   const [liquidity, setLiquidity] = useState();
   const [amounts, setAmounts] = useState([]);
-  const [path, setPath] = useState([]);
-
   // Creating some global variables to use in the upcoming liquidity functions
-  const userAddress = useAccount();
-  const connectedWalletAddress = userAddress.address;
-  const addressTokenA = TOKEN_ONE_ADDRESS;
-  const addressTokenB = TOKEN_TWO_ADDRESS;
+  const { address } = useAccount();
+  const connectedWalletAddress = address;
+  // const addressTokenA = TOKEN_ONE_ADDRESS;
+  // const addressTokenB = TOKEN_TWO_ADDRESS;
   const _deadline = 0;
   const _amountAMin = 1;
   const _amountBMin = 1;
@@ -171,21 +170,16 @@ export default function Pool() {
     }
   };
 
-    // 3 params on this one
-    const quote = async () => {
-      try {
-        const _fetchQuote = await contract.quote(
-          0,
-          0,
-          0
-        );
-        // setQuote(_fetchQuote);
-      } 
-      catch (err) {
-        // toast.error(err.reason);
-        console.error(err)
-      }
+  // 3 params on this one
+  const quote = async () => {
+    try {
+      const _fetchQuote = await contract.quote(0, 0, 0);
+      // setQuote(_fetchQuote);
+    } catch (err) {
+      // toast.error(err.reason);
+      console.error(err);
     }
+  };
 
   return (
     <div
