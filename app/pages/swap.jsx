@@ -4,10 +4,10 @@ import { Fragment, useEffect, useState } from "react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { tokens } from "../utils/tokens";
 import { Dialog, Listbox, Transition } from "@headlessui/react";
-import styles from '../styles/Home.module.css';
+import styles from "../styles/Home.module.css";
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 import { Contract, ethers } from "ethers";
-import { SWAP_ROUTER_ADDRESS, SWAP_ROUTER_ABI } from "../Constants/Index.js";
+import { SWAP_ROUTER_ADDRESS, SWAP_ROUTER_ABI } from "../Constants/index.js";
 
 const token1 = tokens;
 const token2 = tokens;
@@ -21,39 +21,47 @@ export default function Swap() {
   const contract = useContract({
     address: SWAP_ROUTER_ADDRESS,
     abi: SWAP_ROUTER_ABI,
-    signerOrProvider: signer || provider
+    signerOrProvider: signer || provider,
   });
   const [reserveA, setReserveA] = useState(0);
   const [reserveB, setReserveB] = useState(0);
   const [amountOne, setAmountOne] = useState(0);
   const [amountTwo, setAmountTwo] = useState(0);
+  const [exactAmountIn, setExactAmountIn] = useState(false);
+  const [exactAmountOut, setExactAmountOut] = useState(false);
 
+  function checkIfAmountSet() {
+    if (amountOne > 0) {
+      setExactAmountIn(true);
+    } else if (amountTwo > 0) {
+      setExactAmountOut(true);
+    }
+  }
 
-   // ask dhruv about the params
-   const swap = async ()=> {
+  // ask dhruv about the params
+  const swap = async () => {
     try {
-      if(amounts && path) {
+      if (amounts && path) {
         const _swap = await contract._swap(
           amounts,
           path,
           connectedWalletAddress
-        )
+        );
         setLoading(true);
         await _swap.wait();
         setLoading(false);
         // toast.success("")
       }
-      } 
-    catch (err) {
+    } catch (err) {
       // toast.error(err.reason)
-      console.error(err)  
+      console.error(err);
     }
-  }
+  };
 
   // ask dhruv about params
   const swapExactAmountOfTokens = async (valueIn) => {
     try {
-      if(valueIn) {
+      if (valueIn) {
         const _swapExactTokens = await contract.swapExactTokensForTokens(
           valueIn,
           0,
@@ -66,38 +74,36 @@ export default function Swap() {
         setLoading(false);
         // taost.success("swapped");
       }
-    }
-    catch (err) {
+    } catch (err) {
       // toast.err(err.reason)
-      console.error(err)  
+      console.error(err);
     }
-  }
+  };
 
   const swapTokensForExactAmount = async (valueOut) => {
     try {
-      if(valueOut) {
+      if (valueOut) {
         const _swapTokens = await contract.swapTokensForExactTokens(
           valueOut,
           0,
           path,
           connectedWalletAddress,
           _deadline
-          );
-          setLoading(true);
-          await _swapTokens.wait();
-          setLoading(false);
-          // taost.success("SWAPPED!!!");
-        }
-    }
-    catch (err) {
+        );
+        setLoading(true);
+        await _swapTokens.wait();
+        setLoading(false);
+        // taost.success("SWAPPED!!!");
+      }
+    } catch (err) {
       // taost.error("err.reason")
-      console.error(err)  
+      console.error(err);
     }
-  }
+  };
   // payable func
   const swapExactAmountOfEthForTokens = async (valueOut) => {
     try {
-      if(valueOut) {
+      if (valueOut) {
         const _amount = ethers.utils.parseEther("0.1");
         const _swapEth = await contract.swapExactETHForTokens(
           valueOut,
@@ -105,7 +111,7 @@ export default function Swap() {
           connectedWalletAddress,
           _deadline,
           {
-            value: _amount
+            value: _amount,
           }
         );
         setLoading(true);
@@ -115,36 +121,35 @@ export default function Swap() {
       }
     } catch (err) {
       // taost.error(err.reason);
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
-  const swapEthForExactAmountOfTokens = async (valueOut)=> {
+  const swapEthForExactAmountOfTokens = async (valueOut) => {
     try {
-      if(valueOut) {
+      if (valueOut) {
         const _amount = ethers.utils.parseEther("0.01");
         const _swapTokens = await contract.swapETHForExactTokens(
-            valueOut,
-            path,
-            connectedWalletAddress,
-            _deadline,
+          valueOut,
+          path,
+          connectedWalletAddress,
+          _deadline,
           { value: _amount }
-          );
-          setLoading(true);
-          await _swapTokens.wait();
-          setLoading(false);
-          // toast.success();
+        );
+        setLoading(true);
+        await _swapTokens.wait();
+        setLoading(false);
+        // toast.success();
       }
-    }
-    catch (err) {
+    } catch (err) {
       // toast.error(err.reason);
       console.error(err.reason);
     }
-  }
+  };
 
-  const swapTokensForExactAmountOfEth = async (valueOut)=> {
+  const swapTokensForExactAmountOfEth = async (valueOut) => {
     try {
-      if(valueOut) {
+      if (valueOut) {
         const _swapTokensForEth = await contract.swapTokensForExactETH(
           valueOut,
           0,
@@ -157,16 +162,15 @@ export default function Swap() {
         setLoading(false);
         // taost.success("");
       }
-    }
-    catch (err) {
+    } catch (err) {
       // toast.error(err.reason);
       console.error(err);
     }
-  }
+  };
 
   const swapExactAmountOfTokensForEth = async (valueIn) => {
     try {
-      if(valueIn) {
+      if (valueIn) {
         const _swapTokensForEth = await contract.swapExactTokensForETH(
           valueIn,
           0,
@@ -179,92 +183,78 @@ export default function Swap() {
         setLoading(false);
         // toast.success("asdf");
       }
-    } 
-    catch (err) {
+    } catch (err) {
       // toast.error("")
-      console.error(err);  
+      console.error(err);
     }
-  }
+  };
 
   // 3 params on this one
   const quote = async () => {
     try {
-      const _fetchQuote = await contract.quote(
-        0,
-        0,
-        0
-      );
+      const _fetchQuote = await contract.quote(0, 0, 0);
       // setQuote(_fetchQuote);
-    } 
-    catch (err) {
+    } catch (err) {
       // toast.error(err.reason);
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   /// As Soon as user selects both the tokens , call getReserve
-  const getReserve = async (tokenA , tokenB) => {
-    const response = await contract.getReserve(
-      tokenA,
-      tokenB
-    );
+  const getReserve = async (tokenA, tokenB) => {
+    const response = await contract.getReserve(tokenA, tokenB);
     console.log(response);
     setReserveA(response.reserveA);
     setReserveB(response.reserveB);
     // setOutAmount(_getAmount);
-  }
+  };
 
   /// Exact Amount in , user give 1st input
-  const getAmountOut = async (amountA , reserveA , reserveB) => {
-    const amountOut = await contract.getAmountOut(
-      amountA, 
-      reserveA, 
-      reserveB
-    );
-    
-    setAmountOut(amountOut) ;
+  const getAmountOut = async (amountA, reserveA, reserveB) => {
+    const amountOut = await contract.getAmountOut(amountA, reserveA, reserveB);
+
+    setAmountOut(amountOut);
 
     // setOutAmount(_getAmount);
-  }
+  };
 
   /// Exact Amount out , user give 2nd input
-  const getAmountIn = async (amountB , reserveA , reserveB) => {
-  const _getAmount = await contract.getAmountOut(
-    amountB, 
-    reserveA, 
-    reserveB
-  );
-  // setOutAmount(_getAmount);
-}
+  const getAmountIn = async (amountB, reserveA, reserveB) => {
+    const _getAmount = await contract.getAmountOut(amountB, reserveA, reserveB);
+    // setOutAmount(_getAmount);
+  };
 
-// const getAmountsOut = async () => {
-//   const _getAmounts = await contract.getAmountsOut(
-//     0,
-//     path
-//   );
-//   // setAllAmounts(_getAmounts);
-// }
+  // const getAmountsOut = async () => {
+  //   const _getAmounts = await contract.getAmountsOut(
+  //     0,
+  //     path
+  //   );
+  //   // setAllAmounts(_getAmounts);
+  // }
 
-// const getAmountsIn = async () => {
-//   const _getAmounts = await contract.getAmountsIn(
-//     0,
-//     path
-//   );
-//   // setInAmounts(_getAmounts);
-// }
+  // const getAmountsIn = async () => {
+  //   const _getAmounts = await contract.getAmountsIn(
+  //     0,
+  //     path
+  //   );
+  //   // setInAmounts(_getAmounts);
+  // }
 
-/// fetched reserves when both tokens are set
-useEffect(() => {
-  if(selectedToken1 && selectedToken2){
-    getReserve()
-  }
-}, [selectedToken1 , selectedToken2])
-
+  /// fetched reserves when both tokens are set
+  useEffect(() => {
+    if (selectedToken1 != 0 && selectedToken2 != 0) {
+      getReserve();
+    }
+  }, [selectedToken1, selectedToken2]);
 
   return (
     <div
       className={`w-screen min-h-screen no-repeat bg-cover bg-[#03071E]
-        ${!expand ? `${styles.bg} bg-[url('../assets/landing.png')]` : `bg-[#03071E]`}
+        ${
+          !expand
+            ? `${styles.bg} bg-[url('../assets/landing.png')]`
+            : `bg-[#03071E]`
+        }
           `}
     >
       <Navbar expand={expand} setExpand={setExpand} />
@@ -286,10 +276,10 @@ useEffect(() => {
                   placeholder="0"
                   required
                   value={amountOne}
-                  onChange={(e)=> {
-                  setAmountOne(e.target.value) ;
-                  getAmountOut(e.target.value ,reserveA , reserveB ) ;
-                }}
+                  onChange={(e) => {
+                    setAmountOne(e.target.value);
+                    getAmountOut(e.target.value, reserveA, reserveB);
+                  }}
                 />
                 <div className="lg:w-28 w-24 "></div>
                 {/* <button
@@ -372,10 +362,10 @@ useEffect(() => {
                   placeholder="0"
                   required
                   value={amountTwo}
-                  onChange={(e)=> {
-                  setAmountTwo(e.target.value) ;
-                  getAmountIn(e.target.value ,reserveA , reserveB ) ;
-                }}
+                  onChange={(e) => {
+                    setAmountTwo(e.target.value);
+                    getAmountIn(e.target.value, reserveA, reserveB);
+                  }}
                 />
                 <div className="lg:w-28 w-24 "></div>
                 {/* <button
@@ -447,12 +437,12 @@ useEffect(() => {
               </div>
 
               <div className="px-2 border-t border-gray-400 pt-6 w-full mt-6 mx-auto">
-              <button
-              type="button"
-              className="text-white w-full bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
-            >
-              Swap
-            </button>
+                <button
+                  type="button"
+                  className="text-white w-full bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
+                >
+                  Swap
+                </button>
               </div>
             </div>
           </div>

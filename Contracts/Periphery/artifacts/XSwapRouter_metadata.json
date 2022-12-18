@@ -303,6 +303,35 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "tokenA",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "tokenB",
+						"type": "address"
+					}
+				],
+				"name": "getReserve",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "reserveA",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "reserveB",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "amountA",
 						"type": "uint256"
@@ -742,11 +771,11 @@
 			]
 		},
 		"Periphery/XSwapRouter.sol": {
-			"keccak256": "0x95a3f330032e989b206d9bc260102a5942e0f3b630220234318df2c46dd4c3d4",
+			"keccak256": "0x3f99c6015cf256f61c7b52296a24a25e8a3721db7c531073181daace32df3a07",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://16932ca07109bcacf3013631440b5a3c8f41a73ea720b9918f00675f885ddf11",
-				"dweb:/ipfs/Qmbv9MmGAzibY7DtLEjtkMU9UXTgB8TE2eERkbhdDFKVBK"
+				"bzz-raw://23ea05170f519755987a608e782ab60b648daee14d2911faef80763c479e771d",
+				"dweb:/ipfs/QmaME2HNEzchupVoGsLcHXLmLEYQhCHUmoEFGjzXC2vQNM"
 			]
 		},
 		"Periphery/libraries/TransferHelper.sol": {

@@ -6,11 +6,11 @@ import Link from "next/link";
 import Footer from "../components/Footer";
 import Image from "next/image";
 import coin from "../assets/coin.png";
-import { fetchPrice } from "../api";
+// import { fetchPrice } from "../api";
 
 export default function Home() {
   const [expand, setExpand] = useState(false);
-  fetchPrice();
+
   return (
     <div
       className={`w-screen min-h-screen no-repeat bg-cover ${

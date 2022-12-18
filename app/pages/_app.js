@@ -8,7 +8,6 @@ import {
 import { configureChains, createClient, goerli, WagmiConfig } from "wagmi";
 // import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
-import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
 const xdcApothem = {
   id: 51,
@@ -21,7 +20,7 @@ const xdcApothem = {
   },
   rpcUrls: {
     default: {
-      http: ["https://rpc.apothem.network"],
+      http: ["https://erpc.apothem.network"],
     },
   },
   blockExplorers: {
@@ -44,7 +43,7 @@ const xdcMainnet = {
   },
   rpcUrls: {
     default: {
-      http: ["https://rpc.apothem.network"],
+      http: ["https://erpc.apothem.network"],
     },
   },
   blockExplorers: {
