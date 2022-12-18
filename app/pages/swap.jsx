@@ -85,6 +85,26 @@ export default function Swap() {
     "0x1927d7a542826728a25b23acd280b57ac37bb930",
   ];
 
+  const pathXTk1 = [
+    "0xA5A51315b449C7026164111ED142E87cd1C865B7",
+    "0x1927d7a542826728a25b23acd280b57ac37bb930",
+  ];
+
+  const pathTk1X = [
+    "0x1927d7a542826728a25b23acd280b57ac37bb930",
+    "0xA5A51315b449C7026164111ED142E87cd1C865B7",
+  ];
+
+  const pathXTk2 = [
+    "0xA5A51315b449C7026164111ED142E87cd1C865B7",
+    "0xeC80ee7f0e65f696f09206859615ffE5626c384C",
+  ];
+
+  const pathTk2X = [
+    "0xeC80ee7f0e65f696f09206859615ffE5626c384C",
+    "0xA5A51315b449C7026164111ED142E87cd1C865B7",
+  ];
+
   const handleSwapSubmit = () => {
     try {
       if (
@@ -102,34 +122,50 @@ export default function Swap() {
         selectedToken1.symbol != "XDC" &&
         selectedToken2.symbol != "XDC"
       ) {
-        swapTokensForExactAmount(amountTwo);
+        if (selectedToken1.symbol == "Tk1") {
+          swapTokensForExactAmount(amountTwo, pathTK12);
+        } else if (selectedToken1.symbol == "Tk2") {
+          swapExactAmountOfTokens(amountTwo, pathTK21);
+        }
       } else if (exactAmountIn) {
         if (selectedToken1.symbol == "XDC" && selectedToken2.symbol != "XDC") {
+          if (selectedToken2.symbol == "Tk1") {
+            swapExactAmountOfEthForTokens(amountOne, pathXTk1);
+          } else if (selectedToken2.symbol == "Tk2") {
+            swapExactAmountOfEthForTokens(amountOne, pathXTk2);
+          }
         } else if (
           selectedToken1.symbol != "XDC" &&
           selectedToken2.symbol == "XDC"
         ) {
+          if (selectedToken1.symbol == "Tk1") {
+            swapExactAmountOfTokensForEth(amountOne, pathTk1X);
+          } else if (selectedToken1.symbol == "Tk2") {
+            swapExactAmountOfTokensForEth(amountOne, pathTk2X);
+          }
+        }
+      } else if (exactAmountOut) {
+        if (selectedToken1.symbol == "XDC" && selectedToken2.symbol != "XDC") {
+          if (selectedToken2.symbol == "Tk1") {
+            swapEthForExactAmountOfTokens(amountTwo, pathXTk1);
+          } else if (selectedToken2.symbol == "Tk2") {
+            swapEthForExactAmountOfTokens(amountTwo, pathXTk2);
+          }
+        } else if (
+          selectedToken1.symbol != "XDC" &&
+          selectedToken2.symbol == "XDC"
+        ) {
+          if (selectedToken1.symbol == "Tk1") {
+            swapTokensForExactAmountOfEth(amountTwo, pathTk1X);
+          } else if (selectedToken1.symbol == "Tk2") {
+            swapTokensForExactAmountOfEth(amountTwo, pathTk2X);
+          }
         }
       }
     } catch (err) {
       console.log(err);
     }
   };
-
-  // const token1Add = selectedToken1.address;
-  // const token2Add = selectedToken2.address;
-
-  // function pushAddress() {
-  //   let arr = [];
-  //   arr.push(token1Add, token2Add);
-  //   console.log(arr);
-  // }
-
-  // pushAddress();
-  // console.log([
-  //   selectedToken1.address.replace('\'', '\"'),
-  //   selectedToken2.address.replace('\'', '\"'),
-  // ]);
 
   const approveTokens = async (tokenInAddress, amountIn) => {
     try {
@@ -196,6 +232,7 @@ export default function Swap() {
       console.error(err);
     }
   };
+
   // payable func
   const swapExactAmountOfEthForTokens = async (valueOut) => {
     try {
