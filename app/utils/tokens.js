@@ -2,7 +2,7 @@ export const tokens = [
   {
     name: "Xinfin",
     symbol: "XDC",
-    address: "",
+    address: "0xA5A51315b449C7026164111ED142E87cd1C865B7",
     logo: "",
   },
   {
