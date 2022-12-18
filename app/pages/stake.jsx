@@ -1,12 +1,14 @@
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { Dialog, Listbox, Transition } from "@headlessui/react";
 import styles from "../styles/Home.module.css";
 import { tokens } from "../utils/tokens";
 import Loader from "../components/Loader";
 import Link from "next/link";
+import { STAKING_CONTRACT_ABI, STAKING_CONTRACT_ADDRESS } from "../Constants";
+import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 
 const token1 = tokens;
 const token2 = tokens;
@@ -15,6 +17,72 @@ export default function Stake() {
   const [expand, setExpand] = useState(false);
   const [selectedToken1, setSelectedToken1] = useState(token1[0]);
   const [selectedToken2, setSelectedToken2] = useState(token2[0]);
+  const [inputAmount, setInputAmount] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [balance, setBalance] = useState(0);
+  const [earnedRewards, setEarnedRewards] = useState(0);
+  const provider = useProvider();
+  const { data: signer } = useSigner();
+  const contract = useContract({
+    address: STAKING_CONTRACT_ADDRESS,
+    abi: STAKING_CONTRACT_ABI,
+    signerOrProvider: signer || provider
+  });
+
+  const { address } = useAccount();
+
+  const stakeTokens = async (_amount) => {
+    try {
+      // add the required address
+      const _stake = await contract.stake(selectedToken1.address, _amount);
+      setLoading(true);
+      await _stake.wait();
+      setLoading(false);
+      // toast.success();
+    }
+    catch (err) {
+      // toast.error("")
+      console.error(err);
+    }
+  }
+
+  const getStakedTokens = async () => {
+    try {
+      const _getTokens = await contract.getBalance(selectedToken1.address);
+      setBalance(parseInt(_getTokens));
+    } 
+    catch (err) {
+      // toast.error("")
+      console.error(err)  
+    }
+  }
+
+  const getEarnedRewards = async () => {
+    try {
+      // pasting the token address here
+      const _earnings = await contract.getRewardEarned(selectedToken1.address, address);
+      setEarnedRewards(parseInt(_earnings));
+      console.log(earnedRewards)
+    } 
+    catch (err) {
+      console.error(err);  
+    }
+  }
+
+  useEffect(() => {
+    getEarnedRewards();
+    getStakedTokens();
+  }, [])
+
+  // const withdrawTokens = async () => {
+  //   try {
+  //     const _withdraw = await contract.withdraw()
+  //   } 
+  //   catch (err) {
+      
+  //   }
+  // }
+
 
   return (
     <div
@@ -74,7 +142,7 @@ export default function Stake() {
                 </div>
                 <div className=" text-white">
                   <div className=" text-white">Wallet Balance</div>
-                  <div>XDC 80</div>
+                  <div>XDC {balance}</div>
                 </div>
               </div>
 
@@ -102,10 +170,13 @@ export default function Stake() {
                   </button>
                 </div>
               </div>
-
+              <input 
+              onChange={(e) => setInputAmount(+e.target.value)}
+              />
               <button
                 type="button"
                 className="text-white w-full mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
+                onClick={() => stakeTokens(inputAmount)}
               >
                 Stake
               </button>
