@@ -6,8 +6,12 @@ import { tokens } from "../utils/tokens";
 import { Dialog, Listbox, Transition } from "@headlessui/react";
 import styles from "../styles/Home.module.css";
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
-import { ethers } from "ethers";
-import { SWAP_ROUTER_ADDRESS, SWAP_ROUTER_ABI } from "../Constants/index.js";
+import { Contract, ethers } from "ethers";
+import {
+  SWAP_ROUTER_ADDRESS,
+  SWAP_ROUTER_ABI,
+  Token_ABI,
+} from "../Constants/index.js";
 
 const token1 = tokens;
 const token2 = tokens;
@@ -16,8 +20,6 @@ export default function Swap() {
   const [expand, setExpand] = useState(false);
   const [selectedToken1, setSelectedToken1] = useState(token1[0]);
   const [selectedToken2, setSelectedToken2] = useState(token2[0]);
-  const [token1Select, setToken1Select] = useState("");
-  const [token2Select, setToken2Select] = useState("");
 
   const { address, isConnected } = useAccount();
   const provider = useProvider();
@@ -73,38 +75,85 @@ export default function Swap() {
     }
   };
 
+  const pathTK12 = [
+    "0x1927d7a542826728a25b23acd280b57ac37bb930",
+    "0xec80ee7f0e65f696f09206859615ffe5626c384c",
+  ];
+
+  const pathTK21 = [
+    "0xec80ee7f0e65f696f09206859615ffe5626c384c",
+    "0x1927d7a542826728a25b23acd280b57ac37bb930",
+  ];
+
   const handleSwapSubmit = () => {
     try {
-      if (exactAmountIn) {
-        swapExactAmountOfTokens(amountOne);
-      } else if (exactAmountOut) {
+      if (
+        exactAmountIn &&
+        selectedToken1.symbol != "XDC" &&
+        selectedToken2.symbol != "XDC"
+      ) {
+        if (selectedToken1.symbol == "Tk1") {
+          swapExactAmountOfTokens(amountOne, pathTK12);
+        } else if (selectedToken1.symbol == "Tk2") {
+          swapExactAmountOfTokens(amountOne, pathTK21);
+        }
+      } else if (
+        exactAmountOut &&
+        selectedToken1.symbol != "XDC" &&
+        selectedToken2.symbol != "XDC"
+      ) {
         swapTokensForExactAmount(amountTwo);
+      } else if (exactAmountIn) {
+        if (selectedToken1.symbol == "XDC" && selectedToken2.symbol != "XDC") {
+        } else if (
+          selectedToken1.symbol != "XDC" &&
+          selectedToken2.symbol == "XDC"
+        ) {
+        }
       }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const token1Add = selectedToken1.address;
-  const token2Add = selectedToken2.address;
+  // const token1Add = selectedToken1.address;
+  // const token2Add = selectedToken2.address;
 
-  function pushAddress() {
-    let arr = [];
-    arr.push(token1Add, token2Add);
-    console.log(arr);
-  }
+  // function pushAddress() {
+  //   let arr = [];
+  //   arr.push(token1Add, token2Add);
+  //   console.log(arr);
+  // }
 
-  pushAddress();
+  // pushAddress();
   // console.log([
   //   selectedToken1.address.replace('\'', '\"'),
   //   selectedToken2.address.replace('\'', '\"'),
   // ]);
 
+  const approveTokens = async (tokenInAddress, amountIn) => {
+    try {
+      const Token_contract = new Contract(tokenInAddress, Token_ABI, signer);
+
+      const tx = await Token_contract.approve(
+        SWAP_ROUTER_ADDRESS,
+        ethers.utils.parseEther(amountIn.toString())
+      );
+
+      await tx.wait();
+      return true;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   // ask dhruv about params
-  const swapExactAmountOfTokens = async (valueIn) => {
+  const swapExactAmountOfTokens = async (valueIn, path) => {
     try {
       if (valueIn) {
-        const path = [selectedToken1.address, selectedToken2.address];
+        await approveTokens(selectedToken1.address, valueIn);
+        // path[0] = selectedToken1.address;
+        // path[1] = selectedToken1.address;
         const deadline = getDeadline();
         console.log(path, valueIn);
         const _swapExactTokens = await contract.swapExactTokensForTokens(
@@ -125,11 +174,9 @@ export default function Swap() {
     }
   };
 
-  const swapTokensForExactAmount = async (valueOut) => {
+  const swapTokensForExactAmount = async (valueOut, path) => {
     try {
       if (valueOut) {
-        const path = [selectedToken1.address, selectedToken2.address];
-        // console.log(path);
         const deadline = getDeadline();
         // console.log(valueOut);
         const _swapTokens = await contract.swapTokensForExactTokens(
