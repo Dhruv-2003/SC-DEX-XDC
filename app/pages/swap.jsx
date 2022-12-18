@@ -213,7 +213,11 @@ export default function Swap() {
 
   /// Exact Amount in , user give 1st input
   const getAmountOut = async (amountA, reserveA, reserveB) => {
-    const amountOut = await contract.getAmountOut(amountA, reserveA, reserveB);
+    const amountOut = await contract.getAmountOut(
+      ethers.utils.parseEther(amountA),
+      ethers.utils.parseEther(reserveA),
+      ethers.utils.parseEther(reserveB)
+    );
 
     setAmountOut(amountOut);
 
