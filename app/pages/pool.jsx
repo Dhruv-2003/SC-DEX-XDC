@@ -5,7 +5,14 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { Dialog, Listbox, Transition } from "@headlessui/react";
 import styles from "../styles/Home.module.css";
 import { tokens } from "../utils/tokens";
-import { useAccount } from "wagmi";
+import { useAccount, useContract, useProvider, useSigner } from "wagmi";
+import { Contract, ethers } from "ethers";
+import {
+  SWAP_ROUTER_ADDRESS,
+  SWAP_ROUTER_ABI,
+  Token_ABI,
+  WXDC_ADDRESS,
+} from "../Constants/index.js";
 
 const token1 = tokens;
 const token2 = tokens;
@@ -26,8 +33,21 @@ export default function Pool() {
   const [desiredAmountB, setDesiredAmountB] = useState(0);
   const [liquidity, setLiquidity] = useState();
   const [amounts, setAmounts] = useState([]);
+
+  const [reserveA, setReserveA] = useState(0);
+  const [reserveB, setReserveB] = useState(0);
+
   // Creating some global variables to use in the upcoming liquidity functions
   const { address } = useAccount();
+  const provider = useProvider();
+  const { data: signer } = useSigner();
+
+  const contract = useContract({
+    address: SWAP_ROUTER_ADDRESS,
+    abi: SWAP_ROUTER_ABI,
+    signerOrProvider: signer || provider,
+  });
+
   const connectedWalletAddress = address;
   // const addressTokenA = TOKEN_ONE_ADDRESS;
   // const addressTokenB = TOKEN_TWO_ADDRESS;
@@ -170,16 +190,65 @@ export default function Pool() {
     }
   };
 
+  /// As Soon as user selects both the tokens , call getReserve
+  const getReserves = async (tokenA, tokenB) => {
+    const response = await contract.getReserve(tokenA, tokenB);
+    setReserveA(ethers.utils.formatEther(response.reserveA));
+    setReserveB(ethers.utils.formatEther(response.reserveB));
+    console.log(
+      ethers.utils.formatEther(response.reserveA),
+      ethers.utils.formatEther(response.reserveB)
+    );
+    // setOutAmount(_getAmount);
+  };
+
   // 3 params on this one
-  const quote = async () => {
+  const quoteB = async (amountA, reserveA, reserveB) => {
     try {
-      const _fetchQuote = await contract.quote(0, 0, 0);
-      // setQuote(_fetchQuote);
+      if (amountA) {
+        const _fetchQuote = await contract.quote(
+          ethers.utils.parseEther(amountA.toString()),
+          ethers.utils.parseEther(reserveA.toString()),
+          ethers.utils.parseEther(reserveB.toString())
+        );
+        console.log(ethers.utils.formatEther(_fetchQuote));
+        // setQuote(_fetchQuote);
+        setDesiredAmountB(ethers.utils.formatEther(_fetchQuote));
+      }
     } catch (err) {
       // toast.error(err.reason);
       console.error(err);
     }
   };
+
+  const quoteA = async (amountB, reserveA, reserveB) => {
+    try {
+      if (amountB) {
+        const _fetchQuote = await contract.quote(
+          ethers.utils.parseEther(amountB.toString()),
+          ethers.utils.parseEther(reserveA.toString()),
+          ethers.utils.parseEther(reserveB.toString())
+        );
+        console.log(ethers.utils.formatEther(_fetchQuote));
+        // setQuote(_fetchQuote);
+        setDesiredAmountA(ethers.utils.formatEther(_fetchQuote));
+      }
+    } catch (err) {
+      // toast.error(err.reason);
+      console.error(err);
+    }
+  };
+
+  /// fetched reserves when both tokens are set
+  useEffect(() => {
+    if (
+      selectedToken1 != 0 &&
+      selectedToken2 != 0 &&
+      selectedToken1 != selectedToken2
+    ) {
+      getReserves(selectedToken1.address, selectedToken2.address);
+    }
+  }, [selectedToken1, selectedToken2]);
 
   return (
     <div
@@ -338,7 +407,7 @@ export default function Pool() {
                 </Listbox>
               </div>
             </div>
-            <div class="mt-4 relative pt-1 flex flex-col">
+            {/* <div class="mt-4 relative pt-1 flex flex-col">
               <label for="customRange3" className=" text-white">
                 0.05 % fee tier
               </label>
@@ -350,7 +419,7 @@ export default function Pool() {
                 step="1"
                 id="customRange3"
               />
-            </div>
+            </div> */}
             <div class="mt-4 relative pt-1 flex flex-col">
               <span className=" text-gray-100 text-lg font-semibold">
                 Deposit Amounts
@@ -362,6 +431,11 @@ export default function Pool() {
                 className="mt-3 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="token 1"
                 required
+                value={desiredAmountA}
+                onChange={(e) => {
+                  setDesiredAmountA(e.target.value);
+                  quoteB(e.target.value, reserveA, reserveB);
+                }}
               />
 
               <input
@@ -370,6 +444,11 @@ export default function Pool() {
                 className="mt-3 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="token 2"
                 required
+                value={desiredAmountB}
+                onChange={(e) => {
+                  setDesiredAmountB(e.target.value);
+                  quoteA(e.target.value, reserveA, reserveB);
+                }}
               />
             </div>
             <button

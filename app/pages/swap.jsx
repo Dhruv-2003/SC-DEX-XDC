@@ -375,22 +375,6 @@ export default function Swap() {
     }
   };
 
-  // const getAmountsOut = async () => {
-  //   const _getAmounts = await contract.getAmountsOut(
-  //     0,
-  //     path
-  //   );
-  //   // setAllAmounts(_getAmounts);
-  // }
-
-  // const getAmountsIn = async () => {
-  //   const _getAmounts = await contract.getAmountsIn(
-  //     0,
-  //     path
-  //   );
-  //   // setInAmounts(_getAmounts);
-  // }
-
   /// fetched reserves when both tokens are set
   useEffect(() => {
     if (
