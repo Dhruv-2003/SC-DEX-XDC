@@ -32,20 +32,20 @@ export default function Swap() {
   const [path, setPath] = useState([]);
 
   // Creating some global variables to use in the upcoming liquidity functions
-  const userAddress: any = useAccount();
-  const connectedWalletAddress: any = userAddress.address;
-  const addressTokenA: string = TOKEN_ONE_ADDRESS;
-  const addressTokenB: string = TOKEN_TWO_ADDRESS;
-  const _deadline: number = 0;
-  const _amountAMin: number = 1;
-  const _amountBMin: number = 1;
+  const userAddress = useAccount();
+  const connectedWalletAddress = userAddress.address;
+  const addressTokenA = TOKEN_ONE_ADDRESS;
+  const addressTokenB = TOKEN_TWO_ADDRESS;
+  const _deadline = 0;
+  const _amountAMin = 1;
+  const _amountBMin = 1;
 
-  function handleChange(event: any): void {
+  function handleChange(event) {
       setDesiredAmountA(parseInt(event.target.value));
       setDesiredAmountB(parseInt(event.target.value));
   }
 
-  const getDeadline = (): number => {
+  const getDeadline = () => {
     const _deadline = Math.floor(Date.now() / 1000);
     console.log(_deadline)
     return _deadline;
@@ -55,7 +55,7 @@ export default function Swap() {
     getDeadline();
   }, [])
 
-  const addLiquidity = async (valueOne: number, valueTwo: number): Promise<void> => {
+  const addLiquidity = async (valueOne, valueTwo) => {
     try {
       if(addressTokenA && addressTokenB && valueOne && valueTwo && _amountAMin && _amountBMin && connectedWalletAddress && _deadline) {
         const _addLiquidity = await contract.addLiquidity(
@@ -84,7 +84,7 @@ export default function Swap() {
   }
 
   // ask dhruv about the parameters
-  const addLiquidityEth = async (val: number): Promise<void> => {
+  const addLiquidityEth = async (val) => {
     try {
       const _amount = ethers.utils.parseEther("0.1");
       const _addLiquidity = await contract.addLiquidityEth(
@@ -98,14 +98,14 @@ export default function Swap() {
         value: _amount
       });
     }
-    catch (err: any) 
+    catch (err)
     {
       console.error(err);
       alert(err.reason);  
     }
   }
 
-  const returnLiquidity = async (): Promise<void> => {
+  const returnLiquidity = async () => {
     const _liquidity = await contract.getLiquidityAmount(
       connectedWalletAddress,
       addressTokenA,
@@ -115,7 +115,7 @@ export default function Swap() {
   }
 
   // might need to take an input here
-  const removeLiquidity = async (): Promise<void> => {
+  const removeLiquidity = async () => {
     try {
       if(addressTokenA && addressTokenB && liquidity && _amountAMin && _amountBMin &&connectedWalletAddress && _deadline) {
         const _removeLiquidity = await contract.removeLiquidity(
@@ -140,7 +140,7 @@ export default function Swap() {
   }
 
   // ask dhruv about parameters
-  const removeLiquidityEth = async (val: number): Promise<void> => {
+  const removeLiquidityEth = async (val) => {
     try {
       if(liquidity) {
         const _removeLiquidity = await contract.removeLiquidityETH(
@@ -157,7 +157,7 @@ export default function Swap() {
           // toast.success()
         }
     }
-    catch (err: any) {
+    catch (err) {
       alert(err.reason);
       console.error(err);
     }
