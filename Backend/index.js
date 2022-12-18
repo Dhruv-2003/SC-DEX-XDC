@@ -1,5 +1,12 @@
 const { ethers } = require("ethers");
-import { approveBurn, mintToken, burnToken, transferToken } from "./contracts";
+require("dotenv").config();
+const {
+  approveBurn,
+  mintToken,
+  burnToken,
+  transferToken,
+} = require("./contracts");
+const { SDABIJSON, WSDABIJSON } = require("./constants");
 
 const providerOrigin = ethers.getDefaultProvider(
   process.env.ORIGIN_WSS_ENDPOINT
@@ -7,11 +14,9 @@ const providerOrigin = ethers.getDefaultProvider(
 const providerDestination = ethers.getDefaultProvider(
   process.env.DESTINATION_WSS_ENDPOINT
 );
-
 const ORIGIN_TOKEN_CONTRACT_ADDRESS = process.env.ORIGIN_TOKEN_CONTRACT_ADDRESS;
 const DESTINATION_TOKEN_CONTRACT_ADDRESS =
   process.env.DESTINATION_TOKEN_CONTRACT_ADDRESS;
-
 const BRIDGE_WALLET = process.env.BRIDGE_WALLET;
 
 const BRIDGE_WALLET_KEY = process.env.BRIDGE_PRIV_KEY;
@@ -22,29 +27,31 @@ const WALLET_DESTINATION = new ethers.Wallet(
   providerDestination
 );
 
-const SD_ABIJSON = require("");
-const WSD_ABIJSON = require("");
+// const SD_ABIJSON = require("../solidity/contracts/artifacts/StackDollars_metadata.json");
+// const WSD_ABIJSON = require("../solidity/contracts/artifacts/WrappedStackDollars_metadata.json");
+const SD_ABIJSON = SDABIJSON;
+const WSD_ABIJSON = WSDABIJSON;
+
+// const BRIDGE_SIGNER = new ethers.Wallet(BRIDGE_WALLET_KEY, provider);
 
 const ORIGIN_CONTRACT = new ethers.Contract(
   ORIGIN_TOKEN_CONTRACT_ADDRESS,
   SD_ABIJSON,
-  provider
+  providerOrigin
 );
 const ORIGIN = ORIGIN_CONTRACT.connect(WALLET_ORIGIN);
 
 const DESTINATION_CONTRACT = new ethers.Contract(
   DESTINATION_TOKEN_CONTRACT_ADDRESS,
   WSD_ABIJSON,
-  provider
+  providerDestination
 );
 const DESTINATION = DESTINATION_CONTRACT.connect(WALLET_DESTINATION);
 
-/// Tokens Received on the Origin Chain and  Transfer event emitted where to is BRIDGE WALLET
-/// New Tokens Minted on the Destinatio Chain to the user and Transfer from == address(0) logged
-const handleOriginEvents = async ({ from, to, amount, contract }) => {
+const handleOriginEvents = async (from, to, amount) => {
   try {
     console.log("Handling ETH Event");
-
+    console.log(from, to, amount);
     if (from == BRIDGE_WALLET) {
       console.log("Transfer is a bridge back");
       return;
@@ -53,8 +60,12 @@ const handleOriginEvents = async ({ from, to, amount, contract }) => {
       console.log("Tokens received on bridge from ETH chain! Time to bridge!");
 
       try {
-        const tokensMinted = await mintToken(contract, amount, from);
-        if (!tokensMinted) return;
+        // const tokensMinted = await mintToken(contract, amount, from);
+
+        const mintTx = await DESTINATION.mint(from, amount);
+        await mintTx.wait();
+
+        if (!mintTx) return;
         console.log("🌈🌈🌈🌈🌈 Bridge to destination completed");
       } catch (err) {
         console.error("Error processing transaction", err);
@@ -67,18 +78,13 @@ const handleOriginEvents = async ({ from, to, amount, contract }) => {
     console.log(err);
   }
 };
-
-/// Tokens received in the Desitnation chain to the BRIDGE Wallet and transfer emitted
-/// Tokens are Burnt on the Dest Chain from the BRIDGE Wallet
-/// Tokens Sent back on the origin Chain back to the user from the Bridge Wallet
-
-const handleDestinationEvents = async ({
+const handleDestinationEvents = async (
   from,
   value,
   to,
   contract,
-  contractDest,
-}) => {
+  contractDest
+) => {
   if (from == process.env.WALLET_ZERO) {
     console.log("Tokens minted");
     return;
@@ -118,9 +124,8 @@ const main = async () => {
   console.log("Listening for events");
   //// event listner
   ORIGIN_CONTRACT.on("Transfer", (from, to, amount) => {
-    handleOriginEvents(from, to, amount, DESTINATION);
+    handleOriginEvents(from, to, amount);
   });
-
   console.log(
     `Waiting for Transfer events on ${ORIGIN_TOKEN_CONTRACT_ADDRESS}`
   );
