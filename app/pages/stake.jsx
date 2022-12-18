@@ -6,6 +6,7 @@ import { Dialog, Listbox, Transition } from "@headlessui/react";
 import styles from "../styles/Home.module.css";
 import { tokens } from "../utils/tokens";
 import Loader from "../components/Loader";
+import Link from "next/link";
 
 const token1 = tokens;
 const token2 = tokens;
@@ -45,6 +46,8 @@ export default function Stake() {
                 <span className=" text-gray-100 text-lg font-semibold">
                   Stake XDC
                 </span>
+                <Link href="/xdc">
+
                 <button
                   type="button"
                   className=" flex hover:scale-105 transition ease-in-out items-center w- ml-6 mt-2 hover:bg-transparent border hover:border-gray-300 rounded-md opacity-90 text-xs font-semibold font-fredoka text-white px-3 py-2 mr-2 mb-2"
@@ -55,6 +58,8 @@ export default function Stake() {
                   />
                   Buy XDC
                 </button>
+                </Link>
+
               </div>
 
               {/* <div className="lg:w-5/12 flex items-center justify-start "></div> */}

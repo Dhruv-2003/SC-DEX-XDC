@@ -82,6 +82,14 @@ export default function Navbar(props) {
             </button>
           </div>
         </Link>
+        <Link href="/lending">
+          <div className="cursor-pointer hover:animate-pulse relative group py-0.5 px-0.5 ">
+            <div className="absolute -inset-1 blur-lg transition-all"></div>
+            <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
+              Lending
+            </button>
+          </div>
+        </Link>
       </ul>
       <div className="hidden lg:flex items-center">
         <ConnectButton />
@@ -140,6 +148,14 @@ export default function Navbar(props) {
                 <div className="absolute -inset-1 blur-lg transition-all"></div>
                 <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
                   Stake
+                </button>
+              </div>
+            </Link>
+            <Link href="/lending">
+              <div className="cursor-pointer hover:animate-pulse relative group py-0.5 px-0.5 ">
+                <div className="absolute -inset-1 blur-lg transition-all"></div>
+                <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
+                  Staking
                 </button>
               </div>
             </Link>
