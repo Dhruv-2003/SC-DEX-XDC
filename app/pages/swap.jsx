@@ -6,7 +6,7 @@ import { tokens } from "../utils/tokens";
 import { Dialog, Listbox, Transition } from "@headlessui/react";
 import styles from "../styles/Home.module.css";
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
-import { Contract, ethers } from "ethers";
+import { ethers } from "ethers";
 import { SWAP_ROUTER_ADDRESS, SWAP_ROUTER_ABI } from "../Constants/index.js";
 
 const token1 = tokens;
@@ -16,26 +16,38 @@ export default function Swap() {
   const [expand, setExpand] = useState(false);
   const [selectedToken1, setSelectedToken1] = useState(token1[0]);
   const [selectedToken2, setSelectedToken2] = useState(token2[0]);
+
+  const { address, isConnected } = useAccount();
+  console.log(address);
   const provider = useProvider();
   const { data: signer } = useSigner();
+
   const contract = useContract({
     address: SWAP_ROUTER_ADDRESS,
     abi: SWAP_ROUTER_ABI,
     signerOrProvider: signer || provider,
   });
+
   const [reserveA, setReserveA] = useState(0);
   const [reserveB, setReserveB] = useState(0);
   const [amountOne, setAmountOne] = useState(0);
   const [amountTwo, setAmountTwo] = useState(0);
   const [exactAmountIn, setExactAmountIn] = useState(false);
   const [exactAmountOut, setExactAmountOut] = useState(false);
+  const [amountOut, setAmountOut] = useState(0);
+  const [amountIn, setAmountIn] = useState(0);
+  const [inputAmount, setInputAmount] = useState(1);
 
-  function checkIfAmountSet() {
-    if (amountOne > 0) {
-      setExactAmountIn(true);
-    } else if (amountTwo > 0) {
-      setExactAmountOut(true);
-    }
+  // function checkIfAmountSet() {
+  //   if (amountOne > 0) {
+  //     setExactAmountIn(true);
+  //   } else if (amountTwo > 0) {
+  //     setExactAmountOut(true);
+  //   }
+  // }
+
+  function handleInput(event) {
+    setInputAmount(+event.target.value);
   }
 
   // ask dhruv about the params
@@ -58,13 +70,26 @@ export default function Swap() {
     }
   };
 
+  const handleSwapSubmit = () => {
+    try {
+      if (exactAmountIn) {
+        swapExactAmountOfTokens(amountOne);
+      } else if (exactAmountOut) {
+        swapTokensForExactAmount(amountTwo);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   // ask dhruv about params
   const swapExactAmountOfTokens = async (valueIn) => {
     try {
       if (valueIn) {
+        const path = [`${selectedToken1}`, `${selectedToken1}`];
         const _swapExactTokens = await contract.swapExactTokensForTokens(
-          valueIn,
-          0,
+          ethers.utils.parseEther(valueIn.toString()),
+          1,
           path,
           connectedWalletAddress,
           _deadline
@@ -201,28 +226,52 @@ export default function Swap() {
   };
 
   /// As Soon as user selects both the tokens , call getReserve
-  const getReserve = async (tokenA, tokenB) => {
+  const getReserves = async (tokenA, tokenB) => {
     const response = await contract.getReserve(tokenA, tokenB);
     console.log(response);
-    setReserveA(response.reserveA);
-    setReserveB(response.reserveB);
+    setReserveA(ethers.utils.formatEther(response.reserveA));
+    setReserveB(ethers.utils.formatEther(response.reserveB));
+    console.log(
+      ethers.utils.formatEther(response.reserveA),
+      ethers.utils.formatEther(response.reserveB)
+    );
     // setOutAmount(_getAmount);
   };
 
   /// Exact Amount in , user give 1st input
   const getAmountOut = async (amountA, reserveA, reserveB) => {
-    const amountOut = await contract.getAmountOut(amountA, reserveA, reserveB);
+    if (amountA != 0) {
+      const amountOut = await contract.getAmountOut(
+        ethers.utils.parseEther(amountA.toString()),
+        ethers.utils.parseEther(reserveA.toString()),
+        ethers.utils.parseEther(reserveB.toString())
+      );
 
-    setAmountOut(amountOut);
-
-    // setOutAmount(_getAmount);
+      console.log(ethers.utils.formatEther(amountOut));
+      setAmountOut(ethers.utils.formatEther(amountOut));
+      setAmountTwo(ethers.utils.formatEther(amountOut).slice(0, 7));
+    }
   };
 
   /// Exact Amount out , user give 2nd input
   const getAmountIn = async (amountB, reserveA, reserveB) => {
-    const _getAmount = await contract.getAmountOut(amountB, reserveA, reserveB);
-    // setOutAmount(_getAmount);
+    if (amountB != 0) {
+      const amountIn = await contract.getAmountIn(
+        ethers.utils.parseEther(amountB.toString()),
+        ethers.utils.parseEther(reserveA.toString()),
+        ethers.utils.parseEther(reserveB.toString())
+      );
+
+      console.log(ethers.utils.formatEther(amountIn));
+      setAmountIn(ethers.utils.formatEther(amountIn));
+      setAmountOne(ethers.utils.formatEther(amountIn).slice(0, 7));
+    }
   };
+
+  useEffect(() => {
+    getAmountOut(inputAmount, reserveA, reserveB);
+    getAmountIn(inputAmount, reserveA, reserveB);
+  }, []);
 
   // const getAmountsOut = async () => {
   //   const _getAmounts = await contract.getAmountsOut(
@@ -242,8 +291,14 @@ export default function Swap() {
 
   /// fetched reserves when both tokens are set
   useEffect(() => {
-    if (selectedToken1 != 0 && selectedToken2 != 0) {
-      getReserve();
+    if (
+      selectedToken1 != 0 &&
+      selectedToken2 != 0 &&
+      selectedToken1 != selectedToken2
+    ) {
+      if (selectedToken1.symbol != "XDC" && selectedToken2.symbol != "XDC") {
+        getReserves(selectedToken1.address, selectedToken2.address);
+      }
     }
   }, [selectedToken1, selectedToken2]);
 
@@ -279,6 +334,7 @@ export default function Swap() {
                   onChange={(e) => {
                     setAmountOne(e.target.value);
                     getAmountOut(e.target.value, reserveA, reserveB);
+                    setExactAmountIn(true);
                   }}
                 />
                 <div className="lg:w-28 w-24 "></div>
@@ -365,6 +421,7 @@ export default function Swap() {
                   onChange={(e) => {
                     setAmountTwo(e.target.value);
                     getAmountIn(e.target.value, reserveA, reserveB);
+                    setExactAmountOut(true);
                   }}
                 />
                 <div className="lg:w-28 w-24 "></div>

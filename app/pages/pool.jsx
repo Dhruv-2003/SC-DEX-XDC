@@ -171,6 +171,22 @@ export default function Pool() {
     }
   };
 
+    // 3 params on this one
+    const quote = async () => {
+      try {
+        const _fetchQuote = await contract.quote(
+          0,
+          0,
+          0
+        );
+        // setQuote(_fetchQuote);
+      } 
+      catch (err) {
+        // toast.error(err.reason);
+        console.error(err)
+      }
+    }
+
   return (
     <div
       className={`w-screen min-h-screen no-repeat bg-cover bg-[#03071E]

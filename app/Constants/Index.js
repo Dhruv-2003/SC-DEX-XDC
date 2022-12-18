@@ -1,8 +1,8 @@
-export const TOKEN_ONE_ADDRESS = "0xF444a85CbB170e34F52C5d0A64CFFb7f16032725";
+export const TOKEN_ONE_ADDRESS = "0x1927d7a542826728a25B23Acd280B57AC37bb930";
 
-export const TOKEN_TWO_ADDRESS = "0x8960a10CA625eA7b714757E307CF84B6d117fA5c";
+export const TOKEN_TWO_ADDRESS = "0xeC80ee7f0e65f696f09206859615ffE5626c384C";
 
-export const SWAP_ROUTER_ADDRESS = "0xF7E919944685aB5912CE06B56815A4E8d91a23d4";
+export const SWAP_ROUTER_ADDRESS = "0xECb0d45B9d96ad2D7DfDA1267dff33de4d33E175";
 
 export const SWAP_ROUTER_ABI = [
   {
@@ -326,7 +326,7 @@ export const SWAP_ROUTER_ABI = [
         type: "uint256",
       },
     ],
-    stateMutability: "nonpayable",
+    stateMutability: "view",
     type: "function",
   },
   {
