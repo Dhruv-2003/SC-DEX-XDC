@@ -16,9 +16,160 @@ export default function Pool() {
   const [selectedToken2, setSelectedToken2] = useState(token2[0]);
 
   const newPool = () => {
-    setToggle(!toggle)
+    setToggle(!toggle);
+  };
+
+  const [loading, setLoading] = useState < boolean > false;
+  const [selected, setSelected] = useState([...tokens]);
+  const [desiredAmountA, setDesiredAmountA] = useState < number > 0;
+  const [desiredAmountB, setDesiredAmountB] = useState < number > 0;
+  const [liquidity, setLiquidity] = useState();
+  const [amounts, setAmounts] = useState([]);
+  const [path, setPath] = useState([]);
+
+  // Creating some global variables to use in the upcoming liquidity functions
+  const userAddress = useAccount();
+  const connectedWalletAddress = userAddress.address;
+  const addressTokenA = TOKEN_ONE_ADDRESS;
+  const addressTokenB = TOKEN_TWO_ADDRESS;
+  const _deadline = 0;
+  const _amountAMin = 1;
+  const _amountBMin = 1;
+
+  function handleChange(event) {
+    setDesiredAmountA(parseInt(event.target.value));
+    setDesiredAmountB(parseInt(event.target.value));
   }
 
+  const getDeadline = () => {
+    const _deadline = Math.floor(Date.now() / 1000);
+    console.log(_deadline);
+    return _deadline;
+  };
+
+  useEffect(() => {
+    getDeadline();
+  }, []);
+
+  const addLiquidity = async (valueOne, valueTwo) => {
+    try {
+      if (
+        addressTokenA &&
+        addressTokenB &&
+        valueOne &&
+        valueTwo &&
+        _amountAMin &&
+        _amountBMin &&
+        connectedWalletAddress &&
+        _deadline
+      ) {
+        const _addLiquidity = await contract.addLiquidity(
+          addressTokenA,
+          addressTokenB,
+          valueOne,
+          valueTwo,
+          _amountAMin,
+          _amountBMin,
+          connectedWalletAddress,
+          _deadline // current time + 10 mins
+        );
+        setLoading(true);
+        await _addLiquidity.wait();
+        setLoading(false);
+      } else {
+        alert("INPUT DUMBASS!!!");
+      }
+    } catch (err) {
+      // alert shall be changed to toast.error(err.reason) once kushagra adds it
+      alert(err.reason);
+      console.error(err);
+    }
+  };
+
+  // ask dhruv about the parameters here
+  const addLiquidityEth = async (val) => {
+    try {
+      const _amount = ethers.utils.parseEther("0.1");
+      const _addLiquidity = await contract.addLiquidityEth(
+        addressTokenA,
+        val,
+        0,
+        0,
+        connectedWalletAddress,
+        _deadline,
+        {
+          value: _amount,
+        }
+      );
+    } catch (err) {
+      console.error(err);
+      alert(err.reason);
+    }
+  };
+
+  const returnLiquidity = async () => {
+    const _liquidity = await contract.getLiquidityAmount(
+      connectedWalletAddress,
+      addressTokenA,
+      addressTokenB
+    );
+    setLiquidity(_liquidity);
+  };
+
+  // might need to take an input here
+  const removeLiquidity = async () => {
+    try {
+      if (
+        addressTokenA &&
+        addressTokenB &&
+        liquidity &&
+        _amountAMin &&
+        _amountBMin &&
+        connectedWalletAddress &&
+        _deadline
+      ) {
+        const _removeLiquidity = await contract.removeLiquidity(
+          addressTokenA,
+          addressTokenB,
+          liquidity,
+          _amountAMin,
+          _amountBMin,
+          connectedWalletAddress,
+          _deadline
+        );
+        setLoading(true);
+        await _removeLiquidity.wait();
+        setLoading(false);
+        // toast.success("Liquidity removed");
+      }
+    } catch (err) {
+      alert(err.reason);
+      console.error(err);
+    }
+  };
+
+  // ask dhruv about parameters
+  const removeLiquidityEth = async (val) => {
+    try {
+      if (liquidity) {
+        const _removeLiquidity = await contract.removeLiquidityETH(
+          addressTokenA,
+          liquidity,
+          val,
+          0,
+          connectedWalletAddress,
+          _deadline
+        );
+        setLoading(true);
+        await _removeLiquidity.wait();
+        setLoading(false);
+        // toast.success()
+      }
+    } catch (err) {
+      alert(err.reason);
+      console.error(err);
+    }
+  };
 
   return (
     <div
@@ -35,11 +186,18 @@ export default function Pool() {
         <div className=" w-full mt-10 flex flex-col justify-center items-center px-2">
           <div className="w-full flex justify-around">
             <h1 className=" text-gray-100 text-3xl font-semibold">Pools</h1>
-            <button onClick={newPool} className="active:scale-95 bg-[#fc6f38] px-3 py-2 text-sm font-semibold rounded-md">
+            <button
+              onClick={newPool}
+              className="active:scale-95 bg-[#fc6f38] px-3 py-2 text-sm font-semibold rounded-md"
+            >
               + New Pool
             </button>
           </div>
-          <div className={`${toggle ? `visible` : `hidden` } mt-8 lg:w-7/12 border rounded-lg border-gray-500 px-4 py-6 bg-transparent backdrop-blur-xl`}>
+          <div
+            className={`${
+              toggle ? `visible` : `hidden`
+            } mt-8 lg:w-7/12 border rounded-lg border-gray-500 px-4 py-6 bg-transparent backdrop-blur-xl`}
+          >
             <span className=" text-gray-100 text-lg font-semibold">
               Select Pair
             </span>

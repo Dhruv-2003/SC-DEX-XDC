@@ -410,7 +410,7 @@ contract XSwapRouter {
     // **** LIBRARY FUNCTIONS ****
     function getReserve(address tokenA, address tokenB)
         public
-        virtual
+        view
         returns (uint256 reserveA, uint256 reserveB)
     {
         (reserveA, reserveB) = XSwapLibrary.getReserves(

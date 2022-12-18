@@ -1,16 +1,14 @@
 ### Token1 -
 
-xdcF444a85CbB170e34F52C5d0A64CFFb7f16032725
-0xF444a85CbB170e34F52C5d0A64CFFb7f16032725
-
-https://explorer.apothem.network/address/xdcf444a85cbb170e34f52c5d0a64cffb7f16032725#transactions
+xdc1927d7a542826728a25B23Acd280B57AC37bb930
+0x1927d7a542826728a25B23Acd280B57AC37bb930
+https://explorer.apothem.network/address/xdc1927d7a542826728a25B23Acd280B57AC37bb930#transactions
 
 ### Token2 -
 
-xdc8960a10CA625eA7b714757E307CF84B6d117fA5c
-0x8960a10CA625eA7b714757E307CF84B6d117fA5c
-
-https://explorer.apothem.network/address/xdc8960a10ca625ea7b714757e307cf84b6d117fa5c#transactions
+xdceC80ee7f0e65f696f09206859615ffE5626c384C
+0xeC80ee7f0e65f696f09206859615ffE5626c384C
+https://explorer.apothem.network/address/xdceC80ee7f0e65f696f09206859615ffE5626c384C#transactions
 
 ### WXDC -
 
@@ -21,17 +19,15 @@ https://explorer.apothem.network/address/xdca5a51315b449c7026164111ed142e87cd1c8
 
 ## WETH
 
-xdc16E661CeE4Dc280900E89A0E0F1C78c482D22702
-0x16E661CeE4Dc280900E89A0E0F1C78c482D22702
-
-https://explorer.apothem.network/address/xdc16e661cee4dc280900e89a0e0f1c78c482d22702#transactions
+xdc1469db37eC1658a6405d968a5812583F5b79331e
+0x1469db37eC1658a6405d968a5812583F5b79331e
+https://explorer.apothem.network/address/xdc1469db37eC1658a6405d968a5812583F5b79331e#transactions
 
 ## Rtoken - Staking Reward
 
-xdc39813f50a9Ac1b1201EF7c32B80c78CD9fE8b46f
-0x39813f50a9Ac1b1201EF7c32B80c78CD9fE8b46f
-
-https://explorer.apothem.network/address/xdc39813f50a9ac1b1201ef7c32b80c78cd9fe8b46f#transactions
+xdcAc30b602A0035c3a97CB482d2B3A490a113938CE
+0xAc30b602A0035c3a97CB482d2B3A490a113938CE
+https://explorer.apothem.network/address/xdcAc30b602A0035c3a97CB482d2B3A490a113938CE#transactions
 
 ## XSwap Factory
 
@@ -41,9 +37,9 @@ https://explorer.apothem.network/address/xdcEe5045c2cca298d1965dE00493fF7Cb33BbA
 
 ## XSwap Router
 
-xdcF7E919944685aB5912CE06B56815A4E8d91a23d4
-0xF7E919944685aB5912CE06B56815A4E8d91a23d4
-https://explorer.apothem.network/address/xdcF7E919944685aB5912CE06B56815A4E8d91a23d4#transactions
+xdcECb0d45B9d96ad2D7DfDA1267dff33de4d33E175
+0xECb0d45B9d96ad2D7DfDA1267dff33de4d33E175
+https://explorer.apothem.network/address/xdcECb0d45B9d96ad2D7DfDA1267dff33de4d33E175#transactions
 
 ## XSwap Oracle
 
