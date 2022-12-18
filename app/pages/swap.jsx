@@ -1,12 +1,13 @@
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { tokens } from "../utils/tokens";
 import { Dialog, Listbox, Transition } from "@headlessui/react";
 import styles from '../styles/Home.module.css';
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 import { Contract, ethers } from "ethers";
+import { SWAP_ROUTER_ADDRESS, SWAP_ROUTER_ABI } from "../Constants/Index";
 
 const token1 = tokens;
 const token2 = tokens;
@@ -22,146 +23,243 @@ export default function Swap() {
     abi: SWAP_ROUTER_ABI,
     signerOrProvider: signer || provider
   });
+  const [reserveA, setReserveA] = useState(0);
+  const [reserveB, setReserveB] = useState(0);
+  const [amountOne, setAmountOne] = useState(0);
+  const [amountTwo, setAmountTwo] = useState(0);
 
-  const [loading, setLoading] = useState<boolean>(false);
-  const [selected, setSelected] = useState([...tokens]);
-  const [desiredAmountA, setDesiredAmountA] = useState<number>(0);
-  const [desiredAmountB, setDesiredAmountB] = useState<number>(0);
-  const [liquidity, setLiquidity] = useState();
-  const [amounts, setAmounts] = useState([]);
-  const [path, setPath] = useState([]);
 
-  // Creating some global variables to use in the upcoming liquidity functions
-  const userAddress = useAccount();
-  const connectedWalletAddress = userAddress.address;
-  const addressTokenA = TOKEN_ONE_ADDRESS;
-  const addressTokenB = TOKEN_TWO_ADDRESS;
-  const _deadline = 0;
-  const _amountAMin = 1;
-  const _amountBMin = 1;
-
-  function handleChange(event) {
-      setDesiredAmountA(parseInt(event.target.value));
-      setDesiredAmountB(parseInt(event.target.value));
-  }
-
-  const getDeadline = () => {
-    const _deadline = Math.floor(Date.now() / 1000);
-    console.log(_deadline)
-    return _deadline;
-  }
-
-  useEffect(() => {
-    getDeadline();
-  }, [])
-
-  const addLiquidity = async (valueOne, valueTwo) => {
+   // ask dhruv about the params
+   const swap = async ()=> {
     try {
-      if(addressTokenA && addressTokenB && valueOne && valueTwo && _amountAMin && _amountBMin && connectedWalletAddress && _deadline) {
-        const _addLiquidity = await contract.addLiquidity(
-          addressTokenA,
-          addressTokenB,
-          valueOne,
-          valueTwo,
-          _amountAMin,
-          _amountBMin,
-          connectedWalletAddress,
-          _deadline // current time + 10 mins
-          );
-          setLoading(true);
-          await _addLiquidity.wait();
-          setLoading(false);
-        }
-        else {
-          alert("INPUT DUMBASS!!!");
-        }
-    }
-    catch (err: any) {
-      // alert shall be changed to toast.error(err.reason) once kushagra adds it
-      alert(err.reason)
-      console.error(err)
-    }
-  }
-
-  // ask dhruv about the parameters
-  const addLiquidityEth = async (val) => {
-    try {
-      const _amount = ethers.utils.parseEther("0.1");
-      const _addLiquidity = await contract.addLiquidityEth(
-        addressTokenA, 
-        val,
-        0,
-        0,
-        connectedWalletAddress,
-        _deadline,
-      {
-        value: _amount
-      });
-    }
-    catch (err)
-    {
-      console.error(err);
-      alert(err.reason);  
-    }
-  }
-
-  const returnLiquidity = async () => {
-    const _liquidity = await contract.getLiquidityAmount(
-      connectedWalletAddress,
-      addressTokenA,
-      addressTokenB
-    );
-    setLiquidity(_liquidity);
-  }
-
-  // might need to take an input here
-  const removeLiquidity = async () => {
-    try {
-      if(addressTokenA && addressTokenB && liquidity && _amountAMin && _amountBMin &&connectedWalletAddress && _deadline) {
-        const _removeLiquidity = await contract.removeLiquidity(
-          addressTokenA,
-          addressTokenB,
-          liquidity,
-          _amountAMin,
-          _amountBMin,
-          connectedWalletAddress,
-          _deadline
-          );
-          setLoading(true);
-          await _removeLiquidity.wait();
-          setLoading(false);
-          // toast.success("Liquidity removed");
-        }
+      if(amounts && path) {
+        const _swap = await contract._swap(
+          amounts,
+          path,
+          connectedWalletAddress
+        )
+        setLoading(true);
+        await _swap.wait();
+        setLoading(false);
+        // toast.success("")
       }
-    catch(err: any) {
-      alert(err.reason);
-      console.error(err)
+      } 
+    catch (err) {
+      // toast.error(err.reason)
+      console.error(err)  
     }
   }
 
-  // ask dhruv about parameters
-  const removeLiquidityEth = async (val) => {
+  // ask dhruv about params
+  const swapExactAmountOfTokens = async (valueIn) => {
     try {
-      if(liquidity) {
-        const _removeLiquidity = await contract.removeLiquidityETH(
-          addressTokenA,
-          liquidity,
-          val,
+      if(valueIn) {
+        const _swapExactTokens = await contract.swapExactTokensForTokens(
+          valueIn,
           0,
+          path,
+          connectedWalletAddress,
+          _deadline
+        );
+        setLoading(true);
+        await _swapExactTokens.wait();
+        setLoading(false);
+        // taost.success("swapped");
+      }
+    }
+    catch (err) {
+      // toast.err(err.reason)
+      console.error(err)  
+    }
+  }
+
+  const swapTokensForExactAmount = async (valueOut) => {
+    try {
+      if(valueOut) {
+        const _swapTokens = await contract.swapTokensForExactTokens(
+          valueOut,
+          0,
+          path,
           connectedWalletAddress,
           _deadline
           );
           setLoading(true);
-          await _removeLiquidity.wait();
+          await _swapTokens.wait();
           setLoading(false);
-          // toast.success()
+          // taost.success("SWAPPED!!!");
         }
     }
     catch (err) {
-      alert(err.reason);
+      // taost.error("err.reason")
+      console.error(err)  
+    }
+  }
+  // payable func
+  const swapExactAmountOfEthForTokens = async (valueOut) => {
+    try {
+      if(valueOut) {
+        const _amount = ethers.utils.parseEther("0.1");
+        const _swapEth = await contract.swapExactETHForTokens(
+          valueOut,
+          path,
+          connectedWalletAddress,
+          _deadline,
+          {
+            value: _amount
+          }
+        );
+        setLoading(true);
+        await _swapEth.wait();
+        setLoading(false);
+        // toast.success();
+      }
+    } catch (err) {
+      // taost.error(err.reason);
+      console.error(err)
+    }
+  }
+
+  const swapEthForExactAmountOfTokens = async (valueOut)=> {
+    try {
+      if(valueOut) {
+        const _amount = ethers.utils.parseEther("0.01");
+        const _swapTokens = await contract.swapETHForExactTokens(
+            valueOut,
+            path,
+            connectedWalletAddress,
+            _deadline,
+          { value: _amount }
+          );
+          setLoading(true);
+          await _swapTokens.wait();
+          setLoading(false);
+          // toast.success();
+      }
+    }
+    catch (err) {
+      // toast.error(err.reason);
+      console.error(err.reason);
+    }
+  }
+
+  const swapTokensForExactAmountOfEth = async (valueOut)=> {
+    try {
+      if(valueOut) {
+        const _swapTokensForEth = await contract.swapTokensForExactETH(
+          valueOut,
+          0,
+          path,
+          connectedWalletAddress,
+          _deadline
+        );
+        setLoading(true);
+        await _swapTokensForEth.wait();
+        setLoading(false);
+        // taost.success("");
+      }
+    }
+    catch (err) {
+      // toast.error(err.reason);
       console.error(err);
     }
   }
+
+  const swapExactAmountOfTokensForEth = async (valueIn) => {
+    try {
+      if(valueIn) {
+        const _swapTokensForEth = await contract.swapExactTokensForETH(
+          valueIn,
+          0,
+          path,
+          connectedWalletAddress,
+          _deadline
+        );
+        setLoading(true);
+        await _swapTokensForEth.wait();
+        setLoading(false);
+        // toast.success("asdf");
+      }
+    } 
+    catch (err) {
+      // toast.error("")
+      console.error(err);  
+    }
+  }
+
+  // 3 params on this one
+  const quote = async () => {
+    try {
+      const _fetchQuote = await contract.quote(
+        0,
+        0,
+        0
+      );
+      // setQuote(_fetchQuote);
+    } 
+    catch (err) {
+      // toast.error(err.reason);
+      console.error(err)
+    }
+  }
+
+  /// As Soon as user selects both the tokens , call getReserve
+  const getReserve = async (tokenA , tokenB) => {
+    const response = await contract.getReserve(
+      tokenA,
+      tokenB
+    );
+    console.log(response);
+    setReserveA(response.reserveA);
+    setReserveB(response.reserveB);
+    // setOutAmount(_getAmount);
+  }
+
+  /// Exact Amount in , user give 1st input
+  const getAmountOut = async (amountA , reserveA , reserveB) => {
+    const amountOut = await contract.getAmountOut(
+      amountA, 
+      reserveA, 
+      reserveB
+    );
+    
+    setAmountOut(amountOut) ;
+
+    // setOutAmount(_getAmount);
+  }
+
+  /// Exact Amount out , user give 2nd input
+  const getAmountIn = async (amountB , reserveA , reserveB) => {
+  const _getAmount = await contract.getAmountOut(
+    amountB, 
+    reserveA, 
+    reserveB
+  );
+  // setOutAmount(_getAmount);
+}
+
+// const getAmountsOut = async () => {
+//   const _getAmounts = await contract.getAmountsOut(
+//     0,
+//     path
+//   );
+//   // setAllAmounts(_getAmounts);
+// }
+
+// const getAmountsIn = async () => {
+//   const _getAmounts = await contract.getAmountsIn(
+//     0,
+//     path
+//   );
+//   // setInAmounts(_getAmounts);
+// }
+
+/// fetched reserves when both tokens are set
+useEffect(() => {
+  if(selectedToken1 && selectedToken2){
+    getReserve()
+  }
+}, [selectedToken1 , selectedToken2])
+
 
   return (
     <div
@@ -187,6 +285,11 @@ export default function Swap() {
                   className="bg-gray-50 border  lg:w-full w-32 border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="0"
                   required
+                  value={amountOne}
+                  onChange={(e)=> {
+                  setAmountOne(e.target.value) ;
+                  getAmountOut(e.target.value ,reserveA , reserveB ) ;
+                }}
                 />
                 <div className="lg:w-28 w-24 "></div>
                 {/* <button
@@ -268,6 +371,11 @@ export default function Swap() {
                   className="mt-2  bg-gray-50 border lg:w-full w-32 border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="0"
                   required
+                  value={amountTwo}
+                  onChange={(e)=> {
+                  setAmountTwo(e.target.value) ;
+                  getAmountIn(e.target.value ,reserveA , reserveB ) ;
+                }}
                 />
                 <div className="lg:w-28 w-24 "></div>
                 {/* <button
