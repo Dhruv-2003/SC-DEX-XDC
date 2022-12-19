@@ -5,6 +5,7 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { Dialog, Listbox, Transition } from "@headlessui/react";
 import styles from "../styles/Home.module.css";
 import { tokens } from "../utils/tokens";
+import { tokenpairs } from "../utils/pair";
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 import { Contract, ethers } from "ethers";
 import {
@@ -12,6 +13,9 @@ import {
   SWAP_ROUTER_ABI,
   Token_ABI,
   WXDC_ADDRESS,
+  TOKEN_ONE_ADDRESS,
+  SWAP_FACTORY_ABI,
+  SWAP_FACTORY_ADDRESS,
 } from "../Constants/index.js";
 
 const token1 = tokens;
@@ -32,8 +36,9 @@ export default function Pool() {
   const [selected, setSelected] = useState([...tokens]);
   const [desiredAmountA, setDesiredAmountA] = useState(0);
   const [desiredAmountB, setDesiredAmountB] = useState(0);
+
   const [liquidity, setLiquidity] = useState();
-  const [amounts, setAmounts] = useState([]);
+  const [positions, setPositions] = useState();
 
   const [reserveA, setReserveA] = useState(0);
   const [reserveB, setReserveB] = useState(0);
@@ -49,11 +54,14 @@ export default function Pool() {
     signerOrProvider: signer || provider,
   });
 
+  const Factory_contract = useContract({
+    address: SWAP_FACTORY_ADDRESS,
+    abi: SWAP_FACTORY_ABI,
+    signerOrProvider: signer || provider,
+  });
+
   // const addressTokenA = TOKEN_ONE_ADDRESS;
   // const addressTokenB = TOKEN_TWO_ADDRESS;
-  const _deadline = 0;
-  const _amountAMin = 1;
-  const _amountBMin = 1;
 
   // function handleChange(event) {
   //   setDesiredAmountA(parseInt(event.target.value));
@@ -69,16 +77,24 @@ export default function Pool() {
   const handleAddliquidity = () => {
     if (selectedToken1 && selectedToken2 && selectedToken1 != selectedToken2) {
       if (selectedToken1.symbol != "XDC" && selectedToken2.symbol != "XDC") {
-        addLiquidity(
+        addLiquidityContract(
           desiredAmountA,
           desiredAmountB,
           selectedToken1.address,
           selectedToken2.address
         );
       } else if (selectedToken1.symbol == "XDC") {
-        addLiquidityEth(selectedToken2.address, desiredAmountB, desiredAmountA);
+        addLiquidityEthContract(
+          selectedToken2.address,
+          desiredAmountB,
+          desiredAmountA
+        );
       } else if (selectedToken2.symbol == "XDC") {
-        addLiquidityEth(selectedToken1.address, desiredAmountA, desiredAmountB);
+        addLiquidityEthContract(
+          selectedToken1.address,
+          desiredAmountA,
+          desiredAmountB
+        );
       }
     }
   };
@@ -99,7 +115,7 @@ export default function Pool() {
     }
   };
 
-  const addLiquidity = async (
+  const addLiquidityContract = async (
     valueOne,
     valueTwo,
     addressTokenA,
@@ -107,8 +123,8 @@ export default function Pool() {
   ) => {
     try {
       if (addressTokenA && addressTokenB && valueOne && valueTwo && address) {
-        // await approveTokens(addressTokenA, valueOne);
-        // await approveTokens(addressTokenB, valueTwo);
+        await approveTokens(addressTokenA, valueOne);
+        await approveTokens(addressTokenB, valueTwo);
         const _deadline = getDeadline();
         const _addLiquidity = await contract.addLiquidity(
           addressTokenA,
@@ -134,10 +150,19 @@ export default function Pool() {
   };
 
   // ask dhruv about the parameters here
-  const addLiquidityEth = async (addressToken, tokenValue, ETHValue) => {
+  const addLiquidityEthContract = async (
+    addressToken,
+    tokenValue,
+    ETHValue
+  ) => {
     try {
+      // await approveTokens(
+      //   addressToken,
+      //   ethers.utils.parseEther(tokenValue.toString())
+      // );
       const _amount = ethers.utils.parseEther(ETHValue.toString());
-      const _addLiquidity = await contract.addLiquidityEth(
+      const _deadline = getDeadline();
+      const _addLiquidity = await contract.addLiquidityETH(
         addressToken,
         ethers.utils.parseEther(tokenValue.toString()),
         1,
@@ -151,42 +176,86 @@ export default function Pool() {
       await _addLiquidity.wait();
     } catch (err) {
       console.error(err);
-      alert(err.reason);
+      alert(err.message);
     }
   };
 
-  const getPositions = async () => {
+  const getPositions = async (id) => {
     try {
-      /// check balances for each pair and show if the balance is > 0 under positions
+      const promises = [];
+
+      for (let i = 0; i < 3; i++) {
+        const balance = getLiquidity(
+          tokenpairs[i].token1,
+          tokenpairs[i].token2
+        );
+        promises.push({ ...tokenpairs[i], balance });
+      }
+
+      const _positions = await Promise.all(promises);
+      console.log(_positions);
+      setPositions(_positions);
     } catch (err) {
       console.log(err);
     }
   };
-  const getPoolPairs = async () => {
-    try {
-      /// fetch all the pairs from the factory
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
-  const getLiquidity = async () => {
+  const getLiquidity = async (addressTokenA, addressTokenB) => {
     const _liquidity = await contract.getLiquidityAmount(
       address,
       addressTokenA,
       addressTokenB
     );
-    setLiquidity(_liquidity);
+    const liqAmount = ethers.utils.formatEther(_liquidity.toString());
+    console.log(liqAmount);
+    return liqAmount;
+  };
+
+  const handleRemoveLiquidity = async (
+    token1Address,
+    token2Address,
+    pairAddress
+  ) => {
+    if (
+      token1Address &&
+      token2Address &&
+      token1Address != token2Address &&
+      liquidity
+    ) {
+      if (token1Address != WXDC_ADDRESS && token2Address != WXDC_ADDRESS) {
+        removeLiquidityContract(
+          token1Address,
+          token2Address,
+          pairAddress,
+          liquidity
+        );
+      } else if (
+        token1Address == WXDC_ADDRESS &&
+        token2Address != WXDC_ADDRESS
+      ) {
+        removeLiquidityEthContract(token2Address, pairAddress, liquidity);
+      } else if (
+        token1Address != WXDC_ADDRESS &&
+        token2Address == WXDC_ADDRESS
+      ) {
+        removeLiquidityEthContract(token1Address, pairAddress, liquidity);
+      }
+    }
   };
 
   // might need to take an input here
-  const removeLiquidity = async (
+  const removeLiquidityContract = async (
     addressTokenA,
     addressTokenB,
+    pairAddress,
     liquidityAmount
   ) => {
     try {
       if (addressTokenA && addressTokenA && liquidityAmount) {
+        await approveTokens(
+          pairAddress,
+          ethers.utils.parseEther(liquidityAmount.toString())
+        );
         const _deadline = getDeadline();
         const _removeLiquidity = await contract.removeLiquidity(
           addressTokenA,
@@ -209,9 +278,18 @@ export default function Pool() {
   };
 
   // ask dhruv about parameters
-  const removeLiquidityEth = async (addressTokenA, liquidityAmount) => {
+  const removeLiquidityEthContract = async (
+    addressTokenA,
+    pairAddress,
+    liquidityAmount
+  ) => {
     try {
       if (liquidityAmount) {
+        /// approve Lp token transfer
+        await approveTokens(
+          pairAddress,
+          ethers.utils.parseEther(liquidityAmount.toString())
+        );
         const _removeLiquidity = await contract.removeLiquidityETH(
           addressTokenA,
           ethers.utils.parseEther(liquidityAmount.toString()),
@@ -254,7 +332,7 @@ export default function Pool() {
         );
         console.log(ethers.utils.formatEther(_fetchQuote));
         // setQuote(_fetchQuote);
-        setDesiredAmountB(ethers.utils.formatEther(_fetchQuote).slice(0, 7));
+        setDesiredAmountB(ethers.utils.formatEther(_fetchQuote));
       }
     } catch (err) {
       // toast.error(err.reason);
@@ -272,9 +350,7 @@ export default function Pool() {
         );
         console.log(ethers.utils.formatEther(_fetchQuote));
         // setQuote(_fetchQuote);
-        setDesiredAmountA(
-          ethers.utils.formatEther(_fetchQuote).replaceslice(0, 7)
-        );
+        setDesiredAmountA(ethers.utils.formatEther(_fetchQuote));
       }
     } catch (err) {
       // toast.error(err.reason);
@@ -292,6 +368,14 @@ export default function Pool() {
       getReserves(selectedToken1.address, selectedToken2.address);
     }
   }, [selectedToken1, selectedToken2]);
+
+  useEffect(() => {
+    if (!positions) {
+      getPositions();
+    } else {
+      console.log(positions);
+    }
+  }, []);
 
   return (
     <div
@@ -464,7 +548,7 @@ export default function Pool() {
                 id="customRange3"
               />
             </div> */}
-              <div class="mt-4 relative pt-1 flex flex-col">
+              <div className="mt-4 relative pt-1 flex flex-col">
                 <span className=" text-gray-100 text-lg font-semibold">
                   Deposit Amounts
                 </span>
@@ -514,7 +598,7 @@ export default function Pool() {
               <div className=" lg:px-4 py-8 w-full  ">
                 <table className=" w-full text-sm text-left text-gray-100 ">
                   <thead className=" text-sm uppercase  text-gray-100 border-b border-gray-500">
-                    <tr cla>
+                    <tr>
                       <th scope="col" className="py-3 px-6">
                         Token A
                       </th>
@@ -529,44 +613,53 @@ export default function Pool() {
                       </th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr className=" border-b h-28 border-gray-500 text-gray-100">
-                      <th
-                        scope="row"
-                        className="py-4 px-6 font-medium  whitespace-nowrap "
-                      >
-                        XDC
-                      </th>
-                      <td className="py-4 px-6">ETH</td>
-                      <td className="py-4 px-6">10 M</td>
-                      <td className="py-4 px-6 ">
-                        <input
-                          type="number"
-                          id=""
-                          className={` ${toggleRemove ? ` visible` : `hidden` } bg-gray-800 text-white border mb-3  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                          placeholder="0"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setToggleRemove(!toggleRemove)}
-                          className="text-white w-44  bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
-                        >
-                          Remove Liquidity
-                        </button>
-                      </td>
-                      {/* <td className="py-4 px-6">
-                      <a
-                        className=""
-                        target="_blankspace"
-                        rel="noreferrer"
-                        href="#"
-                      >
-                        $ 4.4M
-                      </a>
-                    </td> */}
-                    </tr>
-                  </tbody>
+                  {positions ? (
+                    positions.map((position) => {
+                      <tbody>
+                        <tr className=" border-b h-28 border-gray-500 text-gray-100">
+                          <th
+                            scope="row"
+                            className="py-4 px-6 font-medium  whitespace-nowrap "
+                          >
+                            {position.token1}
+                          </th>
+                          <td className="py-4 px-6">{position.token2}</td>
+                          <td className="py-4 px-6">{position.balance}</td>
+                          <td className="py-4 px-6 ">
+                            <input
+                              type="number"
+                              id=""
+                              className={` ${
+                                toggleRemove ? ` visible` : `hidden`
+                              } bg-gray-800 text-white border mb-3  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                              placeholder="0"
+                              required
+                              onChange={(e) => setLiquidity(e.target.value)}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (toggleRemove) {
+                                  handleRemoveLiquidity(
+                                    position.token1,
+                                    position.token2,
+                                    position.pair
+                                  );
+                                } else {
+                                  setToggleRemove(!toggleRemove);
+                                }
+                              }}
+                              className="text-white w-44  bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
+                            >
+                              Remove Liquidity
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>;
+                    })
+                  ) : (
+                    <a>Active liqudity Positions will appear here</a>
+                  )}
                 </table>
               </div>
             </div>
