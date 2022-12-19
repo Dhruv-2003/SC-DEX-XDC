@@ -93,13 +93,13 @@ export default function Lending() {
     }
   };
 
-  const getRepaidAmount = async () => {
+  const getRepaidAmount = async (_amount) => {
     try {
       // first param takes address of token and then user and amount for now it's hardcoded
       const _amount = await contract.getRepayAmount(
         selectedToken.address,
         address,
-        10
+        _amount
       );
       // save in some state
     } catch (err) {
@@ -113,7 +113,7 @@ export default function Lending() {
       const _withdraw = await contract.getWithdrawAmount(
         selectedToken.address,
         address,
-        10
+        _amount
       );
       // save in some state
     } catch (err) {
@@ -137,6 +137,26 @@ export default function Lending() {
         borrowEther();
       } else {
         borrowToken();
+      }
+    }
+  };
+
+  const handleWithdraw = async () => {
+    if (selectedToken) {
+      if (selectedToken.symbol == "XDC") {
+        withdrawEther();
+      } else {
+        withdrawToken();
+      }
+    }
+  };
+
+  const handleRepay = async () => {
+    if (selectedToken) {
+      if (selectedToken.symbol == "XDC") {
+        repayEther();
+      } else {
+        repayToken();
       }
     }
   };
@@ -173,13 +193,14 @@ export default function Lending() {
     }
   };
 
-  const withdrawToken = async (_amount) => {
+  const withdrawToken = async () => {
     try {
       if (withdrawAmount) {
         const _amount = ethers.utils.parseEther(withdrawAmount.toString());
+        const amountWithdraw = getWithdrawalAmount(_amount);
         const txn = await contract.withdrawToken(
           selectedToken.address,
-          _amount
+          amountWithdraw
         );
         setLoading(true);
         await txn.wait();
@@ -210,7 +231,11 @@ export default function Lending() {
     try {
       if (repayAmount) {
         const _amount = ethers.utils.parseEther(repayAmount.toString());
-        const txn = await contract.repayToken(selectedToken.address, _amount);
+        const amountRepay = getRepaidAmount(_amount);
+        const txn = await contract.repayToken(
+          selectedToken.address,
+          amountRepay
+        );
         setLoading(true);
         await txn.wait();
         setLoading(false);
@@ -240,10 +265,12 @@ export default function Lending() {
     }
   };
 
-  const withdrawEther = async (_amount) => {
+  const withdrawEther = async () => {
     try {
       if (withdrawAmount) {
-        const _txn = await contract.withdrawETH(_amount);
+        const _amount = ethers.utils.parseEther(withdrawAmount);
+        const amountWithdraw = getWithdrawalAmount(_amount);
+        const _txn = await contract.withdrawETH(amountWithdraw);
         setLoading(true);
         await _txn.wait();
         setLoading(false);
@@ -267,17 +294,21 @@ export default function Lending() {
     }
   };
 
-  const repayEther = async (_amount) => {
+  const repayEther = async () => {
     try {
-      const _txn = await contract.repayETH(
-        {
-          value: ethers.utils.parseEther("0.1"), // input any value here you want the user to pay
-        },
-        _amount
-      );
-      setLoading(true);
-      await _txn.wait();
-      setLoading(false);
+      if (repayAmount) {
+        const _amount = ethers.utils.parseEther(repayAmount);
+        const amountRepay = getRepaidAmount(_amount);
+        const _txn = await contract.repayETH(
+          {
+            value: amountRepay, // input any value here you want the user to pay
+          },
+          amountRepay
+        );
+        setLoading(true);
+        await _txn.wait();
+        setLoading(false);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -304,6 +335,7 @@ export default function Lending() {
         address
       );
       const amount = ethers.utils.formatEther(_borrowedAmount.toString());
+      console.log(amount);
       setBorrowedAmount(amount);
     } catch (err) {
       console.error(err);
@@ -315,6 +347,7 @@ export default function Lending() {
       getPoolAddress();
       getConnectedUserBalance();
       fetchLentAmount();
+      fetchBorrowedAmount();
     }
   }, [selectedToken]);
 
@@ -441,11 +474,11 @@ export default function Lending() {
                 <div class="mt-4 relative border w-full ml-2 text-white border-gray-500 py-4 px-6 rounded-md flex flex-col wf items-center justify-between">
                   <div className="flex my-2 w-full justify-between items-center">
                     <div>Supplied amount</div>
-                    <div>0</div>
+                    <div>{lendAmount}</div>
                   </div>
                   <div className="flex my-2 w-full justify-between items-center">
                     <div>Borrowed amount</div>
-                    <div>0</div>
+                    <div>{borrowedAmount}</div>
                   </div>
                   <div className="flex my-2 w-full justify-between items-center">
                     <div>Interest</div>
@@ -492,12 +525,12 @@ export default function Lending() {
                     Withdraw
                   </button>
                   <button
-                   onClick={() => {
-                    setToggleRepay(!toggleRepay);
-                    setToggleWithdraw(false);
-                    setToggleBorrow(false);
-                    setToggleSupply(false);
-                  }}
+                    onClick={() => {
+                      setToggleRepay(!toggleRepay);
+                      setToggleWithdraw(false);
+                      setToggleBorrow(false);
+                      setToggleSupply(false);
+                    }}
                     type="button"
                     className="text-white  mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 ml-4 mb-2"
                   >
@@ -513,11 +546,14 @@ export default function Lending() {
                   className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                   placeholder="0"
                   required
+                  onChange={(e) => {
+                    setWithdrawAmount(e.target.value);
+                  }}
                 />
                 <button
                   type="button"
                   className="text-white w-full  mt-4 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mb-2"
-                  onClick={() => handleSupply()}
+                  onClick={() => handleWithdraw()}
                 >
                   Submit WithDraw
                 </button>
@@ -529,11 +565,14 @@ export default function Lending() {
                   className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                   placeholder="0"
                   required
+                  onChange={(e) => {
+                    setRepayAmount(e.target.value);
+                  }}
                 />
                 <button
                   type="button"
                   className="text-white w-full  mt-4 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mb-2"
-                  onClick={() => handleBorrow()}
+                  onClick={() => handleRepay()}
                 >
                   Submit Repay
                 </button>
