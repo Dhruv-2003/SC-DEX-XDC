@@ -20,6 +20,8 @@ export default function Lending() {
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
   const [toggleSupply, setToggleSupply] = useState(false);
   const [toggleBorrow, setToggleBorrow] = useState(false);
+  const [toggleWithdraw, setToggleWithdraw] = useState(false);
+  const [toggleRepay, setToggleRepay] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userBalance, setUserBalance] = useState(0);
   const [lendAmount, setLendAmount] = useState(0);
@@ -453,28 +455,91 @@ export default function Lending() {
                 </div>
               </div>
 
-              <div>
-                <button
-                  onClick={() => {
-                    setToggleSupply(!toggleSupply);
+              <div className=" flex justify-between items-center">
+                <div>
+                  <button
+                    onClick={() => {
+                      setToggleSupply(!toggleSupply);
+                      setToggleBorrow(false);
+                    }}
+                    type="button"
+                    className="text-white mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
+                  >
+                    Supply
+                  </button>
+                  <button
+                    onClick={() => {
+                      setToggleBorrow(!toggleBorrow);
+                      setToggleSupply(false);
+                    }}
+                    type="button"
+                    className="text-white  mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 ml-4 mb-2"
+                  >
+                    Borrow
+                  </button>
+                </div>
+
+                <div>
+                  <button
+                    onClick={() => {
+                      setToggleWithdraw(!toggleWithdraw);
+                      setToggleRepay(false);
+                      setToggleBorrow(false);
+                      setToggleSupply(false);
+                    }}
+                    type="button"
+                    className="text-white mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
+                  >
+                    Withdraw
+                  </button>
+                  <button
+                   onClick={() => {
+                    setToggleRepay(!toggleRepay);
+                    setToggleWithdraw(false);
                     setToggleBorrow(false);
-                  }}
-                  type="button"
-                  className="text-white mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
-                >
-                  Supply
-                </button>
-                <button
-                  onClick={() => {
-                    setToggleBorrow(!toggleBorrow);
                     setToggleSupply(false);
                   }}
+                    type="button"
+                    className="text-white  mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 ml-4 mb-2"
+                  >
+                    Re-pay
+                  </button>
+                </div>
+              </div>
+
+              <div className={`${toggleWithdraw ? "visible" : "hidden"} `}>
+                <input
+                  type="number"
+                  id=""
+                  className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                  placeholder="0"
+                  required
+                />
+                <button
                   type="button"
-                  className="text-white  mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 ml-4 mb-2"
+                  className="text-white w-full  mt-4 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mb-2"
+                  onClick={() => handleSupply()}
                 >
-                  Borrow
+                  Submit WithDraw
                 </button>
               </div>
+              <div className={`${toggleRepay ? "visible" : "hidden"} `}>
+                <input
+                  type="number"
+                  id=""
+                  className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                  placeholder="0"
+                  required
+                />
+                <button
+                  type="button"
+                  className="text-white w-full  mt-4 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mb-2"
+                  onClick={() => handleBorrow()}
+                >
+                  Submit Repay
+                </button>
+              </div>
+
               <div className={`${toggleSupply ? "visible" : "hidden"} `}>
                 <input
                   type="number"

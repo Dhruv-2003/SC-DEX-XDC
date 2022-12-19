@@ -42,14 +42,7 @@ export default function Navbar(props) {
         </div>
       </div>
       <ul className="hidden lg:flex justify-around items-center basis-2/5 text-lg">
-        <Link href="/xdc">
-          <div className="cursor-pointer relative hover:animate-pulse group py-0.5 px-0.5 ">
-            <div className="absolute -inset-1 blur-lg transition-all"></div>
-            <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
-              Buy XDC
-            </button>
-          </div>
-        </Link>
+        
         <Link href="/tokens">
           <div className="cursor-pointer relative hover:animate-pulse group py-0.5 px-0.5 ">
             <div className="absolute -inset-1 blur-lg transition-all"></div>
@@ -90,6 +83,14 @@ export default function Navbar(props) {
             </button>
           </div>
         </Link>
+        <Link href="/xdc">
+          <div className="cursor-pointer relative hover:animate-pulse group py-0.5 px-0.5 ">
+            <div className="absolute -inset-1 blur-lg transition-all"></div>
+            <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
+              Buy XDC
+            </button>
+          </div>
+        </Link>
       </ul>
       <div className="hidden lg:flex items-center">
         <ConnectButton />
@@ -111,14 +112,7 @@ export default function Navbar(props) {
           id="mobile-menu"
         >
           <ul className=" flex flex-col text-center items-center justify-between basis-2/6 mt-14 mb-">
-            <Link href="/xdc">
-              <div className="cursor-pointer relative hover:animate-pulse group py-0.5 px-0.5 ">
-                <div className="absolute -inset-1 blur-lg transition-all"></div>
-                <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
-                  Buy XDC
-                </button>
-              </div>
-            </Link>
+            
             <Link href="/tokens">
               <div className="cursor-pointer relative hover:animate-pulse group py-0.5 px-0.5 ">
                 <div className="absolute -inset-1 blur-lg transition-all"></div>
@@ -156,6 +150,14 @@ export default function Navbar(props) {
                 <div className="absolute -inset-1 blur-lg transition-all"></div>
                 <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
                   Lending
+                </button>
+              </div>
+            </Link>
+            <Link href="/xdc">
+              <div className="cursor-pointer relative hover:animate-pulse group py-0.5 px-0.5 ">
+                <div className="absolute -inset-1 blur-lg transition-all"></div>
+                <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
+                  Buy XDC
                 </button>
               </div>
             </Link>
