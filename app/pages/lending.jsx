@@ -368,6 +368,10 @@ export default function Lending() {
             <div className="w-full flex flex-col lg:w-5/12 justify-around">
               <h1 className=" text-gray-100 text-3xl font-semibold">Lending</h1>
             </div>
+
+            <span className="mt-5 lg:w-5/12 bg-orange-500 opacity-90 px-6 py-4 text-md font-normal rounded-md">
+            XDC-Fi allows users to lend different tokens including customly deployed ones, users can also borrow, withdraw, Repay and supply tokens by interacting with the lending-contract.
+            </span>
             <div
               className={` mt-8 lg:w-5/12 border rounded-lg border-gray-500 px-4 py-6 bg-transparent backdrop-blur-xl`}
             >

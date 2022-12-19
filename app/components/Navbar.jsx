@@ -36,7 +36,7 @@ export default function Navbar(props) {
           <Link href="/">
             <span className=" flex items-center justify-start space-x-2 w-auto tracking-wide text-2xl font-semibold text-[#fff4f0]">
               <Image width={40} src={logo} alt="logo" />
-              <span className="mx-1">XDC-DEX</span>
+              <span className="mx-1">XDC-Fi</span>
             </span>
           </Link>
         </div>

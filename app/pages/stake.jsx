@@ -258,10 +258,7 @@ export default function Stake() {
             <div className="w-full flex flex-col lg:w-7/12 justify-around">
               <h1 className=" text-gray-100 text-3xl font-semibold">Staking</h1>
               <span className="mt-5 bg-orange-500 opacity-90 px-6 py-4 text-md font-normal rounded-md">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem
-                ipsam blanditiis nobis pariatur ullam, itaque aut veniam
-                voluptate quis saepe exercitationem esse cum voluptates
-                architecto inventore atque velit quos? Ratione.
+              XDC-Fi allows you to stake your tokens in the smart contract as well as unstake them whenever needed, it also allows you to claim the rewards whenever the user wished.
               </span>
             </div>
             <div
