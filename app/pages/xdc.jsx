@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Footer from "../Components/Footer";
-import Navbar from "../Components/Navbar";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
 import styles from '../styles/Home.module.css'
 import BuyXDC from "../components/BuyXDC";
 

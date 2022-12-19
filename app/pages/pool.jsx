@@ -16,7 +16,7 @@ import {
   TOKEN_ONE_ADDRESS,
   SWAP_FACTORY_ABI,
   SWAP_FACTORY_ADDRESS,
-} from "../Constants/index/index.js";
+} from "../Constants/index.js";
 
 const token1 = tokens;
 const token2 = tokens;
