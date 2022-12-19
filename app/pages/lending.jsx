@@ -12,7 +12,7 @@ import {
   LENDING_CONTRACT_ABI,
   LENDING_CONTRACT_ADDRESS,
   Token_ABI,
-} from "../Constants";
+} from "../Constants/index/index";
 import { Contract, ethers } from "ethers";
 
 export default function Lending() {
