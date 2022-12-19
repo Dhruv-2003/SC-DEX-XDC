@@ -265,17 +265,20 @@ export default function Lending() {
     }
   };
 
-  const repayEther = async (_amount) => {
+  const repayEther = async () => {
     try {
-      const _txn = await contract.repayETH(
-        {
-          value: ethers.utils.parseEther("0.1"), // input any value here you want the user to pay
-        },
-        _amount
-      );
-      setLoading(true);
-      await _txn.wait();
-      setLoading(false);
+      if (repayAmount) {
+        const _amount = ethers.utils.parseEther(repayAmount);
+        const _txn = await contract.repayETH(
+          {
+            value: ethers.utils.parseEther("0.1"), // input any value here you want the user to pay
+          },
+          _amount
+        );
+        setLoading(true);
+        await _txn.wait();
+        setLoading(false);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -302,6 +305,7 @@ export default function Lending() {
         address
       );
       const amount = ethers.utils.formatEther(_borrowedAmount.toString());
+      console.log(amount);
       setBorrowedAmount(amount);
     } catch (err) {
       console.error(err);
@@ -313,6 +317,7 @@ export default function Lending() {
       getPoolAddress();
       getConnectedUserBalance();
       fetchLentAmount();
+      fetchBorrowedAmount();
     }
   }, [selectedToken]);
 
@@ -417,7 +422,6 @@ export default function Lending() {
                 </Link>
               </div>
 
-
               <div className=" flex  justify-between w-full">
                 <div class="mt-4 relative border w-full mr-2 text-white border-gray-500 py-4 px-6 rounded-md flex flex-col wf items-center justify-between">
                   <div className="flex my-2 w-full justify-between items-center">
@@ -436,11 +440,11 @@ export default function Lending() {
                 <div class="mt-4 relative border w-full ml-2 text-white border-gray-500 py-4 px-6 rounded-md flex flex-col wf items-center justify-between">
                   <div className="flex my-2 w-full justify-between items-center">
                     <div>Supplied amount</div>
-                    <div>0</div>
+                    <div>{lendAmount}</div>
                   </div>
                   <div className="flex my-2 w-full justify-between items-center">
                     <div>Borrowed amount</div>
-                    <div>0</div>
+                    <div>{borrowedAmount}</div>
                   </div>
                   <div className="flex my-2 w-full justify-between items-center">
                     <div>Interest</div>
