@@ -7,9 +7,13 @@ import styles from "../styles/Home.module.css";
 import { tokens } from "../utils/tokens";
 import Loader from "../components/Loader";
 import Link from "next/link";
-import { STAKING_CONTRACT_ABI, STAKING_CONTRACT_ADDRESS } from "../Constants";
+import {
+  STAKING_CONTRACT_ABI,
+  STAKING_CONTRACT_ADDRESS,
+  Token_ABI,
+} from "../Constants";
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
-import { ethers } from "ethers";
+import { ethers, Contract } from "ethers";
 
 const token1 = tokens;
 const token2 = tokens;
@@ -18,12 +22,17 @@ export default function Stake() {
   const [expand, setExpand] = useState(false);
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
 
-  const [selectedToken1, setSelectedToken1] = useState(token1[0]);
-  const [selectedToken2, setSelectedToken2] = useState(token2[0]);
+  // const [selectedToken1, setSelectedToken1] = useState(token1[0]);
+  // const [selectedToken2, setSelectedToken2] = useState(token2[0]);
   const [inputAmount, setInputAmount] = useState(0);
+  const [withdrawAmount, setWithdrawAmount] = useState(0);
+
   const [loading, setLoading] = useState(false);
   const [balance, setBalance] = useState(0);
   const [earnedRewards, setEarnedRewards] = useState(0);
+  const [stakedAmount, setStakedAmount] = useState(0);
+  const [poolAddress, setPoolAddress] = useState();
+
   const provider = useProvider();
   const { data: signer } = useSigner();
   const contract = useContract({
@@ -34,10 +43,109 @@ export default function Stake() {
 
   const { address } = useAccount();
 
-  const stakeTokens = async (_amount) => {
+  const getPoolAddress = async () => {
     try {
+      const _getPool = await contract.getPoolAddress(selectedToken.address);
+      setPoolAddress(_getPool);
+    } catch (err) {
+      // toast.error("")
+      console.error(err);
+    }
+  };
+
+  const getTokenBalance = async () => {
+    try {
+      const _getTokens = await contract.getBalance(selectedToken.address);
+      setBalance(ethers.utils.formatEther(_getTokens.toString()).slice(0, 7));
+    } catch (err) {
+      // toast.error("")
+      console.error(err);
+    }
+  };
+
+  const getStakedAmount = async () => {
+    try {
+      // pasting the token address here
+      const _staked = await contract.getStaked(address, selectedToken.address);
+      setStakedAmount(ethers.utils.formatEther(_staked.toString()).slice(0, 7));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getEarnedRewards = async () => {
+    try {
+      // pasting the token address here
+      const _earnings = await contract.getRewardEarned(
+        selectedToken.address,
+        address
+      );
+      setEarnedRewards(
+        ethers.utils.formatEther(_earnings.toString()).slice(0, 7)
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleStake = () => {
+    if (selectedToken) {
+      if (selectedToken.symbol == "XDC") {
+        stakeEther();
+      } else {
+        stakeTokens();
+      }
+    }
+  };
+
+  const handleUnstake = () => {
+    if (selectedToken) {
+      if (selectedToken.symbol == "XDC") {
+        withdrawEther();
+      } else {
+        withdraw();
+      }
+    }
+  };
+
+  const handleClaim = () => {
+    if (selectedToken) {
+      if (selectedToken.symbol == "XDC") {
+        redeemRewardEth();
+      } else {
+        redeemRewards();
+      }
+    }
+  };
+
+  const approveTokens = async (tokenInAddress, spender, amountIn) => {
+    try {
+      const Token_contract = new Contract(tokenInAddress, Token_ABI, signer);
+
+      const tx = await Token_contract.approve(
+        spender,
+        ethers.utils.parseEther(amountIn.toString())
+      );
+
+      await tx.wait();
+      return true;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const stakeTokens = async () => {
+    try {
+      // await approveTokens(
+      //   selectedToken.address,
+      //   poolAddress,
+      //   ethers.utils.parseEther(inputAmount.toString())
+      // );
       // add the required address
-      const _stake = await contract.stake(selectedToken1.address, _amount);
+      const _stake = await contract.stake(
+        selectedToken.address,
+        ethers.utils.parseEther(inputAmount.toString())
+      );
       setLoading(true);
       await _stake.wait();
       setLoading(false);
@@ -48,40 +156,19 @@ export default function Stake() {
     }
   };
 
-  const getStakedTokens = async () => {
-    try {
-      const _getTokens = await contract.getBalance(selectedToken1.address);
-      setBalance(parseInt(_getTokens));
-    } catch (err) {
-      // toast.error("")
-      console.error(err);
-    }
-  };
-
-  const getEarnedRewards = async () => {
-    try {
-      // pasting the token address here
-      const _earnings = await contract.getRewardEarned(
-        selectedToken1.address,
-        address
-      );
-      setEarnedRewards(parseInt(_earnings));
-      console.log(earnedRewards);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   // call this function in the withdraw button with inputAmount as _amount
-  const withdraw = async (_amount) => {
+  const withdraw = async () => {
     try {
-      const _withdraw = await contract.withdraw(
-        selectedToken1.address,
-        _amount
-      );
-      setLoading(true);
-      await _withdraw.wait();
-      setLoading(false);
+      if (withdrawAmount) {
+        const _amount = ethers.utils.parseEther(withdrawAmount.toString());
+        const _withdraw = await contract.withdraw(
+          selectedToken.address,
+          _amount
+        );
+        setLoading(true);
+        await _withdraw.wait();
+        setLoading(false);
+      }
     } catch (err) {
       console.error(err);
       // toast.error(err);
@@ -91,9 +178,7 @@ export default function Stake() {
   const redeemRewards = async () => {
     try {
       // in the param put in the token that was staked
-      const _redeemRewards = await contract.reedemReward(
-        selectedToken1.address
-      );
+      const _redeemRewards = await contract.reedemReward(selectedToken.address);
       setLoading(true);
       await _redeemRewards.wait();
       setLoading(false);
@@ -101,6 +186,7 @@ export default function Stake() {
     } catch (err) {
       console.error(err);
       // toast.error(err)
+      alert(err.message);
     }
   };
 
@@ -149,18 +235,11 @@ export default function Stake() {
   };
 
   useEffect(() => {
+    getPoolAddress();
     getEarnedRewards();
-    getStakedTokens();
-  }, []);
-
-  // const withdrawTokens = async () => {
-  //   try {
-  //     const _withdraw = await contract.withdraw()
-  //   }
-  //   catch (err) {
-
-  //   }
-  // }
+    getTokenBalance();
+    getStakedAmount();
+  }, [selectedToken]);
 
   return (
     <div
@@ -288,7 +367,7 @@ export default function Stake() {
               <div class="mt-4 relative flex items-center text-white justify-between">
                 <div class="mt-4 relative border border-gray-500 py-4 px-6 rounded-sm flex items-center flex-col w-full mr-2 justify-center">
                   <h3 className=" text-md mb-1">Staked</h3>
-                  <h3 className=" text-xl font-semibold">0</h3>
+                  <h3 className=" text-xl font-semibold">{stakedAmount}</h3>
                   <div className=" text-sm mt-1">
                     <input
                       type="number"
@@ -296,32 +375,36 @@ export default function Stake() {
                       className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                       placeholder="0"
                       required
+                      onChange={(e) => setWithdrawAmount(+e.target.value)}
                     />
                   </div>
                   <button
                     type="button"
                     className="text-black w-72 mt-6 bg-orange-500 text-sm font-fredoka active:bg-orange-600 font-normal rounded-sm px-5 py-2.5 mr-2 mb-2"
+                    onClick={() => handleUnstake()}
                   >
                     Unstake
                   </button>
                 </div>
                 <div class="mt-4 relative border w-full border-gray-500 py-4 px-6 rounded-sm flex items-center flex-col ml-2 justify-between">
                   <h3 className=" text-md mb-1">Claimable</h3>
-                  <h3 className=" text-xl font-semibold">0</h3>
+                  <h3 className=" text-xl font-semibold">{earnedRewards}</h3>
                   <div className=" text-sm mt-1">
-                    <input
+                    {/* <input
                       type="number"
                       id=""
                       className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                       placeholder="0"
                       required
-                    />
+                      onChange={(e) => setRewardWithdrawAmount(+e.target.value)}
+                    /> */}
                   </div>
                   <button
                     type="button"
                     className="text-black w-72 mt-6 bg-orange-500 text-sm font-fredoka active:bg-orange-600 font-normal rounded-sm px-5 py-2.5 mr-2 mb-2"
+                    onClick={() => handleClaim()}
                   >
-                    Claim XDC
+                    Claim
                   </button>
                 </div>
               </div>
@@ -336,7 +419,7 @@ export default function Stake() {
               <button
                 type="button"
                 className="text-white w-full mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
-                onClick={() => stakeTokens(inputAmount)}
+                onClick={() => handleStake()}
               >
                 Stake
               </button>
