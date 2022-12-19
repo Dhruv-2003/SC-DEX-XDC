@@ -417,39 +417,35 @@ export default function Lending() {
                 </Link>
               </div>
 
-              <div class="mt-4 relative border text-white border-gray-500 py-4 px-6 rounded-md flex flex-col wf items-center justify-between">
-                <div className="flex my-2 w-full justify-between items-center">
-                  <div>Wallet Balance</div>
-                  <div>{userBalance}</div>
-                  {/* <input
-                      type="number"
-                      id=""
-                      className={` mt-5 bg-gray-800 text-white border  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                      placeholder="0"
-                      required
-                    /> */}
+
+              <div className=" flex  justify-between w-full">
+                <div class="mt-4 relative border w-full mr-2 text-white border-gray-500 py-4 px-6 rounded-md flex flex-col wf items-center justify-between">
+                  <div className="flex my-2 w-full justify-between items-center">
+                    <div>Wallet Balance</div>
+                    <div>{userBalance}</div>
+                  </div>
+                  <div className="flex my-2 w-full justify-between items-center">
+                    <div>Available to supply</div>
+                    <div>{userBalance}</div>
+                  </div>
+                  <div className="flex my-2 w-full justify-between items-center">
+                    <div>Available to borrow</div>
+                    <div>{toBorrow}</div>
+                  </div>
                 </div>
-                <div className="flex my-2 w-full justify-between items-center">
-                  <div>Available to supply</div>
-                  <div>{userBalance}</div>
-                  {/* <input
-                      type="number"
-                      id=""
-                      className={` mt-5 bg-gray-800 text-white border  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                      placeholder="0"
-                      required
-                    /> */}
-                </div>
-                <div className="flex my-2 w-full justify-between items-center">
-                  <div>Available to borrow</div>
-                  <div>{toBorrow}</div>
-                  {/* <input
-                      type="number"
-                      id=""
-                      className={` mt-5 bg-gray-800 text-white border  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
-                      placeholder="0"
-                      required
-                    /> */}
+                <div class="mt-4 relative border w-full ml-2 text-white border-gray-500 py-4 px-6 rounded-md flex flex-col wf items-center justify-between">
+                  <div className="flex my-2 w-full justify-between items-center">
+                    <div>Supplied amount</div>
+                    <div>0</div>
+                  </div>
+                  <div className="flex my-2 w-full justify-between items-center">
+                    <div>Borrowed amount</div>
+                    <div>0</div>
+                  </div>
+                  <div className="flex my-2 w-full justify-between items-center">
+                    <div>Interest</div>
+                    <div>13 %</div>
+                  </div>
                 </div>
               </div>
 
