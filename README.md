@@ -1,8 +1,8 @@
 # 🥳 XDC-Fi
 
-[![Hackathon-Video](https://i.imgur.com/bD0samS.gif)](https://youtu.be/ni5wa0Ry3SQ "Hackathon Video")
+https://user-images.githubusercontent.com/76868364/208483536-f404dff3-74e9-407f-b39b-ca5c2242d05a.mov
 
-_Click on the video to view it on YouTube_
+_[Click on the video to view it on YouTube](https://youtu.be/IxsvO4jcZ48)_
 
 ## 🤷‍♀️ Question Time
 
