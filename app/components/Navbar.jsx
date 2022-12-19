@@ -11,7 +11,7 @@ export default function Navbar(props) {
   // --------- States here ------------- //
   const { expand, setExpand } = props;
   return (
-    <nav className="max-w-full border-b border-gray-500 relative w-full flex justify-between items-center px-4 py-4 lg:flex lg:justify-around lg:px-0 font-plus  lg:items-center text-white">
+    <nav className="max-w-full border-b  z-[1000] border-gray-500 backdrop-blur-xl relative w-full flex justify-between items-center px-4 py-4 lg:flex lg:justify-around lg:px-0 font-plus  lg:items-center text-white">
       {!expand ? (
         <span
           className="self-center mlq-2 lg:hidden"
@@ -104,13 +104,13 @@ export default function Navbar(props) {
         leave="transition ease-in-out duration-1000 transform"
         leaveFrom="translate-x-0"
         leaveTo="translate-x-full"
-        className="lg:hidden w-screen h-screen fixed overflow-y left-0 top-0 z-10"
+        className="lg:hidden  w-screen h-screen fixed overflow-y left-0 top-0 z-10"
       >
         <div
-          className="lg:hidden  flex flex-col items-center h-full px-4 w-full mt-16 py-12 md:px-8"
+          className="lg:hidden bg-[#03071E] flex flex-col items-center h-full px-4 w-full mt-16 py-12 md:px-8"
           id="mobile-menu"
         >
-          <ul className=" flex flex-col text-center items-center justify-between basis-2/6 mt-14 mb-6">
+          <ul className=" flex flex-col text-center items-center justify-between basis-2/6 mt-14 mb-">
             <Link href="/xdc">
               <div className="cursor-pointer relative hover:animate-pulse group py-0.5 px-0.5 ">
                 <div className="absolute -inset-1 blur-lg transition-all"></div>
@@ -155,7 +155,7 @@ export default function Navbar(props) {
               <div className="cursor-pointer hover:animate-pulse relative group py-0.5 px-0.5 ">
                 <div className="absolute -inset-1 blur-lg transition-all"></div>
                 <button className="relative active:scale-x-105 border-[#D100D1] py-1 transition-all text-md">
-                  Staking
+                  Lending
                 </button>
               </div>
             </Link>

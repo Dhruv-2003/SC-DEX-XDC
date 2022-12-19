@@ -15,7 +15,7 @@ export default function Home() {
   return (
     <>
       <div
-        className={`w-screen min-h-screen no-repeat bg-cover ${
+        className={`w-screen min-h- pb-20 md:pb-0 lg:min-h-max no-repeat bg-cover ${
           !expand
             ? `${styles.bg} bg-[url('../assets/landing.png')] bg-cover lg:bg-center bg-no-repeat`
             : `bg-[#03071E]`
@@ -25,7 +25,7 @@ export default function Home() {
         <Navbar expand={expand} setExpand={setExpand} />
         {expand ? null : (
           <>
-            <div className="mt-20 lg:ml-12 lg:mt-48 flex items-center lg:justify-start justify-around flex-wrap-reverse">
+            <div className="mt-20 lg:ml-12 lg:mt-48 lg:pb-48 flex items-center lg:justify-start justify-around flex-wrap-reverse">
               <div className="font-fredoka mt-8 tracking-wide text-white flex flex-col items-start justify-center  px-14">
                 <h1 className="text-4xl mb-2">XDC-DEX</h1>
                 <p className="text-xl ">Swap your XDC tokens to ETH</p>
@@ -60,10 +60,10 @@ export default function Home() {
             : `bg-[#03071E]`
         }`}
       >
-        <div className="text-white w-full my-5 flex flex-col justify-center items-center">
-          <h1> Our Main Features</h1>
+        <div className="text-white w-full my-5 flex flex-col justify-center items-center mb-12 z-[1] lg:mb-20">
+          <h1 className=" text-3xl font-semiobold"> Our Main Features</h1>
           <div className="w-11/12 grid md:grid-cols-3   md:gap-4 gap-3 mt-8  rounded-md">
-            <div className=" border px-6 py-10 text-">
+            <div className=" border px-6 py-10  bg-[#fc6f38] text-gray-800">
               <h1>XDC Stable Coin</h1>
               <p></p>
             </div>
@@ -71,7 +71,7 @@ export default function Home() {
               <h1>XDC Stable Coin</h1>
               <p></p>
             </div>
-            <div className=" border px-6 py-10">
+            <div className=" border px-6 py-10 bg-[#fc6f38] text-gray-800">
               <h1>XDC Stable Coin</h1>
               <p></p>
             </div>
@@ -79,7 +79,7 @@ export default function Home() {
               <h1>XDC Stable Coin</h1>
               <p></p>
             </div>
-            <div className=" border px-6 py-10">
+            <div className=" border px-6 py-10 bg-[#fc6f38] text-gray-800">
               <h1>XDC Stable Coin</h1>
               <p></p>
             </div>
@@ -90,7 +90,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className=" w-ful">{expand ? null : <Footer />}</div>
+      <div className="w-ful">{expand ? null : <Footer />}</div>
     </>
   );
 }
