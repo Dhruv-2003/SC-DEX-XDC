@@ -27,7 +27,7 @@ export default function Stake() {
   const contract = useContract({
     address: STAKING_CONTRACT_ADDRESS,
     abi: STAKING_CONTRACT_ABI,
-    signerOrProvider: signer || provider
+    signerOrProvider: signer || provider,
   });
 
   const { address } = useAccount();
@@ -40,35 +40,35 @@ export default function Stake() {
       await _stake.wait();
       setLoading(false);
       // toast.success();
-    }
-    catch (err) {
+    } catch (err) {
       // toast.error("")
       console.error(err);
     }
-  }
+  };
 
   const getStakedTokens = async () => {
     try {
       const _getTokens = await contract.getBalance(selectedToken1.address);
       setBalance(parseInt(_getTokens));
-    } 
-    catch (err) {
+    } catch (err) {
       // toast.error("")
-      console.error(err)  
+      console.error(err);
     }
-  }
+  };
 
   const getEarnedRewards = async () => {
     try {
       // pasting the token address here
-      const _earnings = await contract.getRewardEarned(selectedToken1.address, address);
+      const _earnings = await contract.getRewardEarned(
+        selectedToken1.address,
+        address
+      );
       setEarnedRewards(parseInt(_earnings));
-      console.log(earnedRewards)
-    } 
-    catch (err) {
-      console.error(err);  
+      console.log(earnedRewards);
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
   // call this function in the withdraw button with inputAmount as _amount
   const withdraw = async (_amount) => {
@@ -148,17 +148,16 @@ export default function Stake() {
   useEffect(() => {
     getEarnedRewards();
     getStakedTokens();
-  }, [])
+  }, []);
 
   // const withdrawTokens = async () => {
   //   try {
   //     const _withdraw = await contract.withdraw()
-  //   } 
+  //   }
   //   catch (err) {
-      
+
   //   }
   // }
-
 
   return (
     <div
@@ -191,19 +190,17 @@ export default function Stake() {
                   Stake XDC
                 </span>
                 <Link href="/xdc">
-
-                <button
-                  type="button"
-                  className=" flex hover:scale-105 transition ease-in-out items-center w- ml-6 mt-2 hover:bg-transparent border hover:border-gray-300 rounded-md opacity-90 text-xs font-semibold font-fredoka text-white px-3 py-2 mr-2 mb-2"
-                >
-                  <img
-                    className=" w-5 mr-2"
-                    src="https://img.icons8.com/external-kiranshastry-lineal-kiranshastry/64/ffffff/external-wallet-interface-kiranshastry-lineal-kiranshastry.png"
-                  />
-                  Buy XDC
-                </button>
+                  <button
+                    type="button"
+                    className=" flex hover:scale-105 transition ease-in-out items-center w- ml-6 mt-2 hover:bg-transparent border hover:border-gray-300 rounded-md opacity-90 text-xs font-semibold font-fredoka text-white px-3 py-2 mr-2 mb-2"
+                  >
+                    <img
+                      className=" w-5 mr-2"
+                      src="https://img.icons8.com/external-kiranshastry-lineal-kiranshastry/64/ffffff/external-wallet-interface-kiranshastry-lineal-kiranshastry.png"
+                    />
+                    Buy XDC
+                  </button>
                 </Link>
-
               </div>
 
               {/* <div className="lg:w-5/12 flex items-center justify-start "></div> */}
@@ -226,28 +223,49 @@ export default function Stake() {
                 <div class="mt-4 relative border border-gray-500 py-4 px-6 rounded-sm flex items-center flex-col w-full mr-2 justify-center">
                   <h3 className=" text-md mb-1">Claimable XDC</h3>
                   <h3 className=" text-xl font-semibold">0</h3>
-                  <h3 className=" text-sm mt-1">$ 0</h3>
+                  <div className=" text-sm mt-1">
+                    <input
+                      type="number"
+                      id=""
+                      className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                      placeholder="0"
+                      required
+                    />
+                  </div>
                   <button
                     type="button"
-                    className="text-black w-full mt-6 bg-orange-500 text-sm font-fredoka active:bg-orange-600 font-normal rounded-sm px-5 py-2.5 mr-2 mb-2"
+                    className="text-black w-72 mt-6 bg-orange-500 text-sm font-fredoka active:bg-orange-600 font-normal rounded-sm px-5 py-2.5 mr-2 mb-2"
                   >
-                    Cooldown to unstake
+                    Unstake
                   </button>
                 </div>
                 <div class="mt-4 relative border w-full border-gray-500 py-4 px-6 rounded-sm flex items-center flex-col ml-2 justify-between">
                   <h3 className=" text-md mb-1">Claimable XDC</h3>
                   <h3 className=" text-xl font-semibold">0</h3>
-                  <h3 className=" text-sm mt-1">$ 0</h3>
+                  <div className=" text-sm mt-1">
+                    <input
+                      type="number"
+                      id=""
+                      className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                      placeholder="0"
+                      required
+                    />
+                  </div>
                   <button
                     type="button"
-                    className="text-black w-full mt-6 bg-orange-500 text-sm font-fredoka active:bg-orange-600 font-normal rounded-sm px-5 py-2.5 mr-2 mb-2"
+                    className="text-black w-72 mt-6 bg-orange-500 text-sm font-fredoka active:bg-orange-600 font-normal rounded-sm px-5 py-2.5 mr-2 mb-2"
                   >
                     Claim XDC
                   </button>
                 </div>
               </div>
-              <input 
-              onChange={(e) => setInputAmount(+e.target.value)}
+              <input
+                onChange={(e) => setInputAmount(+e.target.value)}
+                type="number"
+                id=""
+                className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                placeholder="0"
+                required
               />
               <button
                 type="button"

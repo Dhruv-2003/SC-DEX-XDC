@@ -14,6 +14,8 @@ import { ethers } from "ethers";
 export default function Lending() {
   const [expand, setExpand] = useState(false);
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
+  const [toggleSupply, setToggleSupply] = useState(false);
+  const [toggleBorrow, setToggleBorrow] = useState(false);
   const [loading, setLoading] = useState(false);
   const [userBalance, setUserBalance] = useState(0);
   const [lendAmount, setLendAmount] = useState(0);
@@ -224,14 +226,14 @@ export default function Lending() {
         <>
           <div className=" w-full mt-10 flex flex-col justify-center items-center px-2 pb-10">
             <div className="w-full flex flex-col lg:w-5/12 justify-around">
-              <h1 className=" text-gray-100 text-3xl font-semibold">Staking</h1>
+              <h1 className=" text-gray-100 text-3xl font-semibold">Lending</h1>
             </div>
             <div
               className={` mt-8 lg:w-5/12 border rounded-lg border-gray-500 px-4 py-6 bg-transparent backdrop-blur-xl`}
             >
               <div className=" flex items-center justify-between">
                 <div className=" text-gray-100  flex  items-center text-lg font-semibold">
-                  Stake
+                  Lend
                   <Listbox
                     className=" ml-3"
                     value={selectedToken}
@@ -255,7 +257,7 @@ export default function Lending() {
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                       >
-                        <Listbox.Options className="absolute mt-1 max-h-60 w-full z-[100] overflow-auto rounded-md  bg-transparent backdrop-blur-xl py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                        <Listbox.Options className="absolute mt-1 max-h-60 w-36 z-[100] overflow-auto rounded-md  bg-gray-900  backdrop-blur-xl py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                           {tokens.map((token, tokenId) => (
                             <Listbox.Option
                               key={tokenId}
@@ -313,30 +315,89 @@ export default function Lending() {
               <div class="mt-4 relative border text-white border-gray-500 py-4 px-6 rounded-md flex flex-col wf items-center justify-between">
                 <div className="flex my-2 w-full justify-between items-center">
                   <div>Wallet Balance</div>
-                  <div>0 USDC</div>
+                  {/* <div>0 USDC</div> */}
+                  <input
+                      type="number"
+                      id=""
+                      className={` mt-5 bg-gray-800 text-white border  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                      placeholder="0"
+                      required
+                    />
                 </div>
                 <div className="flex my-2 w-full justify-between items-center">
                   <div>Available to supply</div>
-                  <div>0 USDC</div>
+                  {/* <div>0 USDC</div> */}
+                  <input
+                      type="number"
+                      id=""
+                      className={` mt-5 bg-gray-800 text-white border  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                      placeholder="0"
+                      required
+                    />
                 </div>
                 <div className="flex my-2 w-full justify-between items-center">
                   <div>Available to borrow</div>
-                  <div>0 USDC</div>
+                  {/* <div>0 USDC</div> */}
+                  <input
+                      type="number"
+                      id=""
+                      className={` mt-5 bg-gray-800 text-white border  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                      placeholder="0"
+                      required
+                    />
                 </div>
               </div>
 
               <div>
                 <button
+                  onClick={() => {
+                    setToggleSupply(!toggleSupply)
+                    setToggleBorrow(false)
+                  }}
                   type="button"
                   className="text-white mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
                 >
                   Supply
                 </button>
                 <button
+                  onClick={() => {
+                    setToggleBorrow(!toggleBorrow)
+                    setToggleSupply(false)
+                  }}
                   type="button"
                   className="text-white  mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 ml-4 mb-2"
                 >
                   Borrow
+                </button>
+              </div>
+              <div className={`${toggleSupply ? "visible" : "hidden"} `}>
+                <input
+                  type="number"
+                  id=""
+                  className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                  placeholder="0"
+                  required
+                />
+                <button
+                  type="button"
+                  className="text-white w-full  mt-4 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mb-2"
+                >
+                  Submit Supply
+                </button>
+              </div>
+              <div className={`${toggleBorrow ? "visible" : "hidden"} `}>
+                <input
+                  type="number"
+                  id=""
+                  className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                  placeholder="0"
+                  required
+                />
+                <button
+                  type="button"
+                  className="text-white w-full  mt-4 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mb-2"
+                >
+                  Submit Borrow
                 </button>
               </div>
             </div>

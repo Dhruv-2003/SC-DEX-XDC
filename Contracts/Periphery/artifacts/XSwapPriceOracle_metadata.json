@@ -152,11 +152,11 @@
 			]
 		},
 		"Periphery/XSwapPriceOracle.sol": {
-			"keccak256": "0x3e094f3dc647d3d167b572dd64f13dea225b8a842149e5a5ccac345cb5471ede",
+			"keccak256": "0xa5aa61943f55894dedc83ab2305500c496e618ce2521084ad5278ee3573d7c37",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://d09228dd45ee10e87c32eb0d32e5f709add56025b6682dc18d18cccba3bf9d79",
-				"dweb:/ipfs/QmcqsH6PQcJXqJQJWBCyHFfE2LYXZf6dEGDPaMRa3oX3MN"
+				"bzz-raw://1f8405735719ff167cbb8754a40b04562d7b354f5339aca6a026c0c0043362ba",
+				"dweb:/ipfs/QmVAV6cVT8hePLi7TdQmJmMLnMAEioUvPS66qkEuJ16obQ"
 			]
 		},
 		"Periphery/libraries/XSwapLibrary.sol": {
