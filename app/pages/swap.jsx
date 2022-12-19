@@ -11,7 +11,7 @@ import {
   SWAP_ROUTER_ADDRESS,
   SWAP_ROUTER_ABI,
   Token_ABI,
-} from "../constants/index.js";
+} from "../constants/Index";
 
 const token1 = tokens;
 const token2 = tokens;
