@@ -64,27 +64,27 @@ export default function Home() {
           <h1 className=" text-3xl font-semiobold"> Our Main Features</h1>
           <div className="w-11/12 grid md:grid-cols-3   md:gap-4 gap-3 mt-8  rounded-md">
             <div className=" border px-6 py-10  bg-[#fc6f38] text-gray-800">
-              <h1>XDC Stable Coin</h1>
+              <h1>Swapping</h1>
               <p></p>
             </div>
             <div className=" border px-6 py-10">
-              <h1>XDC Stable Coin</h1>
+              <h1>Liquidity Pools</h1>
               <p></p>
             </div>
             <div className=" border px-6 py-10 bg-[#fc6f38] text-gray-800">
-              <h1>XDC Stable Coin</h1>
+              <h1>Staking</h1>
               <p></p>
             </div>
             <div className=" border px-6 py-10">
-              <h1>XDC Stable Coin</h1>
+              <h1>Lending Borrowing</h1>
               <p></p>
             </div>
             <div className=" border px-6 py-10 bg-[#fc6f38] text-gray-800">
-              <h1>XDC Stable Coin</h1>
+              <h1>Stable Coin</h1>
               <p></p>
             </div>
             <div className=" border px-6 py-10">
-              <h1>XDC Stable Coin</h1>
+              <h1>Price Oracle</h1>
               <p></p>
             </div>
           </div>
