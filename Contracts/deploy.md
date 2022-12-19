@@ -49,6 +49,10 @@ xdcCFECf5Da1674e940b1f49E5C3CE0066980815499
 0xCFECf5Da1674e940b1f49E5C3CE0066980815499
 https://explorer.apothem.network/address/xdcCFECf5Da1674e940b1f49E5C3CE0066980815499#transactions
 
+xdc0799B2EcC59039EC318dD4BB328C092C7B34B732
+0x0799B2EcC59039EC318dD4BB328C092C7B34B732
+https://explorer.apothem.network/address/xdc0799B2EcC59039EC318dD4BB328C092C7B34B732#transactions
+
 ## Lending Factory
 
 xdcFbA6E5cB5250FB3d5EbD0e51a99f6c3C947160C8
@@ -57,9 +61,9 @@ https://explorer.apothem.network/address/xdcFbA6E5cB5250FB3d5EbD0e51a99f6c3C9471
 
 ## Lending Router
 
-xdc49372A68d48E11bC12da03128a25f4ADbcBCA739
-0x49372A68d48E11bC12da03128a25f4ADbcBCA739
-https://explorer.apothem.network/address/xdc49372A68d48E11bC12da03128a25f4ADbcBCA739#transactions
+xdc8adb1DE674A4FC96CE66A88C8C5c9A0f38A83715
+0x8adb1DE674A4FC96CE66A88C8C5c9A0f38A83715
+https://explorer.apothem.network/address/xdc8adb1DE674A4FC96CE66A88C8C5c9A0f38A83715#transactions
 
 ## Staking Factory
 
@@ -69,6 +73,7 @@ https://explorer.apothem.network/address/xdcb254a0e6d8b26F4CAe66deC3289E941bd51F
 
 ## Stakig Router
 
-xdc7aFE87507dCafFE72263Aa0b498Cc007C6Be0877
-0x7aFE87507dCafFE72263Aa0b498Cc007C6Be0877
-https://explorer.apothem.network/address/xdc7aFE87507dCafFE72263Aa0b498Cc007C6Be0877#transactions
+xdcB3F71eF36B731A9B1A3aB7C86989c57384b44415
+0xB3F71eF36B731A9B1A3aB7C86989c57384b44415
+https://explorer.apothem.network/address/
+xdcB3F71eF36B731A9B1A3aB7C86989c57384b44415#transactions

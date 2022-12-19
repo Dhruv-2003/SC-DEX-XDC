@@ -47,3 +47,7 @@
 3. Staking Factory - Create and Manages the various Staking Pool
 
 We have plans to allow users to pay protocol fees in the Reward Token we offer to them , in this way it can be utilised
+
+## NOTE : Swapping contracts are ready for Mainnet Deployement . The contracts are properly audited , gas optimized and quailty approved .
+
+## NOTE : LENDING and STAKING contracts Not fit for mainnet, No Audit has been done for these contracts. Issues maybe present.

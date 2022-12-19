@@ -21,7 +21,8 @@ contract XSwapPriceOracle {
         returns (uint256 priceA)
     {
         address pair = XSwapLibrary.pairFor(factory, tokenA, tokenB);
-        priceA = IXSwapPair(pair).price0CumulativeLast();
+        // priceA = IXSwapPair(pair).price0CumulativeLast();
+        priceA = (reserveB/reserveA);
     }
 
     function getPriceB(address tokenA, address tokenB)
@@ -30,6 +31,8 @@ contract XSwapPriceOracle {
         returns (uint256 priceB)
     {
         address pair = XSwapLibrary.pairFor(factory, tokenA, tokenB);
-        priceB = IXSwapPair(pair).price1CumulativeLast();
+        // priceB = IXSwapPair(pair).price1CumulativeLast();
+        (uint reserveA ,uint reserveB ,uint timeStamp )= IXSwapPair(pair).getReserves() ;
+        priceB = (reserveA/reserveB);
     }
 }

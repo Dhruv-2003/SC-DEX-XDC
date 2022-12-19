@@ -147,18 +147,18 @@ export default function Swap() {
       } else if (exactAmountOut) {
         if (selectedToken1.symbol == "XDC" && selectedToken2.symbol != "XDC") {
           if (selectedToken2.symbol == "Tk1") {
-            swapEthForExactAmountOfTokens(amountTwo, pathXTk1);
+            swapEthForExactAmountOfTokens(amountTwo, pathXTk1, amountOne);
           } else if (selectedToken2.symbol == "Tk2") {
-            swapEthForExactAmountOfTokens(amountTwo, pathXTk2);
+            swapEthForExactAmountOfTokens(amountTwo, pathXTk2, amountOne);
           }
         } else if (
           selectedToken1.symbol != "XDC" &&
           selectedToken2.symbol == "XDC"
         ) {
           if (selectedToken1.symbol == "Tk1") {
-            swapTokensForExactAmountOfEth(amountTwo, pathTk1X);
+            swapTokensForExactAmountOfEth(amountTwo, pathTk1X, amountOne);
           } else if (selectedToken1.symbol == "Tk2") {
-            swapTokensForExactAmountOfEth(amountTwo, pathTk2X);
+            swapTokensForExactAmountOfEth(amountTwo, pathTk2X, amountOne);
           }
         }
       }
@@ -234,12 +234,13 @@ export default function Swap() {
   };
 
   // payable func
-  const swapExactAmountOfEthForTokens = async (valueOut) => {
+  const swapExactAmountOfEthForTokens = async (valueIn, path) => {
     try {
       if (valueOut) {
-        const _amount = ethers.utils.parseEther("0.1");
+        const _amount = ethers.utils.parseEther(valueIn.toString());
+        const _deadline = getDeadline();
         const _swapEth = await contract.swapExactETHForTokens(
-          valueOut,
+          1,
           path,
           address,
           _deadline,
@@ -258,16 +259,19 @@ export default function Swap() {
     }
   };
 
-  const swapEthForExactAmountOfTokens = async (valueOut) => {
+  const swapEthForExactAmountOfTokens = async (valueOut, path, valueETH) => {
     try {
       if (valueOut) {
-        const _amount = ethers.utils.parseEther("0.01");
+        const _amount = ethers.utils.parseEther(valueETH.toString());
+        const _deadline = getDeadline();
         const _swapTokens = await contract.swapETHForExactTokens(
-          valueOut,
+          ethers.utils.parseEther(valueOut.toString()),
           path,
           address,
           _deadline,
-          { value: _amount }
+          {
+            value: _amount,
+          }
         );
         setLoading(true);
         await _swapTokens.wait();
@@ -280,12 +284,17 @@ export default function Swap() {
     }
   };
 
-  const swapTokensForExactAmountOfEth = async (valueOut) => {
+  const swapTokensForExactAmountOfEth = async (valueOut, path, valueIn) => {
     try {
       if (valueOut) {
+        await approveTokens(
+          selectedToken1.address,
+          ethers.utils.parseEther(valueIn.toString())
+        );
+        const _deadline = getDeadline();
         const _swapTokensForEth = await contract.swapTokensForExactETH(
-          valueOut,
-          0,
+          ethers.utils.parseEther(valueOut.toString()),
+          1,
           path,
           address,
           _deadline
@@ -301,12 +310,17 @@ export default function Swap() {
     }
   };
 
-  const swapExactAmountOfTokensForEth = async (valueIn) => {
+  const swapExactAmountOfTokensForEth = async (valueIn, path) => {
     try {
       if (valueIn) {
+        await approveTokens(
+          selectedToken1.address,
+          ethers.utils.parseEther(valueIn.toString())
+        );
+        const _deadline = getDeadline();
         const _swapTokensForEth = await contract.swapExactTokensForETH(
-          valueIn,
-          0,
+          ethers.utils.parseEther(valueIn.toString()),
+          1,
           path,
           address,
           _deadline
@@ -356,7 +370,7 @@ export default function Swap() {
 
       console.log(ethers.utils.formatEther(amountOut));
       setAmountOut(ethers.utils.formatEther(amountOut));
-      setAmountTwo(ethers.utils.formatEther(amountOut).slice(0, 7));
+      setAmountTwo(ethers.utils.formatEther(amountOut));
     }
   };
 
@@ -371,7 +385,7 @@ export default function Swap() {
 
       console.log(ethers.utils.formatEther(amountIn));
       setAmountIn(ethers.utils.formatEther(amountIn));
-      setAmountOne(ethers.utils.formatEther(amountIn).slice(0, 7));
+      setAmountOne(ethers.utils.formatEther(amountIn));
     }
   };
 
@@ -382,9 +396,10 @@ export default function Swap() {
       selectedToken2 != 0 &&
       selectedToken1 != selectedToken2
     ) {
-      if (selectedToken1.symbol != "XDC" && selectedToken2.symbol != "XDC") {
-        getReserves(selectedToken1.address, selectedToken2.address);
-      }
+      // if (selectedToken1.symbol != "XDC" && selectedToken2.symbol != "XDC") {
+      //   getReserves(selectedToken1.address, selectedToken2.address);
+      // }
+      getReserves(selectedToken1.address, selectedToken2.address);
     }
   }, [selectedToken1, selectedToken2]);
 
