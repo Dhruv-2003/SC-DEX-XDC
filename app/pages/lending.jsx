@@ -315,36 +315,36 @@ export default function Lending() {
               <div class="mt-4 relative border text-white border-gray-500 py-4 px-6 rounded-md flex flex-col wf items-center justify-between">
                 <div className="flex my-2 w-full justify-between items-center">
                   <div>Wallet Balance</div>
-                  {/* <div>0 USDC</div> */}
-                  <input
+                  <div>0 USDC</div>
+                  {/* <input
                       type="number"
                       id=""
                       className={` mt-5 bg-gray-800 text-white border  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                       placeholder="0"
                       required
-                    />
+                    /> */}
                 </div>
                 <div className="flex my-2 w-full justify-between items-center">
                   <div>Available to supply</div>
-                  {/* <div>0 USDC</div> */}
-                  <input
+                  <div>0 USDC</div>
+                  {/* <input
                       type="number"
                       id=""
                       className={` mt-5 bg-gray-800 text-white border  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                       placeholder="0"
                       required
-                    />
+                    /> */}
                 </div>
                 <div className="flex my-2 w-full justify-between items-center">
                   <div>Available to borrow</div>
-                  {/* <div>0 USDC</div> */}
-                  <input
+                  <div>0 USDC</div>
+                  {/* <input
                       type="number"
                       id=""
                       className={` mt-5 bg-gray-800 text-white border  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                       placeholder="0"
                       required
-                    />
+                    /> */}
                 </div>
               </div>
 
