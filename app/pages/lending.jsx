@@ -205,10 +205,10 @@ export default function Lending() {
   }
 
 
-  useEffect(() => {
-    getConnectedUserBalance();
-    fetchLentAmount();
-  }, [])
+  // useEffect(() => {
+  //   getConnectedUserBalance();
+  //   fetchLentAmount();
+  // }, [])
 
 
   return (
