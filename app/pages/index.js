@@ -7,11 +7,13 @@ import Footer from "../components/Footer";
 import Image from "next/image";
 import coin from "../assets/coin.png";
 import Loader from "../components/Loader";
+import { Toast } from "flowbite-react";
 // import { fetchPrice } from "../api";
 
 import Prism from "prismjs";
 
-import "prismjs/themes/prism-funky.css";
+import "prismjs/themes/prism-coy.css";
+import "prismjs/components/prism-markdown.js";
 import "prismjs/components/prism-jsx.js";
 import "prismjs/plugins/line-numbers/prism-line-numbers.js";
 import "prismjs/plugins/line-numbers/prism-line-numbers.css";
@@ -27,7 +29,9 @@ export default function Home() {
 
   const howToUse = `
   import "xdefi-contracts/Core/XSwapPair.sol" ;
+
   contract myDefiContract is XSwapPair {
+    // ready to use the contracts
   }
   `;
 
@@ -52,7 +56,7 @@ export default function Home() {
               <div className="font-fredoka mt-8 tracking-wide text-white flex flex-col items-start justify-center  px-14">
                 <h1 className="text-4xl mb-2">XDC-DEX</h1>
                 <p className="text-xl ">Swap your XDC tokens to ETH</p>
-                <Link href="/xdc">
+                <Link href="/swap">
                   {/* <button className="border-2 py-2 px-4 rounded-sm mt-5 font-chakra bg-white text-black hover:bg-transparent hover:text-white">
                 Launch App
               </button> */}
@@ -70,7 +74,7 @@ export default function Home() {
                 </Link>
               </div>
               <div className="lg:hidden animate-pulse  max-w-md">
-                <Image src={coin} />
+                <Image alt="image" src={coin} />
               </div>
             </div>
           </>
@@ -149,11 +153,18 @@ export default function Home() {
           </div>
         </div>
 
+        {/* <Toast>
+          <div className="ml-3 text-sm font-normal">
+            Item moved successfully.
+          </div>
+          <Toast.Toggle />
+        </Toast> */}
+
         <div className="text-white w-full my-5 flex flex-col lg:mt-12 mt-20 justify-center items-center mb-12 z-[1] lg:mb-20">
           <h1 className=" text-3xl font-semiobold"> Build with XDC-Fi</h1>
           <div className="w-11/12 flex flex-wrap justify-around items-center mt-8 px-6 py-8 rounded-md backdrop-blur-2xl">
             <div className=" flex flex-col justify-start items-start flex-wrap">
-              <p className=" text-justify max-w-3xl">
+              <p className=" text-justify max-w-xl">
                 We also built a collection of contract-based layer as an
                 npm-package that anyone can use to build DeFi based applicions
                 on top of XDC-Chain
@@ -162,7 +173,13 @@ export default function Home() {
                 type="button"
                 className="text-white  mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mb-2"
               >
-                Get Package
+                <a
+                  href="https://www.npmjs.com/package/xdefi-contracts"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Get Package
+                </a>
               </button>
             </div>
             <div>
