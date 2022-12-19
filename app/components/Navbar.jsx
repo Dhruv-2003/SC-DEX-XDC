@@ -34,9 +34,9 @@ export default function Navbar(props) {
       <div className="flex justify-between w-[200px] -order-1 lg:w-72">
         <div className="  cursor-pointer">
           <Link href="/">
-            <span className=" flex items-center justify-start space-x-2 w-auto tracking-wide text-2xl font-bold text-[#fff4f0]">
+            <span className=" flex items-center justify-start space-x-2 w-auto tracking-wide text-2xl font-semibold text-[#fff4f0]">
               <Image width={40} src={logo} alt="logo" />
-              <span className="mx-1">XDCDEX</span>
+              <span className="mx-1">XDC-DEX</span>
             </span>
           </Link>
         </div>

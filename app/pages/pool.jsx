@@ -464,7 +464,7 @@ export default function Pool() {
                 id="customRange3"
               />
             </div> */}
-              <div class="mt-4 relative pt-1 flex flex-col">
+              <div className="mt-4 relative pt-1 flex flex-col">
                 <span className=" text-gray-100 text-lg font-semibold">
                   Deposit Amounts
                 </span>
@@ -514,7 +514,7 @@ export default function Pool() {
               <div className=" lg:px-4 py-8 w-full  ">
                 <table className=" w-full text-sm text-left text-gray-100 ">
                   <thead className=" text-sm uppercase  text-gray-100 border-b border-gray-500">
-                    <tr cla>
+                    <tr>
                       <th scope="col" className="py-3 px-6">
                         Token A
                       </th>

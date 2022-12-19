@@ -16,6 +16,8 @@ const token2 = tokens;
 
 export default function Stake() {
   const [expand, setExpand] = useState(false);
+  const [selectedToken, setSelectedToken] = useState(tokens[0]);
+
   const [selectedToken1, setSelectedToken1] = useState(token1[0]);
   const [selectedToken2, setSelectedToken2] = useState(token2[0]);
   const [inputAmount, setInputAmount] = useState(0);
@@ -73,77 +75,78 @@ export default function Stake() {
   // call this function in the withdraw button with inputAmount as _amount
   const withdraw = async (_amount) => {
     try {
-      const _withdraw = await contract.withdraw(selectedToken1.address, _amount);
+      const _withdraw = await contract.withdraw(
+        selectedToken1.address,
+        _amount
+      );
       setLoading(true);
       await _withdraw.wait();
       setLoading(false);
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
       // toast.error(err);
     }
-  }
+  };
 
-  const redeemRewards = async() => {
+  const redeemRewards = async () => {
     try {
       // in the param put in the token that was staked
-      const _redeemRewards = await contract.reedemReward(selectedToken1.address);
+      const _redeemRewards = await contract.reedemReward(
+        selectedToken1.address
+      );
       setLoading(true);
       await _redeemRewards.wait();
       setLoading(false);
       // toast.success("Redeemed rewards")
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
-      // toast.error(err) 
+      // toast.error(err)
     }
-  }
+  };
 
-  const stakeEther = async(_amount) => {
+  const stakeEther = async (_amount) => {
     try {
-      const _stakeEth = await contract.stakeEth({
-        value: ethers.utils.parseEther("0.1") // input the amount here dhruv 
-      },
-      _amount
-      )
+      const _stakeEth = await contract.stakeEth(
+        {
+          value: ethers.utils.parseEther("0.1"), // input the amount here dhruv
+        },
+        _amount
+      );
       setLoading(true);
       await _stakeEth.wait();
       setLoading(false);
       // toast.success("staked successfully!")
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
-      // toast.error(err) 
+      // toast.error(err)
     }
-  }
+  };
 
-  const withdrawEther = async(_amount) => {
+  const withdrawEther = async (_amount) => {
     try {
       const _withdrawEth = await contract.withdrawEth(_amount);
       setLoading(true);
       await _withdrawEth.wait();
       setLoading(false);
       // toast.success("withdrawn successfully")
-    } 
-    catch (err) {
+    } catch (err) {
       console.error(err);
       // toast.error(err)
     }
-  }
+  };
 
-  const redeemRewardEth = async() => {
+  const redeemRewardEth = async () => {
     try {
       const _redeemRewardsEth = await contract.reedemRewardETH();
       setLoading(true);
       await _redeemRewardsEth.wait();
       setLoading(false);
       // toast.success("Rewards redeemed!!!")
-    } 
-    catch (err) {
+    } catch (err) {
       console.error(err);
       // toast.error("failed to redeem rewards")
     }
-  }
+  };
 
   useEffect(() => {
     getEarnedRewards();
@@ -186,9 +189,72 @@ export default function Stake() {
               className={` mt-8 lg:w-7/12 border rounded-lg border-gray-500 px-4 py-6 bg-transparent backdrop-blur-xl`}
             >
               <div className=" flex items-center justify-between">
-                <span className=" text-gray-100 text-lg font-semibold">
-                  Stake XDC
-                </span>
+                <div className=" text-gray-100  flex  items-center text-lg font-semibold">
+                  Stake{" "}
+                  <Listbox
+                    className=" ml-3"
+                    value={selectedToken}
+                    onChange={setSelectedToken}
+                  >
+                    <div className="relative mt-0">
+                      <Listbox.Button className="relative  cursor-default rounded-md w-28 lg:w-36 px-4 py-2.5 bg-gray-700 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                        <span className="block truncate">
+                          {selectedToken.symbol}
+                        </span>
+                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                          <ChevronUpDownIcon
+                            className="h-5 w-5 text-gray-200"
+                            aria-hidden="true"
+                          />
+                        </span>
+                      </Listbox.Button>
+                      <Transition
+                        as={Fragment}
+                        leave="transition ease-in duration-100 "
+                        leaveFrom="opacity-100"
+                        leaveTo="opacity-0"
+                      >
+                        <Listbox.Options className="absolute mt-1 max-h-60 w-36 z-[100] overflow-auto rounded-md  bg-gray-900  backdrop-blur-xl py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                          {tokens.map((token, tokenId) => (
+                            <Listbox.Option
+                              key={tokenId}
+                              className={({ active }) =>
+                                `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                  active
+                                    ? "bg-gray-100 text-gray-900"
+                                    : "text-gray-100"
+                                }`
+                              }
+                              value={token}
+                            >
+                              {({ selectedToken }) => (
+                                <>
+                                  <span
+                                    className={`block truncate  ${
+                                      selectedToken
+                                        ? "font-medium"
+                                        : "font-normal"
+                                    }`}
+                                  >
+                                    {token.symbol}
+                                  </span>
+                                  {selectedToken ? (
+                                    <span className="absolute  inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                      <CheckIcon
+                                        className="h-5 w-5 text-gray-900"
+                                        aria-hidden="true"
+                                      />
+                                    </span>
+                                  ) : null}
+                                </>
+                              )}
+                            </Listbox.Option>
+                          ))}
+                        </Listbox.Options>
+                      </Transition>
+                    </div>
+                  </Listbox>
+                </div>
                 <Link href="/xdc">
                   <button
                     type="button"
@@ -207,11 +273,11 @@ export default function Stake() {
               <div class="mt-4 relative border border-gray-500 py-4 px-6 rounded-md flex items-center justify-between">
                 <div className=" text-white">
                   <div>Staking APR</div>
-                  <div>8.5%</div>
+                  <div>12%</div>
                 </div>
                 <div className=" text-white">
                   <div className=" text-white">Max slashing</div>
-                  <div>30%</div>
+                  <div>0%</div>
                 </div>
                 <div className=" text-white">
                   <div className=" text-white">Wallet Balance</div>
@@ -221,7 +287,7 @@ export default function Stake() {
 
               <div class="mt-4 relative flex items-center text-white justify-between">
                 <div class="mt-4 relative border border-gray-500 py-4 px-6 rounded-sm flex items-center flex-col w-full mr-2 justify-center">
-                  <h3 className=" text-md mb-1">Claimable XDC</h3>
+                  <h3 className=" text-md mb-1">Staked</h3>
                   <h3 className=" text-xl font-semibold">0</h3>
                   <div className=" text-sm mt-1">
                     <input
@@ -240,7 +306,7 @@ export default function Stake() {
                   </button>
                 </div>
                 <div class="mt-4 relative border w-full border-gray-500 py-4 px-6 rounded-sm flex items-center flex-col ml-2 justify-between">
-                  <h3 className=" text-md mb-1">Claimable XDC</h3>
+                  <h3 className=" text-md mb-1">Claimable</h3>
                   <h3 className=" text-xl font-semibold">0</h3>
                   <div className=" text-sm mt-1">
                     <input
