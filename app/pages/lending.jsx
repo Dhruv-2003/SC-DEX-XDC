@@ -27,6 +27,9 @@ export default function Lending() {
 
   const [supplyAmount, setSupplyAmount] = useState(0);
   const [borrowAmount, setBorrowAmount] = useState(0);
+  const [withdrawAmount, setWithdrawAmount] = useState(0);
+  const [repayAmount, setRepayAmount] = useState(0);
+
   const [poolAddress, setPoolAddress] = useState();
   const [toBorrow, setToBorrow] = useState();
 
@@ -155,7 +158,7 @@ export default function Lending() {
   const depositToken = async () => {
     try {
       if (supplyAmount) {
-        const _amount = ethers.utils.parseEther(supplyAmount);
+        const _amount = ethers.utils.parseEther(supplyAmount.toString());
         // await approveTokens(selectedToken.address, poolAddress, _amount);
         // first param takes address of the token and second one takes amount
         const txn = await contract.depositToken(selectedToken.address, _amount);
@@ -170,10 +173,16 @@ export default function Lending() {
 
   const withdrawToken = async (_amount) => {
     try {
-      const txn = await contract.withdrawToken(selectedToken.address, _amount);
-      setLoading(true);
-      await txn.wait();
-      setLoading(false);
+      if (withdrawAmount) {
+        const _amount = ethers.utils.parseEther(withdrawAmount.toString());
+        const txn = await contract.withdrawToken(
+          selectedToken.address,
+          _amount
+        );
+        setLoading(true);
+        await txn.wait();
+        setLoading(false);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -182,7 +191,7 @@ export default function Lending() {
   const borrowToken = async () => {
     try {
       if (borrowAmount) {
-        const _amount = ethers.utils.parseEther(borrowAmount);
+        const _amount = ethers.utils.parseEther(borrowAmount.toString());
 
         const txn = await contract.borrowToken(selectedToken.address, _amount);
         setLoading(true);
@@ -195,12 +204,15 @@ export default function Lending() {
     }
   };
 
-  const repayToken = async (_amount) => {
+  const repayToken = async () => {
     try {
-      const txn = await contract.repayToken(selectedToken.address, _amount);
-      setLoading(true);
-      await txn.wait();
-      setLoading(false);
+      if (repayAmount) {
+        const _amount = ethers.utils.parseEther(repayAmount.toString());
+        const txn = await contract.repayToken(selectedToken.address, _amount);
+        setLoading(true);
+        await txn.wait();
+        setLoading(false);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -228,10 +240,12 @@ export default function Lending() {
 
   const withdrawEther = async (_amount) => {
     try {
-      const _txn = await contract.withdrawETH(_amount);
-      setLoading(true);
-      await _txn.wait();
-      setLoading(false);
+      if (withdrawAmount) {
+        const _txn = await contract.withdrawETH(_amount);
+        setLoading(true);
+        await _txn.wait();
+        setLoading(false);
+      }
     } catch (err) {
       console.error(err);
     }
