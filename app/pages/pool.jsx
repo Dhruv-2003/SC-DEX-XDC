@@ -400,6 +400,10 @@ export default function Pool() {
                 + New Pool
               </button>
             </div>
+            <span className="mt-5 lg:w-7/12 bg-orange-500 opacity-90 px-6 py-4 text-md font-normal rounded-md">
+              XDC-Fi allows users to create pool as well as adding and removing
+              liquidity with three different tokens by depositing amount.
+            </span>
             <div
               className={`${
                 toggle ? `visible` : `hidden`

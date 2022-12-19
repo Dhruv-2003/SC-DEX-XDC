@@ -415,11 +415,14 @@ export default function Swap() {
     >
       <Navbar expand={expand} setExpand={setExpand} />
       {expand ? null : (
-        <div className=" w-full flex justify-center items-center px-2">
+        <div className=" w-full flex flex-col justify-center items-center px-2">
           <div className=" lg:max-w-xl rounded-md mx-auto lg:mx-auto font-fredoka text-white px-0 py-0 bg-[#03071e68] opacity-100 backdrop-blur-lg flex flex-col items-center justify-center mt-32 md:mt-12 xl:mt-32 2xl:mt-40 mb-32 ">
             <h2 className=" rounded-t-md text-xl font-semibold tracking-wid w-full bg-[blue-700] py-4 px-4 border-b border-gray-400">
               Swap Tokens
             </h2>
+            <span className="mt-5 mx-8 bg-orange-500 opacity-90 px-6 py-4 text-md font-normal rounded-md">
+            XDC-Fi consists of an entire swap that allows you to swap your tokens in the smoothest way possible, giving you a uniswap like swapping experience
+            </span>
             <div className=" px-4 py-8">
               <label className="" htmlFor="">
                 Enter Value
