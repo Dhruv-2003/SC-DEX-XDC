@@ -9,6 +9,7 @@ import Loader from "../components/Loader";
 import Link from "next/link";
 import { STAKING_CONTRACT_ABI, STAKING_CONTRACT_ADDRESS } from "../Constants";
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
+import { ethers } from "ethers";
 
 const token1 = tokens;
 const token2 = tokens;
@@ -68,6 +69,81 @@ export default function Stake() {
       console.error(err);
     }
   };
+
+  // call this function in the withdraw button with inputAmount as _amount
+  const withdraw = async (_amount) => {
+    try {
+      const _withdraw = await contract.withdraw(selectedToken1.address, _amount);
+      setLoading(true);
+      await _withdraw.wait();
+      setLoading(false);
+    }
+    catch (err) {
+      console.error(err);
+      // toast.error(err);
+    }
+  }
+
+  const redeemRewards = async() => {
+    try {
+      // in the param put in the token that was staked
+      const _redeemRewards = await contract.reedemReward(selectedToken1.address);
+      setLoading(true);
+      await _redeemRewards.wait();
+      setLoading(false);
+      // toast.success("Redeemed rewards")
+    }
+    catch (err) {
+      console.error(err);
+      // toast.error(err) 
+    }
+  }
+
+  const stakeEther = async(_amount) => {
+    try {
+      const _stakeEth = await contract.stakeEth({
+        value: ethers.utils.parseEther("0.1") // input the amount here dhruv 
+      },
+      _amount
+      )
+      setLoading(true);
+      await _stakeEth.wait();
+      setLoading(false);
+      // toast.success("staked successfully!")
+    }
+    catch (err) {
+      console.error(err);
+      // toast.error(err) 
+    }
+  }
+
+  const withdrawEther = async(_amount) => {
+    try {
+      const _withdrawEth = await contract.withdrawEth(_amount);
+      setLoading(true);
+      await _withdrawEth.wait();
+      setLoading(false);
+      // toast.success("withdrawn successfully")
+    } 
+    catch (err) {
+      console.error(err);
+      // toast.error(err)
+    }
+  }
+
+  const redeemRewardEth = async() => {
+    try {
+      const _redeemRewardsEth = await contract.reedemRewardETH();
+      setLoading(true);
+      await _redeemRewardsEth.wait();
+      setLoading(false);
+      // toast.success("Rewards redeemed!!!")
+    } 
+    catch (err) {
+      console.error(err);
+      // toast.error("failed to redeem rewards")
+    }
+  }
 
   useEffect(() => {
     getEarnedRewards();
