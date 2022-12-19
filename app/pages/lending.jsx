@@ -8,8 +8,12 @@ import { tokens } from "../utils/tokens";
 import Loader from "../components/Loader";
 import Link from "next/link";
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
-import { LENDING_CONTRACT_ABI, LENDING_CONTRACT_ADDRESS } from "../Constants";
-import { ethers } from "ethers";
+import {
+  LENDING_CONTRACT_ABI,
+  LENDING_CONTRACT_ADDRESS,
+  Token_ABI,
+} from "../Constants";
+import { Contract, ethers } from "ethers";
 
 export default function Lending() {
   const [expand, setExpand] = useState(false);
@@ -20,14 +24,19 @@ export default function Lending() {
   const [userBalance, setUserBalance] = useState(0);
   const [lendAmount, setLendAmount] = useState(0);
   const [borrowedAmount, setBorrowedAmount] = useState(0);
-  
+
+  const [supplyAmount, setSupplyAmount] = useState(0);
+  const [borrowAmount, setBorrowAmount] = useState(0);
+  const [poolAddress, setPoolAddress] = useState();
+  const [toBorrow, setToBorrow] = useState();
 
   const provider = useProvider();
   const { data: signer } = useSigner();
+
   const contract = useContract({
     address: LENDING_CONTRACT_ADDRESS,
     abi: LENDING_CONTRACT_ABI,
-    signerOrProvider: signer || provider
+    signerOrProvider: signer || provider,
   });
 
   const { address } = useAccount();
@@ -35,12 +44,36 @@ export default function Lending() {
   const getConnectedUserBalance = async () => {
     try {
       const _balance = await contract.getBalance(selectedToken.address);
-      setUserBalance(parseInt(_balance));
-    } 
-    catch (err) {
+      setUserBalance(ethers.utils.formatEther(_balance.toString()).slice(0, 7));
+    } catch (err) {
       console.error(err);
     }
-  }
+  };
+  const getPoolAddress = async () => {
+    try {
+      const data = await contract.getPoolAddress(selectedToken.address);
+      console.log(data);
+      setPoolAddress(data);
+      getPoolBalance(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getPoolBalance = async (_poolAddress) => {
+    try {
+      const token_contract = new Contract(
+        selectedToken.address,
+        Token_ABI,
+        provider
+      );
+      const data = await token_contract.balanceOf(_poolAddress);
+      console.log(ethers.utils.formatEther(data));
+      setToBorrow(ethers.utils.formatEther(data).slice(0, 6));
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const createPool = async () => {
     try {
@@ -50,46 +83,90 @@ export default function Lending() {
       await _createPool.wait();
       setLoading(false);
       // toast.success("Pool created!!!");
-    } 
-    catch (err) {
-      console.error(err);  
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
   const getRepaidAmount = async () => {
     try {
       // first param takes address of token and then user and amount for now it's hardcoded
-        const _amount = await contract.getRepayAmount(selectedToken.address, address, 10);
-        // save in some state
-    } 
-    catch (err) {
-        console.error(err)
+      const _amount = await contract.getRepayAmount(
+        selectedToken.address,
+        address,
+        10
+      );
+      // save in some state
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
   const getWithdrawalAmount = async () => {
     try {
       // first param takes address of token and then user and withdrawAmount but for now it's hardcoded
-      const _withdraw = await contract.getWithdrawAmount(selectedToken.address, address, 10);
+      const _withdraw = await contract.getWithdrawAmount(
+        selectedToken.address,
+        address,
+        10
+      );
       // save in some state
-    } 
-    catch (err) {
-      console.error(err);  
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
-  const depositToken = async (amount) => {
-    try {
-      // first param takes address of the token and second one takes amount
-      const txn = await contract.depositToken(selectedToken.address, amount);
-      setLoading(true);
-      await txn.wait();
-      setLoading(false);
-    } 
-    catch (err) {
-      console.error(err);  
+  const handleSupply = async () => {
+    if (selectedToken) {
+      if (selectedToken.symbol == "XDC") {
+        depositEther();
+      } else {
+        depositToken();
+      }
     }
-  }
+  };
+
+  const handleBorrow = async () => {
+    if (selectedToken) {
+      if (selectedToken.symbol == "XDC") {
+        borrowEther();
+      } else {
+        borrowToken();
+      }
+    }
+  };
+
+  const approveTokens = async (tokenInAddress, spender, amountIn) => {
+    try {
+      const Token_contract = new Contract(tokenInAddress, Token_ABI, signer);
+
+      const tx = await Token_contract.approve(
+        spender,
+        ethers.utils.parseEther(amountIn.toString())
+      );
+
+      await tx.wait();
+      return true;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const depositToken = async () => {
+    try {
+      if (supplyAmount) {
+        const _amount = ethers.utils.parseEther(supplyAmount);
+        // await approveTokens(selectedToken.address, poolAddress, _amount);
+        // first param takes address of the token and second one takes amount
+        const txn = await contract.depositToken(selectedToken.address, _amount);
+        setLoading(true);
+        await txn.wait();
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const withdrawToken = async (_amount) => {
     try {
@@ -97,23 +174,26 @@ export default function Lending() {
       setLoading(true);
       await txn.wait();
       setLoading(false);
-    }
-    catch(err) {
-      console.error(err)
-    }
-  }
-
-  const borrowToken = async (_amount) => {
-    try {
-      const txn = await contract.borrowToken(selectedToken.address, _amount);
-      setLoading(true);
-      await txn.wait();
-      setLoading(false);
-      // add some toaster i guess
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
+
+  const borrowToken = async () => {
+    try {
+      if (borrowAmount) {
+        const _amount = ethers.utils.parseEther(borrowAmount);
+
+        const txn = await contract.borrowToken(selectedToken.address, _amount);
+        setLoading(true);
+        await txn.wait();
+        setLoading(false);
+        // add some toaster i guess
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const repayToken = async (_amount) => {
     try {
@@ -121,27 +201,30 @@ export default function Lending() {
       setLoading(true);
       await txn.wait();
       setLoading(false);
-    } 
-    catch (err) {
-      console.error(err)
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
-  const depositEther = async (_amount) => {
+  const depositEther = async () => {
     try {
-      const _txn = await contract.depositETH({
-        value: ethers.utils.parseEther("0.01") //add some number here dhruv
-      },
-      _amount
-      );
-      setLoading(true);
-      await _txn.wait();
-      setLoading(false);
+      if (supplyAmount) {
+        const _amount = ethers.utils.parseEther(supplyAmount);
+
+        const _txn = await contract.depositETH(
+          {
+            value: _amount, //add some number here dhruv
+          },
+          _amount
+        );
+        setLoading(true);
+        await _txn.wait();
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error(err);
     }
-    catch (err) {
-      console.error(err)
-    }
-  }
+  };
 
   const withdrawEther = async (_amount) => {
     try {
@@ -149,67 +232,75 @@ export default function Lending() {
       setLoading(true);
       await _txn.wait();
       setLoading(false);
-    } 
-    catch (err) {
-      console.error(err)  
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
-  const borrowEther = async (_amount) => {
+  const borrowEther = async () => {
     try {
-      const _txn = await contract.borrowETH(_amount);
-      setLoading(true);
-      await _txn.wait();
-      setLoading(false);  
-    } 
-    catch (err) {
-      console.error(err)
+      if (borrowAmount) {
+        const _amount = ethers.utils.parseEther(borrowAmount);
+        const _txn = await contract.borrowETH(_amount);
+        setLoading(true);
+        await _txn.wait();
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error(err);
     }
-  } 
+  };
 
   const repayEther = async (_amount) => {
     try {
-      const _txn = await contract.repayETH({
-        value: ethers.utils.parseEther("0.1") // input any value here you want the user to pay
-      }
-      , _amount
+      const _txn = await contract.repayETH(
+        {
+          value: ethers.utils.parseEther("0.1"), // input any value here you want the user to pay
+        },
+        _amount
       );
       setLoading(true);
       await _txn.wait();
       setLoading(false);
-    } 
-    catch (err) {
-      console.error(err)
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
   const fetchLentAmount = async () => {
     try {
-      const _lendAmount = await contract.getLendAmount(selectedToken.address, address);
-      setLendAmount(_lendAmount);
-      console.log(lendAmount);
-    } 
-    catch (err) {
-      console.error(err)
+      const _lendAmount = await contract.getLendAmount(
+        selectedToken.address,
+        address
+      );
+      const amount = ethers.utils.formatEther(_lendAmount.toString());
+      setLendAmount(amount);
+      console.log(amount);
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
   const fetchBorrowedAmount = async () => {
     try {
-      const _borrowedAmount = await contract.getBorrowAmount(selectedToken.address, address);
-      setBorrowedAmount(_borrowedAmount);
-    } 
-    catch (err) {
-      console.error(err)  
+      const _borrowedAmount = await contract.getBorrowAmount(
+        selectedToken.address,
+        address
+      );
+      const amount = ethers.utils.formatEther(_borrowedAmount.toString());
+      setBorrowedAmount(amount);
+    } catch (err) {
+      console.error(err);
     }
-  }
+  };
 
-
-  // useEffect(() => {
-  //   getConnectedUserBalance();
-  //   fetchLentAmount();
-  // }, [])
-
+  useEffect(() => {
+    if (selectedToken) {
+      getPoolAddress();
+      getConnectedUserBalance();
+      fetchLentAmount();
+    }
+  }, [selectedToken]);
 
   return (
     <div
@@ -315,7 +406,7 @@ export default function Lending() {
               <div class="mt-4 relative border text-white border-gray-500 py-4 px-6 rounded-md flex flex-col wf items-center justify-between">
                 <div className="flex my-2 w-full justify-between items-center">
                   <div>Wallet Balance</div>
-                  <div>0 USDC</div>
+                  <div>{userBalance}</div>
                   {/* <input
                       type="number"
                       id=""
@@ -326,7 +417,7 @@ export default function Lending() {
                 </div>
                 <div className="flex my-2 w-full justify-between items-center">
                   <div>Available to supply</div>
-                  <div>0 USDC</div>
+                  <div>{userBalance}</div>
                   {/* <input
                       type="number"
                       id=""
@@ -337,7 +428,7 @@ export default function Lending() {
                 </div>
                 <div className="flex my-2 w-full justify-between items-center">
                   <div>Available to borrow</div>
-                  <div>0 USDC</div>
+                  <div>{toBorrow}</div>
                   {/* <input
                       type="number"
                       id=""
@@ -351,8 +442,8 @@ export default function Lending() {
               <div>
                 <button
                   onClick={() => {
-                    setToggleSupply(!toggleSupply)
-                    setToggleBorrow(false)
+                    setToggleSupply(!toggleSupply);
+                    setToggleBorrow(false);
                   }}
                   type="button"
                   className="text-white mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
@@ -361,8 +452,8 @@ export default function Lending() {
                 </button>
                 <button
                   onClick={() => {
-                    setToggleBorrow(!toggleBorrow)
-                    setToggleSupply(false)
+                    setToggleBorrow(!toggleBorrow);
+                    setToggleSupply(false);
                   }}
                   type="button"
                   className="text-white  mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 ml-4 mb-2"
@@ -377,10 +468,14 @@ export default function Lending() {
                   className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                   placeholder="0"
                   required
+                  onChange={(e) => {
+                    setSupplyAmount(e.target.value);
+                  }}
                 />
                 <button
                   type="button"
                   className="text-white w-full  mt-4 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mb-2"
+                  onClick={() => handleSupply()}
                 >
                   Submit Supply
                 </button>
@@ -392,10 +487,14 @@ export default function Lending() {
                   className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                   placeholder="0"
                   required
+                  onChange={(e) => {
+                    setBorrowAmount(e.target.value);
+                  }}
                 />
                 <button
                   type="button"
                   className="text-white w-full  mt-4 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mb-2"
+                  onClick={() => handleBorrow()}
                 >
                   Submit Borrow
                 </button>
