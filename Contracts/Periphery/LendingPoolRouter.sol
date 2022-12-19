@@ -69,13 +69,13 @@ contract LendingPoolRouter {
 
         if (pool != address(0)) {
             /// Not sure of Approval
-            TransferHelper.safeApprove(token, pool, amount);
+            // TransferHelper.safeApprove(token, pool, amount);
             ILendingPool(pool).deposit(amount, msg.sender);
         } else {
             createPool(token);
             pool = getPoolAddress(token);
 
-            TransferHelper.safeApprove(token, pool, amount);
+            // TransferHelper.safeApprove(token, pool, amount);
             ILendingPool(pool).deposit(amount, msg.sender);
         }
     }
@@ -107,7 +107,7 @@ contract LendingPoolRouter {
 
         uint256 totalAmount = getRepayAmount(token, msg.sender, amount);
 
-        TransferHelper.safeApprove(token, pool, totalAmount);
+        // TransferHelper.safeApprove(token, pool, totalAmount);
         ILendingPool(pool).repay(msg.sender, amount);
     }
 
@@ -123,13 +123,13 @@ contract LendingPoolRouter {
 
         if (pool != address(0)) {
             /// Not sure of Approval
-            TransferHelper.safeApprove(WEXDC, pool, amount);
+            // TransferHelper.safeApprove(WEXDC, pool, amount);
             ILendingPool(pool).deposit(amount, msg.sender);
         } else {
             createPool(WEXDC);
             pool = getPoolAddress(WEXDC);
 
-            TransferHelper.safeApprove(WEXDC, pool, amount);
+            // TransferHelper.safeApprove(WEXDC, pool, amount);
             ILendingPool(pool).deposit(amount, msg.sender);
         }
     }
@@ -142,7 +142,7 @@ contract LendingPoolRouter {
         uint256 totalAmount = getWithdrawAmount(WEXDC, msg.sender, amount);
         ILendingPool(pool).withdraw(msg.sender, amount);
 
-        TransferHelper.safeApprove(WEXDC, address(this), totalAmount);
+        // TransferHelper.safeApprove(WEXDC, address(this), totalAmount);
         IXDC(WEXDC).transferFrom(msg.sender, address(this), totalAmount);
 
         IXDC(WEXDC).withdraw(totalAmount);

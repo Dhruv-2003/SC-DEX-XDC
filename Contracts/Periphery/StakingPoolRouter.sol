@@ -66,12 +66,12 @@ contract StakingPoolRouter {
     function stake(address token, uint256 _amount) public {
         address pool = getPoolAddress(token);
         if (pool != address(0)) {
-            TransferHelper.safeApprove(token, pool, _amount);
+            // TransferHelper.safeApprove(token, pool, _amount);
             IStakingPool(pool).stake(_amount, msg.sender);
         } else {
             createPool(token);
 
-            TransferHelper.safeApprove(token, pool, _amount);
+            // TransferHelper.safeApprove(token, pool, _amount);
             IStakingPool(pool).stake(_amount, msg.sender);
         }
     }

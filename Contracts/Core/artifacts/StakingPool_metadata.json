@@ -1,6 +1,6 @@
 {
 	"compiler": {
-		"version": "0.8.14+commit.80d49f37"
+		"version": "0.8.13+commit.abaa5c0e"
 	},
 	"language": "Solidity",
 	"output": {
@@ -67,7 +67,13 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					}
+				],
 				"name": "reedemReward",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -169,11 +175,35 @@
 						"internalType": "uint256",
 						"name": "_amount",
 						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
 					}
 				],
 				"name": "stake",
 				"outputs": [],
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "staked",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -195,6 +225,11 @@
 						"internalType": "uint256",
 						"name": "_amount",
 						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
 					}
 				],
 				"name": "withdraw",
@@ -215,7 +250,7 @@
 						"_0": "uint -  amount of earned rewards"
 					}
 				},
-				"reedemReward()": {
+				"reedemReward(address)": {
 					"details": "to withdraw the reward token"
 				},
 				"rewardPerToken()": {
@@ -224,13 +259,13 @@
 						"_0": "uint - the amount of rewardspertoken"
 					}
 				},
-				"stake(uint256)": {
+				"stake(uint256,address)": {
 					"details": "to stake some amount of token",
 					"params": {
 						"_amount": "-  amount to be staked"
 					}
 				},
-				"withdraw(uint256)": {
+				"withdraw(uint256,address)": {
 					"details": "to withdraw the staked amount",
 					"params": {
 						"_amount": "- amount to be withdrawn"
@@ -263,11 +298,11 @@
 	},
 	"sources": {
 		"Core/StakingPool.sol": {
-			"keccak256": "0x717fde22667262286d185579a6fa136f475cee896b8ff5df9c175f1ec6980594",
+			"keccak256": "0xd17e3e44e2a56a744275ad891d87613f355c6d05bdb30f720642f7bb9574a101",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://627f6682cf1a1bfcaa85aae699c7fe191ef037bbf874e9e3d0a904799bbae326",
-				"dweb:/ipfs/QmacvWTv7xdLwEhYJceyAdENs6z8oNX64TVrMnZiXZY3uz"
+				"bzz-raw://b21c553d87c3f7592da541f2e78b378fea34b630e218f0b81d70f2849044c34f",
+				"dweb:/ipfs/QmS1R6USdx5PDjCnPsq2xeAjWXcPBBw1KG748y1pmx2KX7"
 			]
 		},
 		"Other/interfaces/IERC20.sol": {
