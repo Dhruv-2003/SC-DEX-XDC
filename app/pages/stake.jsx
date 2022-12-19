@@ -390,14 +390,14 @@ export default function Stake() {
                   <h3 className=" text-md mb-1">Claimable</h3>
                   <h3 className=" text-xl font-semibold">{earnedRewards}</h3>
                   <div className=" text-sm mt-1">
-                    {/* <input
+                    <input
                       type="number"
                       id=""
                       className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                       placeholder="0"
                       required
-                      onChange={(e) => setRewardWithdrawAmount(+e.target.value)}
-                    /> */}
+                      // onChange={(e) => setRewardWithdrawAmount(+e.target.value)}
+                    />
                   </div>
                   <button
                     type="button"

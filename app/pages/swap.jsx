@@ -187,7 +187,7 @@ export default function Swap() {
   const swapExactAmountOfTokens = async (valueIn, path) => {
     try {
       if (valueIn) {
-        await approveTokens(selectedToken1.address, valueIn);
+        // await approveTokens(selectedToken1.address, valueIn);
         // path[0] = selectedToken1.address;
         // path[1] = selectedToken1.address;
         const deadline = getDeadline();

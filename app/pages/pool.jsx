@@ -252,10 +252,10 @@ export default function Pool() {
   ) => {
     try {
       if (addressTokenA && addressTokenA && liquidityAmount) {
-        await approveTokens(
-          pairAddress,
-          ethers.utils.parseEther(liquidityAmount.toString())
-        );
+        // await approveTokens(
+        //   pairAddress,
+        //   ethers.utils.parseEther(liquidityAmount.toString())
+        // );
         const _deadline = getDeadline();
         const _removeLiquidity = await contract.removeLiquidity(
           addressTokenA,
@@ -372,9 +372,9 @@ export default function Pool() {
   useEffect(() => {
     if (!positions) {
       getPositions();
-    } else {
-      console.log(positions);
     }
+
+    console.log(positions);
   }, []);
 
   return (
@@ -593,7 +593,7 @@ export default function Pool() {
           <div className=" w-full flex justify-center items-start px-2 ">
             <div className="overflow-x-auto  relative w-full lg:w-7/12 rounded-md mx-auto lg:mx-auto font-fredoka text-white px- py-0 bg-[#03071e68] opacity-100 backdrop-blur-lg flex flex-col items-center justify-center mt-12 mb-32 ">
               <h2 className=" rounded-t-md text-xl font-semibold tracking-wid w-full bg-[blue-700] py-4 px-4 border-b border-gray-400">
-                Top tokens on XDCDEX
+                Your Active Liquidity Positions
               </h2>
               <div className=" lg:px-4 py-8 w-full  ">
                 <table className=" w-full text-sm text-left text-gray-100 ">
@@ -613,7 +613,7 @@ export default function Pool() {
                       </th>
                     </tr>
                   </thead>
-                  {positions ? (
+                  {/* {positions ? (
                     positions.map((position) => {
                       <tbody>
                         <tr className=" border-b h-28 border-gray-500 text-gray-100">
@@ -659,7 +659,139 @@ export default function Pool() {
                     })
                   ) : (
                     <a>Active liqudity Positions will appear here</a>
-                  )}
+                  )} */}
+
+                  <tbody>
+                    <tr className=" border-b h-28 border-gray-500 text-gray-100">
+                      <th
+                        scope="row"
+                        className="py-4 px-6 font-medium  whitespace-nowrap "
+                      >
+                        {tokenpairs[0].token1Name}
+                      </th>
+                      <td className="py-4 px-6">{tokenpairs[0].token2Name}</td>
+                      <td className="py-4 px-6">
+                        {tokenpairs[0].balance.slice(0, 7)}
+                      </td>
+                      <td className="py-4 px-6 ">
+                        <input
+                          type="number"
+                          id=""
+                          className={` ${
+                            toggleRemove ? ` visible` : `hidden`
+                          } bg-gray-800 text-white border mb-3  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                          placeholder="0"
+                          required
+                          onChange={(e) => setLiquidity(e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (toggleRemove) {
+                              handleRemoveLiquidity(
+                                tokenpairs[0].token1,
+                                tokenpairs[0].token2,
+                                tokenpairs[0].pair
+                              );
+                            } else {
+                              setToggleRemove(!toggleRemove);
+                            }
+                          }}
+                          className="text-white w-44  bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
+                        >
+                          Remove Liquidity
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+
+                  <tbody>
+                    <tr className=" border-b h-28 border-gray-500 text-gray-100">
+                      <th
+                        scope="row"
+                        className="py-4 px-6 font-medium  whitespace-nowrap "
+                      >
+                        {tokenpairs[1].token1Name}
+                      </th>
+                      <td className="py-4 px-6">{tokenpairs[1].token2Name}</td>
+                      <td className="py-4 px-6">
+                        {tokenpairs[1].balance.slice(0, 7)}
+                      </td>
+                      <td className="py-4 px-6 ">
+                        <input
+                          type="number"
+                          id=""
+                          className={` ${
+                            toggleRemove ? ` visible` : `hidden`
+                          } bg-gray-800 text-white border mb-3  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                          placeholder="0"
+                          required
+                          onChange={(e) => setLiquidity(e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (toggleRemove) {
+                              handleRemoveLiquidity(
+                                tokenpairs[1].token1,
+                                tokenpairs[1].token2,
+                                tokenpairs[1].pair
+                              );
+                            } else {
+                              setToggleRemove(!toggleRemove);
+                            }
+                          }}
+                          className="text-white w-44  bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
+                        >
+                          Remove Liquidity
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+
+                  <tbody>
+                    <tr className=" border-b h-28 border-gray-500 text-gray-100">
+                      <th
+                        scope="row"
+                        className="py-4 px-6 font-medium  whitespace-nowrap "
+                      >
+                        {tokenpairs[2].token1Name}
+                      </th>
+                      <td className="py-4 px-6">{tokenpairs[2].token2Name}</td>
+                      <td className="py-4 px-6">
+                        {tokenpairs[2].balance.slice(0, 7)}
+                      </td>
+                      <td className="py-4 px-6 ">
+                        <input
+                          type="number"
+                          id=""
+                          className={` ${
+                            toggleRemove ? ` visible` : `hidden`
+                          } bg-gray-800 text-white border mb-3  lg:w-44 border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                          placeholder="0"
+                          required
+                          onChange={(e) => setLiquidity(e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (toggleRemove) {
+                              handleRemoveLiquidity(
+                                tokenpairs[2].token1,
+                                tokenpairs[2].token2,
+                                tokenpairs[2].pair
+                              );
+                            } else {
+                              setToggleRemove(!toggleRemove);
+                            }
+                          }}
+                          className="text-white w-44  bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
+                        >
+                          Remove Liquidity
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
             </div>
