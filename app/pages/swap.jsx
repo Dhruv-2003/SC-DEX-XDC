@@ -11,7 +11,7 @@ import {
   SWAP_ROUTER_ADDRESS,
   SWAP_ROUTER_ABI,
   Token_ABI,
-} from "../constants/Index";
+} from "../constants/index.js";
 
 const token1 = tokens;
 const token2 = tokens;
@@ -421,7 +421,9 @@ export default function Swap() {
               Swap Tokens
             </h2>
             <span className="mt-5 mx-8 bg-orange-500 opacity-90 px-6 py-4 text-md font-normal rounded-md">
-            XDC-Fi consists of an entire swap that allows you to swap your tokens in the smoothest way possible, giving you a uniswap like swapping experience
+              XDC-Fi consists of an entire swap that allows you to swap your
+              tokens in the smoothest way possible, giving you a uniswap like
+              swapping experience
             </span>
             <div className=" px-4 py-8">
               <label className="" htmlFor="">
