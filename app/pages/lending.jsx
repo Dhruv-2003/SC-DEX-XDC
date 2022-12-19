@@ -1,16 +1,213 @@
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { Dialog, Listbox, Transition } from "@headlessui/react";
 import styles from "../styles/Home.module.css";
 import { tokens } from "../utils/tokens";
 import Loader from "../components/Loader";
 import Link from "next/link";
+import { useAccount, useContract, useProvider, useSigner } from "wagmi";
+import { LENDING_CONTRACT_ABI, LENDING_CONTRACT_ADDRESS } from "../Constants";
+import { ethers } from "ethers";
 
 export default function Lending() {
   const [expand, setExpand] = useState(false);
   const [selectedToken, setSelectedToken] = useState(tokens[0]);
+  const [loading, setLoading] = useState(false);
+  const [userBalance, setUserBalance] = useState(0);
+  const [lendAmount, setLendAmount] = useState(0);
+  const [borrowedAmount, setBorrowedAmount] = useState(0);
+  
+
+  const provider = useProvider();
+  const { data: signer } = useSigner();
+  const contract = useContract({
+    address: LENDING_CONTRACT_ADDRESS,
+    abi: LENDING_CONTRACT_ABI,
+    signerOrProvider: signer || provider
+  });
+
+  const { address } = useAccount();
+
+  const getConnectedUserBalance = async () => {
+    try {
+      const _balance = await contract.getBalance(selectedToken.address);
+      setUserBalance(parseInt(_balance));
+    } 
+    catch (err) {
+      console.error(err);
+    }
+  }
+
+  const createPool = async () => {
+    try {
+      // here in the param add the address of the token you want to create a lending pool for
+      const _createPool = await contract.createPool(selectedToken.address);
+      setLoading(true);
+      await _createPool.wait();
+      setLoading(false);
+      // toast.success("Pool created!!!");
+    } 
+    catch (err) {
+      console.error(err);  
+    }
+  }
+
+  const getRepaidAmount = async () => {
+    try {
+      // first param takes address of token and then user and amount for now it's hardcoded
+        const _amount = await contract.getRepayAmount(selectedToken.address, address, 10);
+        // save in some state
+    } 
+    catch (err) {
+        console.error(err)
+    }
+  }
+
+  const getWithdrawalAmount = async () => {
+    try {
+      // first param takes address of token and then user and withdrawAmount but for now it's hardcoded
+      const _withdraw = await contract.getWithdrawAmount(selectedToken.address, address, 10);
+      // save in some state
+    } 
+    catch (err) {
+      console.error(err);  
+    }
+  }
+
+  const depositToken = async (amount) => {
+    try {
+      // first param takes address of the token and second one takes amount
+      const txn = await contract.depositToken(selectedToken.address, amount);
+      setLoading(true);
+      await txn.wait();
+      setLoading(false);
+    } 
+    catch (err) {
+      console.error(err);  
+    }
+  }
+
+  const withdrawToken = async (_amount) => {
+    try {
+      const txn = await contract.withdrawToken(selectedToken.address, _amount);
+      setLoading(true);
+      await txn.wait();
+      setLoading(false);
+    }
+    catch(err) {
+      console.error(err)
+    }
+  }
+
+  const borrowToken = async (_amount) => {
+    try {
+      const txn = await contract.borrowToken(selectedToken.address, _amount);
+      setLoading(true);
+      await txn.wait();
+      setLoading(false);
+      // add some toaster i guess
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const repayToken = async (_amount) => {
+    try {
+      const txn = await contract.repayToken(selectedToken.address, _amount);
+      setLoading(true);
+      await txn.wait();
+      setLoading(false);
+    } 
+    catch (err) {
+      console.error(err)
+    }
+  }
+
+  const depositEther = async (_amount) => {
+    try {
+      const _txn = await contract.depositETH({
+        value: ethers.utils.parseEther("0.01") //add some number here dhruv
+      },
+      _amount
+      );
+      setLoading(true);
+      await _txn.wait();
+      setLoading(false);
+    }
+    catch (err) {
+      console.error(err)
+    }
+  }
+
+  const withdrawEther = async (_amount) => {
+    try {
+      const _txn = await contract.withdrawETH(_amount);
+      setLoading(true);
+      await _txn.wait();
+      setLoading(false);
+    } 
+    catch (err) {
+      console.error(err)  
+    }
+  }
+
+  const borrowEther = async (_amount) => {
+    try {
+      const _txn = await contract.borrowETH(_amount);
+      setLoading(true);
+      await _txn.wait();
+      setLoading(false);  
+    } 
+    catch (err) {
+      console.error(err)
+    }
+  } 
+
+  const repayEther = async (_amount) => {
+    try {
+      const _txn = await contract.repayETH({
+        value: ethers.utils.parseEther("0.1") // input any value here you want the user to pay
+      }
+      , _amount
+      );
+      setLoading(true);
+      await _txn.wait();
+      setLoading(false);
+    } 
+    catch (err) {
+      console.error(err)
+    }
+  }
+
+  const fetchLentAmount = async () => {
+    try {
+      const _lendAmount = await contract.getLendAmount(selectedToken.address, address);
+      setLendAmount(_lendAmount);
+      console.log(lendAmount);
+    } 
+    catch (err) {
+      console.error(err)
+    }
+  }
+
+  const fetchBorrowedAmount = async () => {
+    try {
+      const _borrowedAmount = await contract.getBorrowAmount(selectedToken.address, address);
+      setBorrowedAmount(_borrowedAmount);
+    } 
+    catch (err) {
+      console.error(err)  
+    }
+  }
+
+
+  useEffect(() => {
+    getConnectedUserBalance();
+    fetchLentAmount();
+  }, [])
+
 
   return (
     <div
