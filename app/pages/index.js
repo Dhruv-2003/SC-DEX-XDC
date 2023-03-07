@@ -55,7 +55,7 @@ export default function Home() {
             <div className="mt-20 lg:ml-12 lg:mt-48 lg:pb-48 flex items-center lg:justify-between justify-around flex-wrap-reverse ">
               <div className="font-fredoka mt-8 tracking-wide text-white flex flex-col items-start justify-center  px-14">
                 <h1 className="text-4xl mb-2">FantomFi</h1>
-                <p className="text-xl ">Swap your XDC tokens to ETH</p>
+                <p className="text-xl max-w-md ">A decentralised staking and lending protocol built on top of fantom blockchain</p>
                 <Link href="/swap">
                   {/* <button className="border-2 py-2 px-4 rounded-sm mt-5 font-chakra bg-white text-black hover:bg-transparent hover:text-white">
                 Launch App
@@ -86,7 +86,7 @@ export default function Home() {
           : `bg-[#03071E]`
           }`}
       >
-        <div className="text-white w-full my-5 flex flex-col justify-center items-center mb-12 z-[1] lg:mb-20">
+        <div className=" min-h-screen text-white w-full my-5 flex flex-col justify-center items-center mb-12 z-[1] lg:mb-20">
           <h1 className=" text-3xl font-semiobold"> Our Main Features</h1>
           <div className="w-11/12 grid md:grid-cols-3   md:gap-4 gap-3 mt-8  rounded-md">
             <div className=" border px-6 py-10  bg-[#c3adff] text-gray-800">
@@ -94,7 +94,7 @@ export default function Home() {
                 Swapping
               </h1>
               <p>
-                XDC-Fi consists of an entire swap that allows you to swap your
+                FantomFi consists of an entire swap that allows you to swap your
                 tokens in the smoothest way possible, giving you a uniswap like
                 swapping experience
               </p>
@@ -104,7 +104,7 @@ export default function Home() {
                 Liquidity Pools
               </h1>
               <p>
-                XDC-Fi allows users to create pool as well as adding and
+                FantomFi allows users to create pool as well as adding and
                 removing liquidity with three different tokens by depositing
                 amount.
               </p>
@@ -114,7 +114,7 @@ export default function Home() {
                 Staking
               </h1>
               <p>
-                XDC-Fi allows you to stake your tokens in the smart contract as
+                FantomFi allows you to stake your tokens in the smart contract as
                 well as unstake them whenever needed, it also allows you to
                 claim the rewards whenever the user wished.
               </p>
@@ -124,7 +124,7 @@ export default function Home() {
                 Lending
               </h1>
               <p>
-                XDC-Fi allows users to lend different tokens including customly
+                FantomFi allows users to lend different tokens including customly
                 deployed ones, users can also borrow, withdraw, Repay and supply
                 tokens by interacting with the lending-contract.
               </p>
@@ -134,7 +134,7 @@ export default function Home() {
                 Stable Coin
               </h1>
               <p>
-                XDC-Fi stableCoin allows users to get 1 USD worth of XDC tokens
+                FantomFi stableCoin allows users to get 1 USD worth of XDC tokens
                 by fetching the price from the coingecko api. In the future this
                 feature will be improved on a lot.
               </p>
@@ -144,7 +144,7 @@ export default function Home() {
                 Price Oracle
               </h1>
               <p>
-                XDC-Fi has on chain pricefeeds from the pools not making users
+                FantomFi has on chain pricefeeds from the pools not making users
                 reliant on other protocols at all and simplifying the process
                 with this feature.
               </p>
@@ -159,8 +159,8 @@ export default function Home() {
           <Toast.Toggle />
         </Toast> */}
 
-        <div className="text-white w-full my-5 flex flex-col lg:mt-12 mt-20 justify-center items-center mb-12 z-[1] lg:mb-20">
-          <h1 className=" text-3xl font-semiobold"> Build with XDC-Fi</h1>
+        {/* <div className="text-white w-full my-5 flex flex-col lg:mt-12 mt-20 justify-center items-center mb-12 z-[1] lg:mb-20">
+          <h1 className=" text-3xl font-semiobold"> Build with FantomFi</h1>
           <div className="w-11/12 flex flex-wrap justify-around items-center mt-8 px-6 py-8 rounded-md backdrop-blur-2xl">
             <div className=" flex flex-col justify-start items-start flex-wrap">
               <p className=" text-justify max-w-xl">
@@ -190,7 +190,7 @@ export default function Home() {
               </span>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className="w-ful">{expand ? null : <Footer />}</div>
     </>
