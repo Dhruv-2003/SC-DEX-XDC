@@ -81,10 +81,10 @@ export default function App({ Component, pageProps }) {
         chains={chains}
         modalSize="compact"
         theme={darkTheme({
-          accentColor: "#fc6f38",
-          accentColorForeground: "black",
+          // accentColor: "#fc6f38",
+          // accentColorForeground: "black",
           borderRadius: "small",
-          fontStack: "rounded",
+          // fontStack: "rounded",
         })}
       >
         <Component {...pageProps} />

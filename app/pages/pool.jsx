@@ -380,11 +380,11 @@ export default function Pool() {
   return (
     <div
       className={`w-screen min-h-screen no-repeat bg-cover bg-[#03071E]
-        ${
-          !expand
-            ? `${styles.bg1} bg-[url('../assets/landing.png')]`
-            : `bg-[#03071E]`
-        }
+      ${
+        !expand
+          ? `bg-[#4532a1]`
+          : `bg-[#03071E]`
+      }
           `}
     >
       <Navbar expand={expand} setExpand={setExpand} />
@@ -395,15 +395,12 @@ export default function Pool() {
               <h1 className=" text-gray-100 text-3xl font-semibold">Pools</h1>
               <button
                 onClick={newPool}
-                className="active:scale-95 bg-[#fc6f38] px-3 py-2 text-sm font-semibold rounded-md"
+                className="active:scale-95 bg-[#c3adff] px-3 py-2 text-sm font-semibold rounded-md"
               >
                 + New Pool
               </button>
             </div>
-            <span className="mt-5 lg:w-7/12 bg-orange-500 opacity-90 px-6 py-4 text-md font-normal rounded-md">
-              XDC-Fi allows users to create pool as well as adding and removing
-              liquidity with three different tokens by depositing amount.
-            </span>
+            
             <div
               className={`${
                 toggle ? `visible` : `hidden`
@@ -545,7 +542,7 @@ export default function Pool() {
               </label>
               <input
                 type="range"
-                className="mt-3 lg:w-full h-2 bg-orange-500 rounded-lg appearance-none cursor-pointer form-range p-0 bg-transparent focus:outline-none focus:ring-0 focus:shadow-none"
+                className="mt-3 lg:w-full h-2 bg-[#c3adff]  rounded-lg appearance-none cursor-pointer form-range p-0 bg-transparent focus:outline-none focus:ring-0 focus:shadow-none"
                 min="0"
                 max="3"
                 step="1"
@@ -585,7 +582,7 @@ export default function Pool() {
               </div>
               <button
                 type="button"
-                className="text-white w-full mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
+                className="text-white w-full mt-6 bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
                 onClick={() => {
                   handleAddliquidity();
                 }}
@@ -653,7 +650,7 @@ export default function Pool() {
                                   setToggleRemove(!toggleRemove);
                                 }
                               }}
-                              className="text-white w-44  bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
+                              className="text-white w-44  bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 mr- mb-2"
                             >
                               Remove Liquidity
                             </button>
@@ -701,7 +698,7 @@ export default function Pool() {
                               setToggleRemove(!toggleRemove);
                             }
                           }}
-                          className="text-white w-44  bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
+                          className="text-white w-44  bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 mr- mb-2"
                         >
                           Remove Liquidity
                         </button>
@@ -745,7 +742,7 @@ export default function Pool() {
                               setToggleRemove(!toggleRemove);
                             }
                           }}
-                          className="text-white w-44  bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
+                          className="text-white w-44  bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 mr- mb-2"
                         >
                           Remove Liquidity
                         </button>
@@ -789,7 +786,7 @@ export default function Pool() {
                               setToggleRemove(!toggleRemove);
                             }
                           }}
-                          className="text-white w-44  bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
+                          className="text-white w-44  bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 mr- mb-2"
                         >
                           Remove Liquidity
                         </button>
