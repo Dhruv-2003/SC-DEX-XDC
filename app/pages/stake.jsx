@@ -11,7 +11,7 @@ import {
   STAKING_CONTRACT_ABI,
   STAKING_CONTRACT_ADDRESS,
   Token_ABI,
-} from "../constants/constants";
+} from "../constants/index.js";
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 import { ethers, Contract } from "ethers";
 
