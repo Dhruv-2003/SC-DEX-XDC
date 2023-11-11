@@ -12,7 +12,7 @@ import {
   STAKING_CONTRACT_ADDRESS,
   Token_ABI,
 } from "../constants/index.js";
-} from "../constants/index.js";
+
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 import { ethers, Contract } from "ethers";
 
@@ -245,11 +245,7 @@ export default function Stake() {
   return (
     <div
       className={`w-screen min-h-screen no-repeat bg-cover bg-[#03071E]
-      ${
-        !expand
-          ? `bg-[#4532a1]`
-          : `bg-[#03071E]`
-      }
+      ${!expand ? `bg-[#4532a1]` : `bg-[#03071E]`}
           `}
     >
       <Navbar expand={expand} setExpand={setExpand} />

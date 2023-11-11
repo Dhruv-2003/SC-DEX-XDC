@@ -12,7 +12,6 @@ import {
   SWAP_ROUTER_ABI,
   Token_ABI,
 } from "../constants/index.js";
-} from "../constants/index.js";
 
 const token1 = tokens;
 const token2 = tokens;
@@ -407,13 +406,9 @@ export default function Swap() {
   return (
     <div
       // `${styles.bg} bg-[url('../assets/landing.png')]`
-    // `${styles.bg} bg-[url('../assets/landing.png')]`  
+      // `${styles.bg} bg-[url('../assets/landing.png')]`
       className={`w-screen min-h-screen no-repeat bg-cover bg-[#03071E]
-      ${
-          !expand
-            ? `bg-[#4532a1]`
-            : `bg-[#03071E]`
-        }
+      ${!expand ? `bg-[#4532a1]` : `bg-[#03071E]`}
           `}
     >
       <Navbar expand={expand} setExpand={setExpand} />
@@ -423,7 +418,7 @@ export default function Swap() {
             <h2 className=" rounded-t-md text-xl font-semibold tracking-wid w-full bg-[blue-700] py-4 px-4 border-b border-gray-400">
               Swap Tokens
             </h2>
-         
+
             <div className=" px-4 py-8">
               <label className="" htmlFor="">
                 Enter Value
