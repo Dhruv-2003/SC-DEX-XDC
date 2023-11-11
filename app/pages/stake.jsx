@@ -12,6 +12,7 @@ import {
   STAKING_CONTRACT_ADDRESS,
   Token_ABI,
 } from "../constants/index.js";
+} from "../constants/index.js";
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 import { ethers, Contract } from "ethers";
 
@@ -244,7 +245,11 @@ export default function Stake() {
   return (
     <div
       className={`w-screen min-h-screen no-repeat bg-cover bg-[#03071E]
-      ${!expand ? `bg-[#4532a1]` : `bg-[#03071E]`}
+      ${
+        !expand
+          ? `bg-[#4532a1]`
+          : `bg-[#03071E]`
+      }
           `}
     >
       <Navbar expand={expand} setExpand={setExpand} />
@@ -253,11 +258,6 @@ export default function Stake() {
           <div className=" w-full mt-10 flex flex-col justify-center items-center px-2 pb-10">
             <div className="w-full flex flex-col lg:w-7/12 justify-around">
               <h1 className=" text-gray-100 text-3xl font-semibold">Staking</h1>
-              <span className="mt-5 bg-orange-500 opacity-90 px-6 py-4 text-md font-normal rounded-md">
-                XDC-Fi allows you to stake your tokens in the smart contract as
-                well as unstake them whenever needed, it also allows you to
-                claim the rewards whenever the user wished.
-              </span>
             </div>
             <div
               className={` mt-8 lg:w-7/12 border rounded-lg border-gray-500 px-4 py-6 bg-transparent backdrop-blur-xl`}
