@@ -21,7 +21,7 @@ export default function BuyXDC() {
         </p>
         <button
           type="button"
-          className=" flex hover:scale-105 mt-8 transition ease-in-out items-center bg-gray-900 text-white border hover:border-gray-300 rounded-sm text-lg hover:bg-orange-500 font-semibold font-fredoka hover:text-white px-3 py-2 mr-2 mb-2"
+          className=" flex hover:scale-105 mt-8 transition ease-in-out items-center bg-gray-900 text-white border hover:border-gray-300 rounded-sm text-lg hover:bg-[#c3adff]  font-semibold font-fredoka hover:text-white px-3 py-2 mr-2 mb-2"
           onClick={() => setShowModal(!showModal)}
         >
           <img
@@ -74,7 +74,7 @@ export default function BuyXDC() {
 
           <button
             type="button"
-            className=" mt-8 flex hover:scale-105 transition ease-in-out items-center bg-gray-900 text-white border hover:border-gray-300 rounded-sm text-lg hover:bg-orange-500 font-normal font-fredoka hover:text-black px-3 py-2 mb-2"
+            className=" mt-8 flex hover:scale-105 transition ease-in-out items-center bg-gray-900 text-white border hover:border-gray-300 rounded-sm text-lg hover:bg-[#c3adff]  font-normal font-fredoka hover:text-black px-3 py-2 mb-2"
           >
             <img
               className=" w-6 mr-2"
@@ -104,7 +104,7 @@ export default function BuyXDC() {
     <div>
       <button
         type="button"
-        className=" flex hover:scale-105 transition ease-in-out items-center bg-gray-900 text-white border hover:border-gray-300 rounded-sm text-lg hover:bg-orange-500 font-semibold font-fredoka hover:text-white px-3 py-2 mr-2 mb-2"
+        className=" flex hover:scale-105 transition ease-in-out items-center bg-gray-900 text-white border hover:border-gray-300 rounded-sm text-lg hover:bg-[#c3adff]  font-semibold font-fredoka hover:text-white px-3 py-2 mr-2 mb-2"
         onClick={() => setShowModal(!showModal)}
       >
         <img
