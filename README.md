@@ -4,10 +4,6 @@ https://user-images.githubusercontent.com/76868364/208483536-f404dff3-74e9-407f-
 
 _[Click on the video to view it on YouTube](https://youtu.be/IxsvO4jcZ48)_
 
-### Live Link
-
-[Checkout the live website here](https://xdc-fi.vercel.app/)
-
 ## 🤷‍♀️ Question Time
 
 ### 👨‍🔬 What is XDC-Fi?
@@ -19,6 +15,7 @@ And if that were'nt enough, it also consists of an entire npm package that allow
 - [Click here to checkout the npm package](https://www.npmjs.com/package/xdefi-contracts)
 
 - [Read more about the contracts here in this repository](https://github.com/Dhruv-2003/XDefi-Contracts)
+
 
 ### 🕵️ What is DeFi?
 
@@ -37,6 +34,7 @@ XDC-Fi has been an amazing project to learn from and the chain XDC is quiet a fa
 ## ⚡ Hackathon
 
 This project was made for [XDC DeFi Hackathon](https://xdc.devpost.com/?ref_feature=challenge&ref_medium=your-open-hackathons&ref_content=Submissions+open)
+
 
 ## 🔩 Project Structure
 

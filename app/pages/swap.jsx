@@ -11,7 +11,8 @@ import {
   SWAP_ROUTER_ADDRESS,
   SWAP_ROUTER_ABI,
   Token_ABI,
-} from "../constants/constants";
+} from "../constants/index.js";
+} from "../constants/index.js";
 
 const token1 = tokens;
 const token2 = tokens;
@@ -405,10 +406,12 @@ export default function Swap() {
 
   return (
     <div
+      // `${styles.bg} bg-[url('../assets/landing.png')]`
+    // `${styles.bg} bg-[url('../assets/landing.png')]`  
       className={`w-screen min-h-screen no-repeat bg-cover bg-[#03071E]
-        ${
+      ${
           !expand
-            ? `${styles.bg} bg-[url('../assets/landing.png')]`
+            ? `bg-[#4532a1]`
             : `bg-[#03071E]`
         }
           `}
@@ -420,11 +423,7 @@ export default function Swap() {
             <h2 className=" rounded-t-md text-xl font-semibold tracking-wid w-full bg-[blue-700] py-4 px-4 border-b border-gray-400">
               Swap Tokens
             </h2>
-            <span className="mt-5 mx-8 bg-orange-500 opacity-90 px-6 py-4 text-md font-normal rounded-md">
-              XDC-Fi consists of an entire swap that allows you to swap your
-              tokens in the smoothest way possible, giving you a uniswap like
-              swapping experience
-            </span>
+         
             <div className=" px-4 py-8">
               <label className="" htmlFor="">
                 Enter Value
@@ -433,7 +432,7 @@ export default function Swap() {
                 <input
                   type="number"
                   id=""
-                  className="bg-gray-50 border  lg:w-full w-32 border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="bg-gray-50 border  lg:w-full w-32 border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-[#b49af9]  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="0"
                   required
                   value={amountOne}
@@ -453,7 +452,7 @@ export default function Swap() {
                 </button> */}
                 <Listbox value={selectedToken1} onChange={setSelectedToken1}>
                   <div className="relative mt-1">
-                    <Listbox.Button className="relative  cursor-default rounded-md w-28 lg:w-36 px-4 py-2.5 bg-gray-700 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                    <Listbox.Button className="relative  cursor-default rounded-md w-28 lg:w-36 px-4 py-2.5 bg-[#b49af9]  pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                       <span className="block truncate">
                         {selectedToken1.symbol}
                       </span>
@@ -520,7 +519,7 @@ export default function Swap() {
                 <input
                   type="number"
                   id=""
-                  className="mt-2  bg-gray-50 border lg:w-full w-32 border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="mt-2  bg-gray-50 border lg:w-full w-32 border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-[#b49af9]  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="0"
                   required
                   value={amountTwo}
@@ -540,7 +539,7 @@ export default function Swap() {
                 </button> */}
                 <Listbox value={selectedToken2} onChange={setSelectedToken2}>
                   <div className="relative mt-1">
-                    <Listbox.Button className="relative cursor-default rounded-md w-28 lg:w-36 px-4 py-2.5 bg-gray-700 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                    <Listbox.Button className="relative cursor-default rounded-md w-28 lg:w-36 px-4 py-2.5 bg-[#b49af9]  pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                       <span className="block truncate">
                         {selectedToken2.symbol}
                       </span>
@@ -602,7 +601,7 @@ export default function Swap() {
               <div className="px-2 border-t border-gray-400 pt-6 w-full mt-6 mx-auto">
                 <button
                   type="button"
-                  className="text-white w-full bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
+                  className="text-white w-full bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
                   onClick={handleSwapSubmit}
                 >
                   Swap

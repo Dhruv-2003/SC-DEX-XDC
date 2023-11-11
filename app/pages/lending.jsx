@@ -12,7 +12,7 @@ import {
   LENDING_CONTRACT_ABI,
   LENDING_CONTRACT_ADDRESS,
   Token_ABI,
-} from "../constants/constants";
+} from "../constants/index.js";
 import { Contract, ethers } from "ethers";
 
 export default function Lending() {
@@ -354,11 +354,7 @@ export default function Lending() {
   return (
     <div
       className={`w-screen min-h-screen no-repeat bg-cover bg-[#03071E]
-        ${
-          !expand
-            ? `${styles.bg} bg-[url('../assets/landing.png')]`
-            : `bg-[#03071E]`
-        }
+      ${!expand ? `bg-[#4532a1]` : `bg-[#03071E]`}
           `}
     >
       <Navbar expand={expand} setExpand={setExpand} />
@@ -369,11 +365,6 @@ export default function Lending() {
               <h1 className=" text-gray-100 text-3xl font-semibold">Lending</h1>
             </div>
 
-            <span className="mt-5 lg:w-5/12 bg-orange-500 opacity-90 px-6 py-4 text-md font-normal rounded-md">
-              XDC-Fi allows users to lend different tokens including customly
-              deployed ones, users can also borrow, withdraw, Repay and supply
-              tokens by interacting with the lending-contract.
-            </span>
             <div
               className={` mt-8 lg:w-5/12 border rounded-lg border-gray-500 px-4 py-6 bg-transparent backdrop-blur-xl`}
             >
@@ -386,7 +377,7 @@ export default function Lending() {
                     onChange={setSelectedToken}
                   >
                     <div className="relative mt-0">
-                      <Listbox.Button className="relative  cursor-default rounded-md w-28 lg:w-36 px-4 py-2.5 bg-gray-700 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                      <Listbox.Button className="text-gray-900 relative  cursor-default rounded-md w-28 lg:w-36 px-4 py-2.5 bg-[#b49af9]  pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                         <span className="block truncate">
                           {selectedToken.symbol}
                         </span>
@@ -444,18 +435,6 @@ export default function Lending() {
                     </div>
                   </Listbox>
                 </div>
-                <Link href="/xdc">
-                  <button
-                    type="button"
-                    className=" flex hover:scale-105 transition ease-in-out items-center w- ml-6 mt-2 hover:bg-transparent border hover:border-gray-300 rounded-md opacity-90 text-xs font-semibold font-fredoka text-white px-3 py-2 mr-2 mb-2"
-                  >
-                    <img
-                      className=" w-5 mr-2"
-                      src="https://img.icons8.com/external-kiranshastry-lineal-kiranshastry/64/ffffff/external-wallet-interface-kiranshastry-lineal-kiranshastry.png"
-                    />
-                    Buy XDC
-                  </button>
-                </Link>
               </div>
 
               <div className=" flex  justify-between w-full">
@@ -497,7 +476,7 @@ export default function Lending() {
                       setToggleBorrow(false);
                     }}
                     type="button"
-                    className="text-white mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
+                    className="text-white mt-6 bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 mr- mb-2"
                   >
                     Supply
                   </button>
@@ -507,7 +486,7 @@ export default function Lending() {
                       setToggleSupply(false);
                     }}
                     type="button"
-                    className="text-white  mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 ml-4 mb-2"
+                    className="text-white  mt-6 bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 ml-4 mb-2"
                   >
                     Borrow
                   </button>
@@ -522,7 +501,7 @@ export default function Lending() {
                       setToggleSupply(false);
                     }}
                     type="button"
-                    className="text-white mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr- mb-2"
+                    className="text-white mt-6 bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 mr- mb-2"
                   >
                     Withdraw
                   </button>
@@ -534,7 +513,7 @@ export default function Lending() {
                       setToggleSupply(false);
                     }}
                     type="button"
-                    className="text-white  mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 ml-4 mb-2"
+                    className="text-white  mt-6 bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 ml-4 mb-2"
                   >
                     Re-pay
                   </button>
@@ -554,7 +533,7 @@ export default function Lending() {
                 />
                 <button
                   type="button"
-                  className="text-white w-full  mt-4 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mb-2"
+                  className="text-white w-full  mt-4 bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 mb-2"
                   onClick={() => handleWithdraw()}
                 >
                   Submit WithDraw
@@ -573,7 +552,7 @@ export default function Lending() {
                 />
                 <button
                   type="button"
-                  className="text-white w-full  mt-4 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mb-2"
+                  className="text-white w-full  mt-4 bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 mb-2"
                   onClick={() => handleRepay()}
                 >
                   Submit Repay
@@ -593,7 +572,7 @@ export default function Lending() {
                 />
                 <button
                   type="button"
-                  className="text-white w-full  mt-4 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mb-2"
+                  className="text-white w-full  mt-4 bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 mb-2"
                   onClick={() => handleSupply()}
                 >
                   Submit Supply
@@ -612,7 +591,7 @@ export default function Lending() {
                 />
                 <button
                   type="button"
-                  className="text-white w-full  mt-4 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mb-2"
+                  className="text-white w-full  mt-4 bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 mb-2"
                   onClick={() => handleBorrow()}
                 >
                   Submit Borrow

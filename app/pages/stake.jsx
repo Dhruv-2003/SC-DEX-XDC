@@ -11,7 +11,8 @@ import {
   STAKING_CONTRACT_ABI,
   STAKING_CONTRACT_ADDRESS,
   Token_ABI,
-} from "../constants/constants";
+} from "../constants/index.js";
+} from "../constants/index.js";
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 import { ethers, Contract } from "ethers";
 
@@ -244,11 +245,11 @@ export default function Stake() {
   return (
     <div
       className={`w-screen min-h-screen no-repeat bg-cover bg-[#03071E]
-        ${
-          !expand
-            ? `${styles.bg} bg-[url('../assets/landing.png')]`
-            : `bg-[#03071E]`
-        }
+      ${
+        !expand
+          ? `bg-[#4532a1]`
+          : `bg-[#03071E]`
+      }
           `}
     >
       <Navbar expand={expand} setExpand={setExpand} />
@@ -257,11 +258,6 @@ export default function Stake() {
           <div className=" w-full mt-10 flex flex-col justify-center items-center px-2 pb-10">
             <div className="w-full flex flex-col lg:w-7/12 justify-around">
               <h1 className=" text-gray-100 text-3xl font-semibold">Staking</h1>
-              <span className="mt-5 bg-orange-500 opacity-90 px-6 py-4 text-md font-normal rounded-md">
-                XDC-Fi allows you to stake your tokens in the smart contract as
-                well as unstake them whenever needed, it also allows you to
-                claim the rewards whenever the user wished.
-              </span>
             </div>
             <div
               className={` mt-8 lg:w-7/12 border rounded-lg border-gray-500 px-4 py-6 bg-transparent backdrop-blur-xl`}
@@ -275,7 +271,7 @@ export default function Stake() {
                     onChange={setSelectedToken}
                   >
                     <div className="relative mt-0">
-                      <Listbox.Button className="relative  cursor-default rounded-md w-28 lg:w-36 px-4 py-2.5 bg-gray-700 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+                      <Listbox.Button className="relative  cursor-default rounded-md w-28 lg:w-36 px-4 py-2.5 bg-[#b49af9]  pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                         <span className="block truncate">
                           {selectedToken.symbol}
                         </span>
@@ -333,7 +329,7 @@ export default function Stake() {
                     </div>
                   </Listbox>
                 </div>
-                <Link href="/xdc">
+                {/* <Link href="/xdc">
                   <button
                     type="button"
                     className=" flex hover:scale-105 transition ease-in-out items-center w- ml-6 mt-2 hover:bg-transparent border hover:border-gray-300 rounded-md opacity-90 text-xs font-semibold font-fredoka text-white px-3 py-2 mr-2 mb-2"
@@ -344,7 +340,7 @@ export default function Stake() {
                     />
                     Buy XDC
                   </button>
-                </Link>
+                </Link> */}
               </div>
 
               {/* <div className="lg:w-5/12 flex items-center justify-start "></div> */}
@@ -371,7 +367,7 @@ export default function Stake() {
                     <input
                       type="number"
                       id=""
-                      className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                      className={` mt-5 bg-gray-100 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                       placeholder="0"
                       required
                       onChange={(e) => setWithdrawAmount(+e.target.value)}
@@ -379,7 +375,7 @@ export default function Stake() {
                   </div>
                   <button
                     type="button"
-                    className="text-black w-72 mt-6 bg-orange-500 text-sm font-fredoka active:bg-orange-600 font-normal rounded-sm px-5 py-2.5 mr-2 mb-2"
+                    className="text-black w-72 mt-6 bg-[#c3adff] text-sm font-fredoka active:bg-[#b49af9]  font-normal rounded-sm px-5 py-2.5 mr-2 mb-2"
                     onClick={() => handleUnstake()}
                   >
                     Unstake
@@ -392,7 +388,7 @@ export default function Stake() {
                     <input
                       type="number"
                       id=""
-                      className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                      className={` mt-5 bg-gray-100 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                       placeholder="0"
                       required
                       // onChange={(e) => setRewardWithdrawAmount(+e.target.value)}
@@ -400,7 +396,7 @@ export default function Stake() {
                   </div>
                   <button
                     type="button"
-                    className="text-black w-72 mt-6 bg-orange-500 text-sm font-fredoka active:bg-orange-600 font-normal rounded-sm px-5 py-2.5 mr-2 mb-2"
+                    className="text-black w-72 mt-6 bg-[#c3adff]  text-sm font-fredoka active:bg-[#b49af9]  font-normal rounded-sm px-5 py-2.5 mr-2 mb-2"
                     onClick={() => handleClaim()}
                   >
                     Claim
@@ -411,13 +407,13 @@ export default function Stake() {
                 onChange={(e) => setInputAmount(+e.target.value)}
                 type="number"
                 id=""
-                className={` mt-5 bg-gray-800 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
+                className={` mt-5 bg-gray-100 text-white border  lg:w-full border-gray-300  text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500`}
                 placeholder="0"
                 required
               />
               <button
                 type="button"
-                className="text-white w-full mt-6 bg-orange-600 text-md font-fredoka active:bg-orange-700 font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
+                className="text-gray-900 w-full mt-6 bg-[#b49af9]  text-md font-fredoka active:bg-[#b49af9]  font-medium rounded-sm px-5 py-2.5 mr-2 mb-2"
                 onClick={() => handleStake()}
               >
                 Stake

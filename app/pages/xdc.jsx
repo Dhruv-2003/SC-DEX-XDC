@@ -1,7 +1,13 @@
 import React, { useState } from "react";
+<<<<<<< HEAD
+import Footer from "../Components/Footer";
+import Navbar from "../Components/Navbar";
+import styles from "../styles/Home.module.css";
+=======
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import styles from '../styles/Home.module.css'
+>>>>>>> c0b7a45e9105130576604d80e30be5ec5e4004e2
 import BuyXDC from "../components/BuyXDC";
 
 export default function Coin() {
@@ -16,8 +22,7 @@ export default function Coin() {
       <Navbar expand={expand} setExpand={setExpand} />
       {expand ? null : <BuyXDC />}
       <div className=" w-full">
-      <Footer />
-
+        <Footer />
       </div>
     </div>
   );

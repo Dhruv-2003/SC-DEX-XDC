@@ -4,6 +4,10 @@
     background-size: cover;
 }
 
+.bg1 {
+    background: conic-gradient(from 200.75deg at 74.63% 35%, #28295A 0deg, #1A1B3C 88.12deg, #353778 213.08deg, #101024 306.42deg, #28295A 360deg);
+}
+
 .bg2 {
     background-image: url('../assets/dark.png');
     background-repeat: no-repeat;
